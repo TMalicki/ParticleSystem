@@ -37,7 +37,8 @@ int main()
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
         //particles.move(mousePosition);
      
-        particles.update(dt);
+        sf::Vector2f windowSize = sf::Vector2f{ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y) };
+        particles.update(dt, windowSize);
   
         sf::Event event;
         while (window.pollEvent(event))

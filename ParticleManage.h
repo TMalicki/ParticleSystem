@@ -21,11 +21,11 @@ public:
 	void particlePush(const vector<std::pair<size_t, size_t>>&, bool collision = false);
 
 	void createForceWave(sf::Vector2i, float radius = 1.0f);
-	void forceWaveExpand(float);
+	void forceWaveExpand(float, sf::Vector2f);
 	const auto isForceWaveCollided();
 
 	float getRandomFloat(float, float);
-	void update(float dt);
+	void update(float dt, sf::Vector2f);
 	void draw(sf::RenderWindow&);
 };
 

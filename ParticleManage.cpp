@@ -1,4 +1,4 @@
-#include "ParticleManage.h"
+﻿#include "ParticleManage.h"
 
 Particles ParticleManage::createParticles(sf::PrimitiveType type, int amount)
 {
@@ -53,12 +53,37 @@ void ParticleManage::createForceWave(sf::Vector2i mousePosition, float radius)
 	m_force.back().setOutlineColor(sf::Color::White);
 }
 
-void ParticleManage::forceWaveExpand(float velocity)
+void ParticleManage::forceWaveExpand(float velocity, sf::Vector2f windowSize)
 {
-	for (auto& force : m_force)
+	vector<size_t> toDestroy{};
+	// to powinna byc przekatna a nie bok prostokąta
+	for (size_t i = 0; i < m_force.size(); i++)
 	{
-		force.setRadius(force.getRadius() + velocity);
-		force.setOrigin(force.getRadius(), force.getRadius());
+		m_force[i].setRadius(m_force[i].getRadius() + velocity);
+		m_force[i].setOrigin(m_force[i].getRadius(), m_force[i].getRadius());
+
+		auto forceRadius = m_force[i].getRadius();
+		auto forceWidth = m_force[i].getPosition().x;
+
+		if (forceWidth >= windowSize.x / 2)
+		{
+			if (forceRadius >= forceWidth)
+			{
+				toDestroy.push_back(i);
+			}
+		}
+		else if (forceWidth < windowSize.x / 2)
+		{
+			if (forceRadius >= windowSize.x - forceWidth)
+			{
+				toDestroy.push_back(i);
+			}
+		}
+	}
+	
+	for (auto destroy : toDestroy)
+	{
+		m_force.erase(m_force.begin() + destroy);
 	}
 }
 
@@ -78,7 +103,8 @@ const auto ParticleManage::isForceWaveCollided()
 
 		for (size_t i = 0; i < m_explodedParticles.size(); i++)
 		{
-			if (i != k)
+			 if(!((i == m_explodedParticles.size() - 1) && (k == m_force.size() - 1)))
+			//if (i != k) // to nie powinno byc to tylko nie powinien byc end() rowny end()
 			{
 				auto actualParticleGroup = m_explodedParticles[i].getParticle();
 
@@ -154,14 +180,14 @@ float ParticleManage::getRandomFloat(float min, float max)
 	return temp;
 }
 
-void ParticleManage::update(float dt)
+void ParticleManage::update(float dt, sf::Vector2f windowSize)
 {
 	for (auto& particleGroup : m_explodedParticles)
 	{
 		particleGroup.update(dt);
 	}
 	
-	forceWaveExpand(0.2f*dt);
+	forceWaveExpand(0.2f*dt, windowSize);
 
 	auto particlesPushed = isForceWaveCollided();
 	particlePush(particlesPushed.second, particlesPushed.first);
