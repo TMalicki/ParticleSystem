@@ -9,12 +9,14 @@ Particles::Particles(long int amount, sf::Vector2f position, sf::Vector2f veloci
 	}
 }
 
-void Particles::update(double dt) // in parameter - dt
+void Particles::update(float dt) // in parameter - dt
 {
 	for (size_t i = 0; i < m_particles.getVertexCount(); i++)
 	{
-		m_particles[i].position.x += m_particleAttributes[i].getDirection().x * m_particleAttributes[i].getVelocity().x * dt / 100.0;	//s = s0 + v*t
-		m_particles[i].position.y += m_particleAttributes[i].getDirection().y * m_particleAttributes[i].getVelocity().y * dt / 100.0;
+		sf::Vector2f tempDirection = m_particleAttributes[i].getDirection();
+		sf::Vector2f tempVelocity = m_particleAttributes[i].getVelocity();
+		m_particles[i].position.x += tempDirection.x * tempVelocity.x * dt / 100.0f;	//s = s0 + v*t
+		m_particles[i].position.y += tempDirection.y * tempVelocity.y * dt / 100.0f;
 	}
 }
 
@@ -28,6 +30,7 @@ void Particles::setParticleAttributes(size_t index, sf::Vector2f position, sf::V
 //	}
 }
 
+/*
 void Particles::move(sf::Vector2i mousePosition)
 {
 	int randomPositionX;
@@ -51,7 +54,7 @@ void Particles::move(sf::Vector2i mousePosition)
 		m_particles[i].color = sf::Color(0, 255 - valueOfColor, 0, 255);
 	}
 }
-
+*/
 /*
 ParticleGroup::ParticleGroup(int amount) : particleGroup(amount), vertices(type, amount)
 {
@@ -62,21 +65,20 @@ ParticleGroup::ParticleGroup(int amount) : particleGroup(amount), vertices(type,
 }
 */
 /*
-void ParticleGroup::explode(sf::Vector2i mousePosition)
+void Particles::explode(sf::Vector2i mousePosition)
 {
-	sf::Vector2f actualPosition;
-	sf::Vector2f actualVelocity;
-	int randomPositionX;
-	int randomPositionY;
-
-	for (int i = 0; i < particles.getVertexCount(); i++)
+	std::default_random_engine generator;
+	std::uniform_real_distribution<float> distribution(1.0, 6.0);
+	
+	for (size_t i = 0; i < m_particles.getVertexCount(); i++)
 	{
-		randomPositionX = (rand() % 2 - 1);
-		randomPositionY = (rand() % 2 - 1);
-		actualPosition = particles[i].position;
-		actualVelocity = sf::Vector2f(((mousePosition.x - actualPosition.x) / 50) + randomPositionX, ((mousePosition.y - actualPosition.y) / 50) + randomPositionY);
+		auto random_x = distribution(generator);
+		auto random_y = distribution(generator);
+		auto tempVelocity = m_particleAttributes[i].getVelocity();
+		tempVelocity += sf::Vector2f(random_x, random_y);
 
-		particles[i].position += actualVelocity;
+		sf::Vector2f mousePos = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
+		setParticleAttributes(i, mousePos, tempVelocity, sf::Vector2f(static_cast<float>(sin(i)), static_cast<float>(cos(i))));	
 	}
 }
 */
