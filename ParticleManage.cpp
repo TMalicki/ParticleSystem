@@ -38,7 +38,7 @@ void ParticleManage::setParticleExpandAttributes(vector<Particles>& particleGrou
 		tempVelocity += sf::Vector2f(random_x, random_y);
 
 		sf::Vector2f mousePos = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
-		actualParticleGroup.setParticleAttributes(i, mousePos, tempVelocity, sf::Vector2f(static_cast<float>(sin(i)), static_cast<float>(cos(i))));
+		actualParticleGroup.setParticleAttributes(i, mousePos, tempVelocity, sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i))));
 	}
 }
 
@@ -51,6 +51,7 @@ void ParticleManage::createForceWave(sf::Vector2i mousePosition, float radius)
 	m_force.back().setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 	m_force.back().setFillColor(sf::Color::Transparent);
 	m_force.back().setOutlineColor(sf::Color::White);
+	setForceVelocity(0.2f);
 }
 
 void ParticleManage::forceWaveExpand(float velocity, sf::Vector2f windowSize)
@@ -89,12 +90,10 @@ void ParticleManage::forceWaveExpand(float velocity, sf::Vector2f windowSize)
 
 const auto ParticleManage::isForceWaveCollided()
 {
-
-	// nie powinny byc liczone fale uderzeniowe ktore wyszly juz poza ekran
 	// czasteczki ktore wychodza poza ekran powinny byc w zaleznosci od trybu usuwane, odbijane od krawedzi, lub powinny wychodzic z innej strony ekranu 
 
 	bool collision = false;
-	vector<std::pair<size_t, size_t>> indexes{};
+	vector<std::tuple<size_t, size_t, size_t>> indexes{};
 	
 	for (size_t k = 0; k < m_force.size(); k++)
 	{
@@ -113,9 +112,9 @@ const auto ParticleManage::isForceWaveCollided()
 					auto positionFromForceWave = (actualParticleGroup[j].position - actualForcePosition);
 					auto distanceFromForceWave = sqrt(pow(positionFromForceWave.x, 2) + pow(positionFromForceWave.y, 2));
 
-					if ((distanceFromForceWave - actualForceRadius > -50.0f) && (distanceFromForceWave - actualForceRadius) <= 0.0f)
+					if ((distanceFromForceWave - actualForceRadius > -40.0f) && (distanceFromForceWave - actualForceRadius) <= 0.0f)
 					{
-						indexes.push_back({ i,j });
+						indexes.push_back({ i,j, k });
 						m_explodedParticles[i].setParticleColor(j, sf::Color::Green);
 					}
 				}
@@ -129,30 +128,37 @@ const auto ParticleManage::isForceWaveCollided()
 
 
 // collision shoud not be available with sf::point primitive type (because of lack hitboxes)
-void ParticleManage::particlePush(const vector<std::pair<size_t, size_t>>& pushedParticlesIndex, bool collision)
+void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t>>& pushedParticlesIndex, bool collision)
 {
 	if (collision == true)
 	{
-		//auto forceSource = m_force.back();
-
 		// update of already existing particle groups
 		for (size_t i = 0; i < pushedParticlesIndex.size(); i++)
 		{
-			auto actualParticle = m_explodedParticles.at(pushedParticlesIndex[i].first).getParticle()[pushedParticlesIndex[i].second];
-			auto actualParticleAttribute = m_explodedParticles.at(pushedParticlesIndex[i].first).getParticleAttributes().at(pushedParticlesIndex[i].second);
+			//pushedParticlesIndex[0]
+			auto [particleGroup, particleInGroup, forceWave] = pushedParticlesIndex[i];
 
-
+			auto actualParticle = m_explodedParticles.at(particleGroup).getParticle()[particleInGroup];
+			auto actualParticleAttribute = m_explodedParticles.at(particleGroup).getParticleAttributes().at(particleInGroup);
+			
 			/*
 				sf::Vector2f actualVelocity = sf::Vector2f(actualParticleAttribute.getVelocity().x - (forceSource.at(j).getVelocity().x - 0.5f),
 					actualParticleAttribute.getVelocity().y - (forceSource.at(j).getVelocity().y - 0.5f));
 				sf::Vector2f actualDirection = sf::Vector2f(actualParticleAttribute.getDirection().x - (forceSource.at(j).getDirection().x - 0.5f),
 					actualParticleAttribute.getDirection().y - (forceSource.at(j).getDirection().y - 0.5f));
 			*/
-			auto actualPosition = m_explodedParticles.at(pushedParticlesIndex[i].first).getParticle()[pushedParticlesIndex[i].second].position;
-			auto actualVelocity = actualParticleAttribute.getVelocity();
-			auto actualDirection = -actualParticleAttribute.getDirection();
+			auto actualPosition = actualParticle.position;
 
-			m_explodedParticles.at(pushedParticlesIndex[i].first).setParticleAttributes(pushedParticlesIndex[i].second, actualPosition, actualVelocity, actualDirection);
+			auto actualRadius = m_force[forceWave].getRadius();
+			auto actualVelocity = sf::Vector2f{ (actualParticleAttribute.getVelocity().x - (getForceVelocity()/actualRadius)) , (actualParticleAttribute.getVelocity().y - (getForceVelocity()/actualRadius)) };
+			///actualVelocity.x += 0.01f;
+			///actualVelocity.y += 0.01f;
+
+			auto newDirectionVector = sf::Vector2f{ (actualPosition.x - m_force[forceWave].getPosition().x), (actualPosition.y - m_force[forceWave].getPosition().y) };
+			auto newDirectionMagnitude = abs(newDirectionVector.x + newDirectionVector.y);
+			auto newDirection = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
+
+			m_explodedParticles.at(particleGroup).setParticleAttributes(particleInGroup, actualPosition, actualVelocity, newDirection);
 		}
 	}
 }
@@ -187,9 +193,10 @@ void ParticleManage::update(float dt, sf::Vector2f windowSize)
 		particleGroup.update(dt);
 	}
 	
-	forceWaveExpand(0.2f*dt, windowSize);
-
+	forceWaveExpand(getForceVelocity()*dt, windowSize);
+	
 	auto particlesPushed = isForceWaveCollided();
+	
 	particlePush(particlesPushed.second, particlesPushed.first);
 }
 

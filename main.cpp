@@ -23,7 +23,6 @@ int main()
 
     //Particle particles(50000,sf::Vector2f(0.0,0.0),sf::Vector2f(2.0,2.0));
     ParticleManage particles;
-    size_t xx = 0;
     while (window.isOpen())
     {
         auto dt = getTime(start);
@@ -49,8 +48,7 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    xx++;
-                    particles.explode(mousePosition, sf::Points, sf::Vector2f(1.0,5.0), 10000);
+                    particles.explode(mousePosition, sf::Points, sf::Vector2f(1.0,5.0), 5000);
                    // particles.explosionForce(mousePosition);
                    // particles.forcePush();
                 }
