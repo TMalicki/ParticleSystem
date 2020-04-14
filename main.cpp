@@ -3,25 +3,12 @@
 #include "ParticleManage.h"
 #include "Timer.h"
 
-// sf::VertexArray m_particles;	// maybe list will be better? try that, also maybe vector<VertexArray> for explosion?
-// stare byc odpychane w zaleznosci od odleglosci od miejsca wybuchu
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!");
     
     auto start = std::chrono::high_resolution_clock::now();;
 
-    /*
-  //  sf::VertexArray timePlotY(sf::PrimitiveType::Points, 1000);
-  //  int timePlotX{};
- 
-    for (int i = 0; i < timePlotY.getVertexCount(); i++)
-    {
-        timePlotY[i].color = sf::Color::Yellow;
-    }
-    */
-
-    //Particle particles(50000,sf::Vector2f(0.0,0.0),sf::Vector2f(2.0,2.0));
     ParticleManage particles;
     while (window.isOpen())
     {
@@ -59,12 +46,9 @@ int main()
             }
         }
 
-
         window.clear();
-
         particles.draw(window);   
-      //  window.draw(timePlotY);
-        
+      //  window.draw(timePlotY);      
         window.display();
     }
 

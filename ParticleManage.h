@@ -12,7 +12,7 @@ private:
 	vector<sf::CircleShape> m_force;	// make class for m_force
 	float m_forceWaveVelocity;
 public:
-	ParticleManage() {};
+	ParticleManage() : m_forceWaveVelocity(0) {};
 
 	void explode(sf::Vector2i, sf::PrimitiveType, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
 	void vacuum();
