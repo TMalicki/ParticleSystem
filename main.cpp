@@ -13,12 +13,6 @@ int main()
     while (window.isOpen())
     {
         auto dt = getTime(start);
-       // std::cout << dt << "\n";
-        /*
-        timePlotY[timePlotX].position = sf::Vector2f(static_cast<double>(timePlotX), dt + 5);
-        if(timePlotX < 1000)
-            timePlotX++;
-            */
 
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
         //particles.move(mousePosition);
@@ -50,12 +44,6 @@ int main()
         particles.draw(window);   
       //  window.draw(timePlotY);      
         window.display();
-    }
-
-    auto x = timePlot();
-    for (float i : x)
-    {
-        std::cout << i << std::endl;
     }
 
     return 0;

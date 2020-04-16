@@ -13,7 +13,6 @@ private:
 
 	sf::PrimitiveType			  m_type;
 public:
-	//Particles(int amount);
 	Particles(long int amount = 100, sf::Vector2f position = { 0.0,0.0 }, sf::Vector2f velocity = { 0.0,0.0 }, sf::Vector2f direction = { 0,0 }, sf::PrimitiveType tempType = sf::Points);
 
 	void setType(sf::PrimitiveType type) { this->m_type = type; }
@@ -26,8 +25,5 @@ public:
 	void setParticleColor(size_t i, sf::Color color) { m_particlesVertex[i].color = color; }
 	const size_t getParticlesAmount() { return m_particlesVertex.getVertexCount(); }
 	void update(float);
-
-
-
 };
 

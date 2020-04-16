@@ -7,18 +7,10 @@ Particles ParticleManage::createParticles(sf::PrimitiveType type, int amount)
 
 void ParticleManage::explode(sf::Vector2i mousePosition, sf::PrimitiveType type, sf::Vector2f randomRange, int amount)
 {
-	/// add breath on other groups nearer point of mouse == stronger
-		//m_explodedParticles.push_back(Particles(amount, sf::Vector2f(0.0, 0.0), sf::Vector2f(2.0, 2.0),sf::Vector2f(0.0,0.0), type));
-
 	m_explodedParticles.push_back(createParticles(type, amount));
 	setParticleExpandAttributes(m_explodedParticles, mousePosition, type, randomRange, amount);
 
 	createForceWave(mousePosition);
-
-	//m_force.push_back(createParticles(sf::TriangleFan, amount));
-	//particleExpand(m_force, mousePosition, sf::TriangleFan, sf::Vector2f(0.0,0.0), amount);
-	//ForceExpand(mousePosition, sf::TriangleFan);
-	//particlePush();
 }
 
 void ParticleManage::setParticleExpandAttributes(vector<Particles>& particleGroup, sf::Vector2i mousePosition, sf::PrimitiveType type, sf::Vector2f randomRange, int amount)

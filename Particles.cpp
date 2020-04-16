@@ -3,10 +3,13 @@
 Particles::Particles(long int amount, sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f direction, sf::PrimitiveType tempType) :
 	m_type(tempType), m_particlesVertex(tempType, amount), m_particleAttributes(amount)
 {
+	
 	for (size_t i = 0; i < m_particlesVertex.getVertexCount(); i++)
 	{
 		setParticleAttributes(i, position, velocity, direction);
 	}
+//	auto lambdaFun = [this, position, velocity, direction](size_t index) mutable { setParticleAttributes(index, position, velocity, direction); };
+//	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), lambdaFun);
 }
 
 void Particles::update(float dt) // in parameter - dt
