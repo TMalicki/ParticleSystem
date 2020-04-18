@@ -17,6 +17,12 @@ int main()
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
         sf::Vector2f windowSize = sf::Vector2f{ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y) };
      
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+        {
+            particles.vacuum(mousePosition);
+        }
+
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -30,7 +36,7 @@ int main()
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
-                    particles.vacuum(mousePosition);
+                    //particles.vacuum(mousePosition);
                 }
             }
         }

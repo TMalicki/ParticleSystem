@@ -153,12 +153,19 @@ void ParticleManage::vacuum(sf::Vector2i mousePosition)
 {
 	for (size_t i = 0; i < m_explodedParticles.size(); i++)
 	{
-		auto particles = m_explodedParticles[i]->getParticleVertex();
-		auto attributes = m_explodedParticles[i]->getParticleAttributes();
+		auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
 
-		for (size_t j = 0; j < m_explodedParticles[i]->getParticlesAmount(); j++)
+		for (size_t j = 0; j < actualParticleGroup.getVertexCount(); j++)
 		{
+			auto& actualParticleAttribute = m_explodedParticles.at(i)->getParticleAttributes().at(j);
 
+			auto newDirectionVector = sf::Vector2f{ mousePosition.x - actualParticleGroup[j].position.x, mousePosition.y - actualParticleGroup[j].position.y };
+			auto newDirectionMagnitude = abs(newDirectionVector.x) + abs(newDirectionVector.y);
+			auto newDirection = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
+
+			m_explodedParticles.at(i)->setParticleAttributes(j, actualParticleGroup[j].position, actualParticleAttribute.getVelocity(), newDirection);
+
+			// sort particles by vector length and stop setting new attributes when it is nearer than...
 		}
 	}
 }
