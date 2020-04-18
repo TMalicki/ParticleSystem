@@ -11,7 +11,7 @@ private:
 	sf::Color	 m_color;
 public:
 	ParticleSettings(sf::Vector2f vel = { 0.0,0.0 }, sf::Vector2f dir = { 0.0f, 0.0f }) : m_velocity{ vel }, m_direction{ dir }, m_color{ sf::Color::White } {};
-
+	
 	void setVelocity(sf::Vector2f velocity) { this->m_velocity = velocity; }
 	const sf::Vector2f& getVelocity() { return m_velocity; }
 

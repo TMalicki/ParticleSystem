@@ -19,7 +19,7 @@ public:
 	const sf::PrimitiveType& getType() { return m_type; }
 
 	const sf::VertexArray& getParticleVertex() const { return m_particlesVertex; }
-	const vector<ParticleSettings>& getParticleAttributes() { return m_particleAttributes; }	// czy przez to ze vector jest bez referencji elementów nie ma czasami kopiowania?
+	vector<ParticleSettings>& getParticleAttributes() { return m_particleAttributes; }	// czy przez to ze vector jest bez referencji elementów nie ma czasami kopiowania?
 	void setParticleAttributes(size_t index = 0, sf::Vector2f position = { 0.0, 0.0 }, sf::Vector2f velocity = { 0.0, 0.0 }, sf::Vector2f direction = { 0.0, 0.0 });
 
 	void setParticleColor(size_t i, sf::Color color) { m_particlesVertex[i].color = color; }

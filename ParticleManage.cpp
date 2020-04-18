@@ -1,24 +1,26 @@
 ﻿#include "ParticleManage.h"
+#include <algorithm>
 
-Particles ParticleManage::createParticles(sf::PrimitiveType type, int amount)
+void ParticleManage::createParticles(sf::PrimitiveType type, int amount)
 {
-	return Particles(amount, sf::Vector2f(0.0, 0.0), sf::Vector2f(2.0, 2.0), sf::Vector2f(0.0, 0.0), type);
+	m_explodedParticles.push_back(std::unique_ptr<Particles>(new Particles(amount, sf::Vector2f(0.0, 0.0), sf::Vector2f(2.0, 2.0), sf::Vector2f(0.0, 0.0), type)));
+	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
 void ParticleManage::explode(sf::Vector2i mousePosition, sf::PrimitiveType type, sf::Vector2f randomRange, int amount)
 {
-	m_explodedParticles.push_back(createParticles(type, amount));
+	createParticles(type, amount);
 	setParticleExpandAttributes(m_explodedParticles, mousePosition, type, randomRange, amount);
 
 	createForceWave(mousePosition);
 }
 
-void ParticleManage::setParticleExpandAttributes(vector<Particles>& particleGroup, sf::Vector2i mousePosition, sf::PrimitiveType type, sf::Vector2f randomRange, int amount)
+void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particles>>& particleGroup, sf::Vector2i mousePosition, sf::PrimitiveType type, sf::Vector2f randomRange, int amount)
 {
 	auto& actualParticleGroup = particleGroup.back();
-	auto actualParticleGroupAttributes = actualParticleGroup.getParticleAttributes();
+	auto& actualParticleGroupAttributes = actualParticleGroup->getParticleAttributes();
 
-	for (size_t i = 0; i < actualParticleGroup.getParticlesAmount(); i++)
+	for (size_t i = 0; i < actualParticleGroup->getParticlesAmount(); i++)
 	{
 		float random_x = getRandomFloat(randomRange.x, randomRange.y);
 		float random_y = getRandomFloat(randomRange.x, randomRange.y);
@@ -27,7 +29,7 @@ void ParticleManage::setParticleExpandAttributes(vector<Particles>& particleGrou
 		tempVelocity += sf::Vector2f(random_x, random_y);
 
 		sf::Vector2f mousePos = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
-		actualParticleGroup.setParticleAttributes(i, mousePos, tempVelocity, sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i))));
+		actualParticleGroup->setParticleAttributes(i, mousePos, tempVelocity, sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i))));
 	}
 }
 
@@ -92,19 +94,18 @@ const auto ParticleManage::isForceWaveCollided()
 		for (size_t i = 0; i < m_explodedParticles.size(); i++)
 		{
 			 if(!((i == m_explodedParticles.size() - 1) && (k == m_force.size() - 1)))
-			//if (i != k) // to nie powinno byc to tylko nie powinien byc end() rowny end()
 			{
-				auto actualParticleGroup = m_explodedParticles[i].getParticleVertex();
+				auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
 
 				for (size_t j = 0; j < actualParticleGroup.getVertexCount(); j++)
 				{
 					auto positionFromForceWave = (actualParticleGroup[j].position - actualForcePosition);
 					auto distanceFromForceWave = sqrt(pow(positionFromForceWave.x, 2) + pow(positionFromForceWave.y, 2));
 
-					if ((distanceFromForceWave - actualForceRadius > -40.0f) && (distanceFromForceWave - actualForceRadius) <= 0.0f)
+					if ((distanceFromForceWave - actualForceRadius > -40.0f) && (distanceFromForceWave - actualForceRadius) <= 20.0f)
 					{
 						indexes.push_back({ i,j, k });
-						m_explodedParticles[i].setParticleColor(j, sf::Color::Green);
+						m_explodedParticles[i]->setParticleColor(j, sf::Color::Green);
 					}
 				}
 			}
@@ -121,36 +122,41 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 {
 	if (collision == true)
 	{
+		auto maxVelocity = 0.0f;
 		// update of already existing particle groups
 		for (auto pushedParticleIndex : pushedParticlesIndex)
 		{
 			//pushedParticlesIndex[0]
 			auto [particleGroup, particleInGroup, forceWave] = pushedParticleIndex;
 
-			auto actualParticle = m_explodedParticles.at(particleGroup).getParticleVertex()[particleInGroup];
-			auto actualParticleAttribute = m_explodedParticles.at(particleGroup).getParticleAttributes().at(particleInGroup);
+			auto actualParticle = m_explodedParticles.at(particleGroup)->getParticleVertex()[particleInGroup];
+			auto& actualParticleAttribute = m_explodedParticles.at(particleGroup)->getParticleAttributes().at(particleInGroup);
 			auto actualPosition = actualParticle.position;
 
 			auto actualRadius = m_force[forceWave].getRadius();
 			auto actualVelocity = sf::Vector2f{ (actualParticleAttribute.getVelocity().x - (getForceVelocity()/actualRadius)) , (actualParticleAttribute.getVelocity().y - (getForceVelocity()/actualRadius)) };
+			
+			auto tempVelocity = sqrt(pow(actualVelocity.x, 2) + pow(actualVelocity.y, 2));
+			if (tempVelocity > maxVelocity) maxVelocity = tempVelocity;
 
 			auto newDirectionVector = sf::Vector2f{ (actualPosition.x - m_force[forceWave].getPosition().x), (actualPosition.y - m_force[forceWave].getPosition().y) };
-			auto newDirectionMagnitude = abs(newDirectionVector.x + newDirectionVector.y);
+			auto newDirectionMagnitude = abs(newDirectionVector.x) + abs(newDirectionVector.y);
 			auto newDirection = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
 
-			m_explodedParticles.at(particleGroup).setParticleAttributes(particleInGroup, actualPosition, actualVelocity, newDirection);
+			m_explodedParticles.at(particleGroup)->setParticleAttributes(particleInGroup, actualPosition, actualVelocity, newDirection);
 		}
+	//	std::cout << maxVelocity << "\n";
 	}
 }
 
-void ParticleManage::vacuum()
+void ParticleManage::vacuum(sf::Vector2i mousePosition)
 {
 	for (size_t i = 0; i < m_explodedParticles.size(); i++)
 	{
-		auto particles = m_explodedParticles[i].getParticleVertex();
-		auto attributes = m_explodedParticles[i].getParticleAttributes();
+		auto particles = m_explodedParticles[i]->getParticleVertex();
+		auto attributes = m_explodedParticles[i]->getParticleAttributes();
 
-		for (size_t j = 0; j < m_explodedParticles[i].getParticlesAmount(); j++)
+		for (size_t j = 0; j < m_explodedParticles[i]->getParticlesAmount(); j++)
 		{
 
 		}
@@ -167,14 +173,16 @@ float ParticleManage::getRandomFloat(float min, float max)
 
 void ParticleManage::update(float dt, sf::Vector2f windowSize)
 {
+	// for moving
 	for (auto& particleGroup : m_explodedParticles)
 	{
-		particleGroup.update(dt);
+		particleGroup->update(dt* 2.0f);
 	}
 	
-	forceWaveExpand(getForceVelocity()*dt, windowSize);
-	auto particlesPushed = isForceWaveCollided();
+	forceWaveExpand(getForceVelocity()*2.0f*dt, windowSize);
 	
+
+	auto particlesPushed = isForceWaveCollided();
 	particlePush(particlesPushed.second, particlesPushed.first);
 }
 
@@ -182,7 +190,7 @@ void ParticleManage::draw(sf::RenderWindow& window)
 {
 	for (const auto& particleGroup : m_explodedParticles)
 	{
-		window.draw(particleGroup.getParticleVertex());
+		window.draw(particleGroup->getParticleVertex());
 	}
 	for (const auto& force : m_force)
 	{
