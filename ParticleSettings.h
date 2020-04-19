@@ -9,9 +9,12 @@ private:
 	sf::Vector2f m_acceleration;
 	sf::Vector2f m_velocity;
 	sf::Vector2f m_direction;
+
+	float		 m_mass;
 	sf::Color	 m_color;
 public:
-	ParticleSettings(sf::Vector2f vel = { 0.0,0.0 }, sf::Vector2f dir = { 0.0f, 0.0f }) : m_acceleration(sf::Vector2f{ 0.0f, 0.0f }), m_velocity{ vel }, m_direction{ dir }, m_color{ sf::Color::White } {};
+	ParticleSettings(sf::Vector2f vel = { 0.0,0.0 }, sf::Vector2f dir = { 0.0f, 0.0f }) : m_acceleration(sf::Vector2f{ 0.0f, 0.0f }), m_velocity{ vel }, m_direction{ dir }, m_color{ sf::Color::White }
+	, m_mass(1.0) {};
 	
 	void setAcceleration(sf::Vector2f acceleration) { this->m_acceleration = acceleration; }
 	const sf::Vector2f& getAcceleration() { return m_acceleration; }

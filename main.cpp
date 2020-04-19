@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "windowSettings.h"
 #include "ParticleManage.h"
 #include "Timer.h"
 
@@ -7,15 +8,21 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "ParticleSystem");
     auto start = std::chrono::high_resolution_clock::now();;
+    
+    sf::Vector2f windowSize = sf::Vector2f{ static_cast<float>(window.getSize().x) - 320, static_cast<float>(window.getSize().y) };
 
+    windowSettings windowSettings(windowSize);
+
+    auto windowOptionSize = windowSettings.getOptionWindowSize();
+    
     ParticleManage particles;
+    particles.setActiveAreaSize(windowSettings.getActiveWindowSize());
 
     while (window.isOpen())
     {
         auto dt = getTime(start);
  
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-        sf::Vector2f windowSize = sf::Vector2f{ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y) };
      
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
@@ -41,7 +48,7 @@ int main()
             }
         }
 
-        particles.update(dt, windowSize);
+        particles.update(dt);
 
         window.clear();
         particles.draw(window);    

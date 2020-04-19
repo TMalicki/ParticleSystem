@@ -6,14 +6,18 @@
 class ParticleManage
 {
 private:
-	std::default_random_engine  m_generator;
+	std::default_random_engine					m_generator;
+	sf::Vector2f								m_activeAreaSize;
+
 
 	vector<std::unique_ptr<Particles>>			m_explodedParticles;
-	vector<sf::CircleShape>		m_force;	// make class for m_force
-	float						m_forceWaveVelocity;
+	vector<sf::CircleShape>						m_force;	// make class for m_force
+	float										m_forceWaveVelocity;
 public:
-	ParticleManage() : m_forceWaveVelocity(0) {};
-	
+	ParticleManage() : m_forceWaveVelocity{ 0 }, m_activeAreaSize{ sf::Vector2f(0.0f, 0.0f) } {};
+	void setActiveAreaSize(sf::Vector2f activeAreaSize) { m_activeAreaSize = activeAreaSize; Particles::setActiveArea(activeAreaSize); }
+	const sf::Vector2f getActiveAreaSize() { return m_activeAreaSize; }
+
 	void explode(sf::Vector2i, sf::PrimitiveType, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
 	void vacuum(sf::Vector2i);
 
@@ -29,7 +33,7 @@ public:
 	const float getForceVelocity() { return m_forceWaveVelocity; }
 
 	float getRandomFloat(float, float);
-	void update(float dt, sf::Vector2f);
+	void update(float dt);
 	void draw(sf::RenderWindow&);
 };
 

@@ -178,7 +178,7 @@ float ParticleManage::getRandomFloat(float min, float max)
 	return temp;
 }
 
-void ParticleManage::update(float dt, sf::Vector2f windowSize)
+void ParticleManage::update(float dt)
 {
 	// for moving
 	for (auto& particleGroup : m_explodedParticles)
@@ -186,7 +186,7 @@ void ParticleManage::update(float dt, sf::Vector2f windowSize)
 		particleGroup->update(dt* 2.0f);
 	}
 	
-	forceWaveExpand(getForceVelocity()*2.0f*dt, windowSize);
+	forceWaveExpand(getForceVelocity()*2.0f*dt, m_activeAreaSize);
 	
 
 	auto particlesPushed = isForceWaveCollided();
