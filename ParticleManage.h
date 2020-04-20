@@ -10,8 +10,8 @@ private:
 	sf::Vector2f								m_activeAreaSize;
 
 
-	vector<std::unique_ptr<Particles>>			m_explodedParticles;
-	vector<sf::CircleShape>						m_force;	// make class for m_force
+	std::vector<std::unique_ptr<Particles>>			m_explodedParticles;
+	std::vector<sf::CircleShape>						m_force;	// make class for m_force
 	float										m_forceWaveVelocity;
 public:
 	ParticleManage() : m_forceWaveVelocity{ 0 }, m_activeAreaSize{ sf::Vector2f(0.0f, 0.0f) } {};
@@ -22,9 +22,9 @@ public:
 	void vacuum(sf::Vector2i);
 
 	void createParticles(sf::PrimitiveType type = sf::Points, int amount = 1000);
-	void setParticleExpandAttributes(vector<std::unique_ptr<Particles>>&, sf::Vector2i, sf::PrimitiveType, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
+	void setParticleExpandAttributes(std::vector<std::unique_ptr<Particles>>&, sf::Vector2i, sf::PrimitiveType, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
 	
-	void particlePush(const vector<std::tuple<size_t, size_t, size_t>>&, bool collision = false);
+	void particlePush(const std::vector<std::tuple<size_t, size_t, size_t>>&, bool collision = false);
 	void createForceWave(sf::Vector2i, float radius = 1.0f);
 	void forceWaveExpand(float, sf::Vector2f);
 	const auto isForceWaveCollided();

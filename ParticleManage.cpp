@@ -1,9 +1,11 @@
 ﻿#include "ParticleManage.h"
 #include <algorithm>
 
+using std::vector;
+
 void ParticleManage::createParticles(sf::PrimitiveType type, int amount)
 {
-	m_explodedParticles.push_back(std::unique_ptr<Particles>(new Particles(amount, sf::Vector2f(0.0, 0.0), sf::Vector2f(2.0, 2.0), sf::Vector2f(0.0, 0.0), type)));
+	m_explodedParticles.push_back(std::unique_ptr<Particles>(new Particles(amount, sf::Vector2f(0.0, 0.0), sf::Vector2f(0.0, 0.0), sf::Vector2f(0.0, 0.0), type)));
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
@@ -161,9 +163,17 @@ void ParticleManage::vacuum(sf::Vector2i mousePosition)
 
 			auto newDirectionVector = sf::Vector2f{ mousePosition.x - actualParticleGroup[j].position.x, mousePosition.y - actualParticleGroup[j].position.y };
 			auto newDirectionMagnitude = abs(newDirectionVector.x) + abs(newDirectionVector.y);
-			auto newDirection = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
+			auto newDirectionNormalized = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
 
-			m_explodedParticles.at(i)->setParticleAttributes(j, actualParticleGroup[j].position, actualParticleAttribute.getVelocity(), newDirection);
+			auto actualVelocity = actualParticleAttribute.getVelocity();
+			auto actualAcceleration = actualParticleAttribute.getAcceleration();
+			
+			actualVelocity.x += actualAcceleration.x * newDirectionNormalized.x;
+			actualVelocity.y += actualAcceleration.y * newDirectionNormalized.y;
+
+			if (abs(actualVelocity.x) + abs(actualVelocity.y) >= 40.0f) actualVelocity = sf::Vector2f{ 40.0f * newDirectionNormalized.x, 40.0f * newDirectionNormalized.y };
+	
+			m_explodedParticles.at(i)->setParticleAttributes(j, actualParticleGroup[j].position, actualVelocity, newDirectionNormalized);
 
 			// sort particles by vector length and stop setting new attributes when it is nearer than...
 		}
