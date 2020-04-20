@@ -11,7 +11,8 @@ Particles::Particles(long int amount, sf::Vector2f position, sf::Vector2f veloci
 		m_particleAttributes[i].setVelocity(velocity);
 		m_particleAttributes[i].setDirection(direction);
 		//setParticleAttributes(i, position, velocity, direction);
-		m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.1f, 0.1f });
+		////m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.1f, 0.1f });
+		////m_particleAttributes[i].applyForce(sf::Vector2f(0.0f, 1.0f));
 	}
 //	auto lambdaFun = [this, position, velocity, direction](size_t index) mutable { setParticleAttributes(index, position, velocity, direction); };
 //	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), lambdaFun);
@@ -28,8 +29,17 @@ void Particles::update(float dt) // in parameter - dt
 			sf::Vector2f tempVelocity = m_particleAttributes[i].getVelocity();
 			sf::Vector2f tempAcceleration = m_particleAttributes[i].getAcceleration();
 
-			tempVelocity.x += tempAcceleration.x * tempDirection.x;
-			tempVelocity.y += tempAcceleration.y * tempDirection.y;
+			/*
+			std::vector<sf::Vector2f> tempForces = m_particleAttributes[i].getForces();
+
+			for (auto Force : tempForces)
+			{
+				tempAcceleration += Force;
+			}
+			*/
+
+			tempVelocity.x += tempAcceleration.x; //* tempDirection.x;
+			tempVelocity.y += tempAcceleration.y; //* tempDirection.y;
 
 			float magnitudeVector = sqrt(pow(tempVelocity.x, 2) + pow(tempVelocity.y, 2));
 			if (magnitudeVector > 100.0f)
@@ -40,6 +50,8 @@ void Particles::update(float dt) // in parameter - dt
 			tempPosition += tempVelocity * dt / 100.0f;
 
 			setParticleAttributes(i, tempPosition, tempVelocity, tempDirection);
+
+			m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
 		}
 		else
 		{
@@ -51,9 +63,9 @@ void Particles::update(float dt) // in parameter - dt
 	}
 }
 
-void Particles::moveTowardsPoint(sf::Vector2f goalPosition)
+void Particles::getDirectionTowardsPoint(sf::Vector2f goalPosition)
 {
-	for (int i = 0; i < m_particleVertex.getVertexCount(); i++)
+	for (size_t i = 0; i < m_particleVertex.getVertexCount(); i++)
 	{
 		auto actualPosition = getParticleVertex()[i].position;
 		auto newDirectionVector = sf::Vector2f{ goalPosition.x - actualPosition.x, goalPosition.y - actualPosition.y };
@@ -61,7 +73,16 @@ void Particles::moveTowardsPoint(sf::Vector2f goalPosition)
 		if (newDirectionMagnitude == 0.0f) newDirectionMagnitude = 1.0f;
 		auto newDirection = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
 
-		setParticleAttributes(i, actualPosition, getParticleAttributes()[i].getVelocity(), newDirection);
+		m_particleAttributes[i].setDirection(newDirection);
+		//setParticleAttributes(i, actualPosition, getParticleAttributes()[i].getVelocity(), newDirection);
+	}
+}
+
+void Particles::applyForce(sf::Vector2f force)
+{
+	for (auto& particle : m_particleAttributes)
+	{
+		particle.applyForce(force);
 	}
 }
 

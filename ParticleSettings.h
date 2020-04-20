@@ -6,20 +6,27 @@
 class ParticleSettings
 {
 private:
-	sf::Vector2f	m_acceleration;
-	sf::Vector2f	m_velocity;
-	sf::Vector2f	m_direction;
+	sf::Vector2f				 m_force;
+	sf::Vector2f				 m_acceleration;
+	sf::Vector2f				 m_velocity;
+	sf::Vector2f				 m_direction;
 
-	float			m_mass;
-	sf::Color		m_color;
+	float						 m_mass;
+	sf::Color					 m_color;
 public:
 	ParticleSettings(sf::Vector2f acc = { 0.0,0.0 }, sf::Vector2f vel = { 0.0,0.0 }, sf::Vector2f dir = { 0.0f, 0.0f }) :
 		m_acceleration(acc),
 		m_velocity{ vel }, 
 		m_direction{ dir }, 
 		m_color{ sf::Color::White },
-		m_mass(1.0) {};
+		m_mass(1.0f) {};
 	
+	void applyForce(sf::Vector2f force);
+	const sf::Vector2f getForces() { return m_force; }
+
+	void setMass(float mass) { this->m_mass = mass; }
+	const float getMass() { return m_mass; }
+
 	void setAcceleration(sf::Vector2f acceleration) { this->m_acceleration = acceleration; }
 	const sf::Vector2f& getAcceleration() { return m_acceleration; }
 

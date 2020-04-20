@@ -35,22 +35,17 @@ int main()
    //// ParticleManage particles;
    //// particles.setActiveAreaSize(windowSettings.getActiveWindowSize());
 
+
     while (window.isOpen())
     {
         auto dt = getTime(start);
  
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 
-        ////////////////////////////////////////////
-        /// TEST
-
-        /**/ particles.moveTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
-        
-        /// TEST
-        ////////////////////////////////////////////
-
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
+            /**/ particles.getDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
+            /**/ particles.applyForce(sf::Vector2f{ 0.01f , 0.01f });
             ////particles.vacuum(mousePosition);
         }
 

@@ -19,7 +19,8 @@ public:
 	static void setActiveArea(sf::Vector2f activeArea) { s_activeAreaSize = activeArea; }
 	const size_t getParticlesAmount() { return m_particleVertex.getVertexCount(); }
 	const sf::VertexArray& getParticleVertex() const { return m_particleVertex; }
-	void moveTowardsPoint(sf::Vector2f);
+	void getDirectionTowardsPoint(sf::Vector2f);
+	void applyForce(sf::Vector2f force);
 
 	std::vector<ParticleSettings>& getParticleAttributes() { return m_particleAttributes; };
 	void setParticleAttributes(size_t index = 0, sf::Vector2f position = { 0.0, 0.0 }, sf::Vector2f velocity = { 0.0, 0.0 }, sf::Vector2f direction = { 0.0, 0.0 });
