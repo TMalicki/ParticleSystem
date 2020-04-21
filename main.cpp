@@ -29,25 +29,36 @@ int main()
     auto windowOptionSize = windowSettings.getOptionWindowSize();
     
     
-   /* */ Particles particles(1, sf::Vector2f(100.0, 100.0));
+   /* */ Particles particles(10, sf::Vector2f(100.0, 100.0));
    /* */ particles.setActiveArea(sf::Vector2f{ 1500.0f, 1080.0f });
-
+         
+   /**/ //particles.setMass(0, 3.0f);
+   /**/    for (size_t i = 0; i < 10; i++)
+   /**/    {
+   /**/        particles.setMass(i, static_cast<float>(i + 1));
+   /**/    }
+       
    //// ParticleManage particles;
    //// particles.setActiveAreaSize(windowSettings.getActiveWindowSize());
 
+   while (window.isOpen())
+   {
+       auto dt = getTime(start);
 
-    while (window.isOpen())
-    {
-        auto dt = getTime(start);
- 
-        sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+       sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-        {
-            /**/ particles.getDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
-            /**/ particles.applyForce(sf::Vector2f{ 0.01f , 0.01f });
-            ////particles.vacuum(mousePosition);
-        }
+       /**/ //particles.applyAirResistance(1000.f);
+       /**/ particles.applyFriction();
+       if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+       {
+           /**/ particles.getDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
+           /**/ particles.applyForce(sf::Vector2f{ 0.1f , 0.1f });
+           ////particles.vacuum(mousePosition);
+       }
+       if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+       {
+           /**/ particles.applyGravityForce(sf::Vector2f{ 0.0f, 0.02f });
+       }
 
         sf::Event event;
         while (window.pollEvent(event))

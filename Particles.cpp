@@ -55,6 +55,7 @@ void Particles::update(float dt) // in parameter - dt
 		}
 		else
 		{
+			// it should be done inside windowSettings class
 			if (tempPosition.y < 0) m_particleVertex[i].position.y = s_activeAreaSize.y;
 			else if (tempPosition.y > s_activeAreaSize.y) m_particleVertex[i].position.y = 0;
 			else if (tempPosition.x < 0) m_particleVertex[i].position.x = s_activeAreaSize.x;
@@ -78,12 +79,37 @@ void Particles::getDirectionTowardsPoint(sf::Vector2f goalPosition)
 	}
 }
 
-void Particles::applyForce(sf::Vector2f force)
+void Particles::setDirection(sf::Vector2f direction)
+{
+	for (auto& particleAttribute : m_particleAttributes)
+	{
+		particleAttribute.setDirection(direction);
+	}
+}
+
+void Particles::applyForce(sf::Vector2f force, ParticleSettings::Forces forceType)
 {
 	for (auto& particle : m_particleAttributes)
 	{
-		particle.applyForce(force);
+		particle.applyForce(force, forceType);
 	}
+}
+
+void Particles::applyGravityForce(sf::Vector2f force)
+{
+	setDirection(sf::Vector2f{ 0.0f, 1.0f });
+	applyForce(force, ParticleSettings::Forces::Gravity);
+}
+
+void Particles::applyAirResistance(float coefficent)
+{
+	//setDirection(-getDirection())
+	applyForce(sf::Vector2f{ 0.0f, 0.0f }, ParticleSettings::Forces::AirResistance);
+}
+
+void Particles::applyFriction(float mi)
+{
+	applyForce(sf::Vector2f{ 0.0f, 0.0f }, ParticleSettings::Forces::Friction);
 }
 
 void Particles::setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f direction)
