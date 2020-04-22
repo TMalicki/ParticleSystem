@@ -1,0 +1,17 @@
+CheckBox.CheckBox1 {
+    Position = (1580, 40);
+    Size = (18, 18);
+    TextSize = 13;
+
+    Renderer {
+        textcolor = rgb(100, 100, 100);
+        texturechecked = "GUI/themes/BabyBlue.png" Part(48, 40, 34, 36);
+        texturecheckeddisabled = None;
+        texturecheckedfocused = None;
+        texturecheckedhover = None;
+        textureunchecked = "GUI/themes/BabyBlue.png" Part(381, 2, 31, 31);
+        textureuncheckeddisabled = None;
+        textureuncheckedfocused = None;
+        textureuncheckedhover = None;
+    }
+}

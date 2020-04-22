@@ -17,7 +17,6 @@ sf::Vector2f ParticleSettings::getDirectionFromVelocity()
 
 void ParticleSettings::applyForce(sf::Vector2f force, Forces forceType)
 {
-	static int x = 0;
 	if(forceType == Forces::Gravity) 
 	{
 		m_force = force;
@@ -45,12 +44,4 @@ void ParticleSettings::applyForce(sf::Vector2f force, Forces forceType)
 		m_force = (force / m_mass);
 	}
 	m_acceleration += sf::Vector2f{ m_force.x * m_direction.x, m_force.y * m_direction.y }; 
-
-	x++;
-	if (x == 100) {
-		std::cout << "Force: " << m_force.x << " " << m_force.y << "\n";
-		std::cout << "Direction: " << m_direction.x << " " << m_direction.y << "\n";
-		std::cout << "Velocity: " << m_velocity.x << " " << m_velocity.y << "\n";
-		x = 0;
-	}
 }

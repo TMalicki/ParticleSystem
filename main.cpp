@@ -1,5 +1,6 @@
 ﻿#include <iostream>
-#include <SFML/Graphics.hpp>
+#include <TGUI/TGUI.hpp>
+//#include <SFML/Graphics.hpp>
 #include "windowSettings.h"
 ////#include "ParticleManage.h"
 #include "Timer.h"
@@ -14,12 +15,14 @@ się przyzwoicie i będzie dobra hermetyzacja danych to wtedy spróbować zaprog
 odpowiednie algorytmy zachowań.
 */
 
-
-
+/*OGARNĄĆ JEDNOSTKI!*/
+/*DODAĆ STEROWALNE PRZYCISKI DO ZMIANY USTAWIEŃ*/
+/*POPRAWIĆ SIŁY - SZCZEGÓLNIE DZIAŁANIE ARGUMENTU DLA METODY APPLYAIRRESISTANCE*/
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "ParticleSystem");
+    tgui::Gui gui{ window };
     auto start = std::chrono::high_resolution_clock::now();;
     
     sf::Vector2f windowSize = sf::Vector2f{ static_cast<float>(window.getSize().x) - 320, static_cast<float>(window.getSize().y) };
@@ -27,8 +30,7 @@ int main()
     windowSettings windowSettings(windowSize);
 
     auto windowOptionSize = windowSettings.getOptionWindowSize();
-    
-    
+
    /* */ Particles particles(10, sf::Vector2f(100.0, 100.0));
    /* */ particles.setActiveArea(sf::Vector2f{ 1500.0f, 1080.0f });
          
@@ -40,6 +42,8 @@ int main()
        
    //// ParticleManage particles;
    //// particles.setActiveAreaSize(windowSettings.getActiveWindowSize());
+   gui.loadWidgetsFromFile("GUI/Side.txt");
+   auto x = gui.getWidgets();
 
    while (window.isOpen())
    {
@@ -48,6 +52,7 @@ int main()
        sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 
        /**/ //particles.applyAirResistance(1000.f);
+
        /**/ particles.applyFriction();
        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
        {
@@ -59,7 +64,7 @@ int main()
        {
            /**/ particles.applyGravityForce(sf::Vector2f{ 0.0f, 0.02f });
        }
-
+       
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -69,6 +74,7 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
+                    
                   ////  particles.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 1000);
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
@@ -76,11 +82,14 @@ int main()
                    //// particles.vacuum(mousePosition);
                 }
             }
+            gui.handleEvent(event);
+         //   x.at(0)->connect("Checked", [&]() { particles.applyGravityForce(sf::Vector2f{ 0.0f,0.02f }); });
         }
 
         /* */particles.update(dt);
         window.clear();
         /* */particles.draw(window);
+        /**/gui.draw();
        // particles.draw(window);    
         window.display();
     }
