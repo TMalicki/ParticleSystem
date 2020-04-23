@@ -99,7 +99,7 @@ const auto ParticleManage::isForceWaveCollided()
 			{
 				auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
 
-				for (size_t j = 0; j < actualParticleGroup.getVertexCount(); j++)
+				for (size_t j = 0; j < actualParticleGroup.size(); j++)
 				{
 					auto positionFromForceWave = (actualParticleGroup[j].position - actualForcePosition);
 					auto distanceFromForceWave = sqrt(pow(positionFromForceWave.x, 2) + pow(positionFromForceWave.y, 2));
@@ -157,7 +157,7 @@ void ParticleManage::vacuum(sf::Vector2i mousePosition)
 	{
 		auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
 
-		for (size_t j = 0; j < actualParticleGroup.getVertexCount(); j++)
+		for (size_t j = 0; j < actualParticleGroup.size(); j++)
 		{
 			auto& actualParticleAttribute = m_explodedParticles.at(i)->getParticleAttributes().at(j);
 
@@ -207,7 +207,7 @@ void ParticleManage::draw(sf::RenderWindow& window)
 {
 	for (const auto& particleGroup : m_explodedParticles)
 	{
-		window.draw(particleGroup->getParticleVertex());
+		//window.draw(particleGroup->getParticleVertex());
 	}
 	for (const auto& force : m_force)
 	{

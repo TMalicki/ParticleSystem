@@ -25,8 +25,8 @@ public:
 
 	sf::Vector2f getDirectionFromVelocity();
 
-	void applyForce(sf::Vector2f force, Forces forceType);
-	const sf::Vector2f getForces() { return m_force; }
+	void applyForce(sf::Vector2f force, Forces forceType, float constant = 0.0f);
+	const sf::Vector2f& getForces() { return m_force; }
 
 	void setMass(float mass) { this->m_mass = mass; }
 	const float getMass() { return m_mass; }

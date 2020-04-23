@@ -15,8 +15,8 @@ private:
 	float										m_forceWaveVelocity;
 public:
 	ParticleManage() : m_forceWaveVelocity{ 0 }, m_activeAreaSize{ sf::Vector2f(0.0f, 0.0f) } {};
-	void setActiveAreaSize(sf::Vector2f activeAreaSize) { m_activeAreaSize = activeAreaSize; Particles::setActiveArea(activeAreaSize); }
-	const sf::Vector2f getActiveAreaSize() { return m_activeAreaSize; }
+	//void setActiveAreaSize(sf::Vector2f activeAreaSize) { m_activeAreaSize = activeAreaSize; Particles::setActiveArea(activeAreaSize); }
+	//const sf::Vector2f getActiveAreaSize() { return m_activeAreaSize; }
 
 	void explode(sf::Vector2i, sf::PrimitiveType, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
 	void vacuum(sf::Vector2i);

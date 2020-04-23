@@ -2,30 +2,26 @@
 
 sf::Vector2f ParticleSettings::getDirectionFromVelocity()
 {
-	//auto actualPosition = getParticleVertex()[i].position;
-	//auto newDirectionVector = sf::Vector2f{ goalPosition.x - actualPosition.x, goalPosition.y - actualPosition.y };
 	auto newDirectionMagnitude = sqrt(pow(m_velocity.x, 2) + pow(m_velocity.y, 2));
 	auto newDirection = sf::Vector2f{};
 
 	if (newDirectionMagnitude == 0.0f) newDirection = sf::Vector2f{ 0.0f,0.0f };
 	else newDirection = sf::Vector2f{ m_velocity.x / newDirectionMagnitude, m_velocity.y / newDirectionMagnitude };
 
-	//m_direction = newDirection;
-
 	return newDirection;
 }
 
-void ParticleSettings::applyForce(sf::Vector2f force, Forces forceType)
+void ParticleSettings::applyForce(sf::Vector2f force, Forces forceType, float constant)
 {
 	if(forceType == Forces::Gravity) 
 	{
+		m_direction = sf::Vector2f{ 0.0f, 1.0f };
 		m_force = force;
 	}
 	else if (forceType == Forces::AirResistance)
 	{
-		float c = 0.0001f;
+		float c = constant;
 		auto velocityMagnitude = sqrt(pow(m_velocity.x, 2) + pow(m_velocity.y, 2));
-		//auto direction = getDirectionFromVelocity();
 
 		m_direction = -getDirectionFromVelocity();
 		m_force = pow(velocityMagnitude, 2) * c * sf::Vector2f{1.0f, 1.0f};
@@ -33,10 +29,9 @@ void ParticleSettings::applyForce(sf::Vector2f force, Forces forceType)
 	else if (forceType == Forces::Friction)
 	{
 		auto normal = 1.0f;
-		auto mi = 0.01f;
-		//auto direction = -getDirectionFromVelocity();
-		m_direction = -getDirectionFromVelocity();
+		float mi = constant;
 
+		m_direction = -getDirectionFromVelocity();
 		m_force = normal * mi * sf::Vector2f{ 1.0f, 1.0f };
 	}
 	else
