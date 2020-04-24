@@ -13,12 +13,15 @@ private:
 	sf::PrimitiveType				m_type;
 
 	bool m_GravityOn;
+	bool m_FrictionOn;
+	bool m_AirResistanceOn;
 public:
 	Particles(long int amount = 100, sf::Vector2f position = { 0.0,0.0 }, sf::Vector2f velocity = { 0.0,0.0 }, 
 				sf::Vector2f direction = { 0,0 }, sf::PrimitiveType tempType = sf::Points);
 	
 	std::vector<sf::Vertex>& getParticleVertex() { return m_particleVertex; }
 	std::vector<ParticleSettings>& getParticleAttributes() { return m_particleAttributes; };
+	
 	void setParticleAttributes(size_t index = 0, sf::Vector2f position = { 0.0, 0.0 }, sf::Vector2f velocity = { 0.0, 0.0 }, sf::Vector2f direction = { 0.0, 0.0 });///?
 	void setParticleAttributesN(size_t index = 0, sf::Vector2f position = { 0.0, 0.0 }, sf::Vector2f velocity = { 0.0, 0.0 });///?
 

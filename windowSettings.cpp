@@ -1,20 +1,4 @@
 #include "windowSettings.h"
-/*
-void windowSettings::createButton(sf::Vector2f size, sf::Vector2f position)
-{
-	position.x += m_activeWindowSize.x;
-	m_UI_Objects.createButton(size, position);
-}
-
-void windowSettings::drawButton(sf::RenderWindow& window)
-{
-	auto tempButtons = m_UI_Objects.getButtons();
-	for (auto button : tempButtons)
-	{
-		window.draw(button.getButton());
-	}
-}
-*/
 
 windowSettings::windowSettings(sf::RenderWindow& window, float border) : m_gui{window}
 {
@@ -35,3 +19,4 @@ void windowSettings::transitionParticle(std::vector<sf::Vertex>& particlesVertex
 		else if (tempPosition.x > m_activeWindowSize.x) particlesVertex[i].position.x = 0;
 	}
 }
+

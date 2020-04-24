@@ -62,11 +62,21 @@ void Particles::TurnOnForce(bool logic, ParticleSettings::Forces force)
 	{
 		m_GravityOn = logic;
 	}
+	else if (force == ParticleSettings::Forces::AirResistance)
+	{
+		m_AirResistanceOn = logic;
+	}
+	else if (force == ParticleSettings::Forces::Friction)
+	{
+		m_FrictionOn = logic;
+	}
 }
 
 void Particles::forceUpdate()
 {
 	if (m_GravityOn == true) applyGravityForce(sf::Vector2f{ 0.0f,0.02f });
+	if (m_AirResistanceOn == true) applyAirResistance();
+	if (m_FrictionOn == true) applyFriction();
 }
 
 void Particles::applyForce(sf::Vector2f force, ParticleSettings::Forces forceType, float constant)

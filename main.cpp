@@ -31,17 +31,15 @@ int main()
        
     //// ParticleManage particles;
     //// particles.setActiveAreaSize(windowSettings.getActiveWindowSize());
-    auto& x = windowSettings.getObjectsUI();
+    auto gravityCheckBox = windowSettings.getGravityButton();
+    auto frictionCheckBox = windowSettings.getFrictionButton();
+    auto airResistanceCheckBox = windowSettings.getAirResistanceButton();
 
    while (window.isOpen())
    {
        auto dt = getTime(start);
 
        sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-
-       /**/ //particles.applyAirResistance();
-
-       particles.applyFriction();
        
        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
        {
@@ -51,7 +49,6 @@ int main()
        }
        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
        {
-           particles.applyGravityForce(sf::Vector2f{ 0.0f, 0.02f });
        }
        
         sf::Event event;
@@ -67,22 +64,28 @@ int main()
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
-                   //// particles.vacuum(mousePosition);
+
                 }
             }
             windowSettings.updateGUI(event);
-            x.at(0)->connect("Checked", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Gravity); });
-            x.at(0)->connect("Unchecked", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Gravity); });
+
+            gravityCheckBox->connect("Checked", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Gravity); });
+            gravityCheckBox->connect("Unchecked", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Gravity); });
+            frictionCheckBox->connect("Checked", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Friction); });
+            frictionCheckBox->connect("Unchecked", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Friction); });
+            airResistanceCheckBox->connect("Checked", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::AirResistance); });
+            airResistanceCheckBox->connect("Unchecked", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::AirResistance); });
         }
 
-        /* */particles.update(dt);
-            windowSettings.transitionParticle(particles.getParticleVertex());
-             window.clear();
-        /* */particles.draw(window);
-        /**/ windowSettings.drawGUI();
-        /**/ //gui.draw();
-       // particles.draw(window);    
-        window.display();
+       particles.update(dt);
+       windowSettings.transitionParticle(particles.getParticleVertex());
+       
+       window.clear();
+       
+       particles.draw(window);
+       windowSettings.drawGUI();
+       
+       window.display();
     }
     return 0;
 }
