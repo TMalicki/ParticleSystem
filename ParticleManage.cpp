@@ -22,7 +22,7 @@ void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particle
 	auto& actualParticleGroup = particleGroup.back();
 	auto& actualParticleGroupAttributes = actualParticleGroup->getParticleAttributes();
 
-	for (size_t i = 0; i < actualParticleGroup->getParticlesAmount(); i++)
+	for (size_t i = 0; i < actualParticleGroup->getParticleVertex().size(); i++)
 	{
 		float random_x = getRandomFloat(randomRange.x, randomRange.y);
 		float random_y = getRandomFloat(randomRange.x, randomRange.y);

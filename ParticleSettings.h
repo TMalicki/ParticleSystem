@@ -22,7 +22,7 @@ public:
 		m_mass(1.0f) {};
 	
 	enum class Forces { Gravity, AirResistance, External, Friction };
-
+	
 	sf::Vector2f getDirectionFromVelocity();
 
 	void applyForce(sf::Vector2f force, Forces forceType, float constant = 0.0f);

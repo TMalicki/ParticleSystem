@@ -71,7 +71,8 @@ int main()
                 }
             }
             windowSettings.updateGUI(event);
-            x.at(0)->connect("Checked", [&]() { particles.applyGravityForce(sf::Vector2f{ 0.0f,0.02f }); });
+            x.at(0)->connect("Checked", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Gravity); });
+            x.at(0)->connect("Unchecked", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Gravity); });
         }
 
         /* */particles.update(dt);
