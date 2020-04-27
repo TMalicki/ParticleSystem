@@ -20,3 +20,23 @@ void windowSettings::transitionParticle(std::vector<sf::Vertex>& particlesVertex
 	}
 }
 
+void windowSettings::loadGUI()
+{ 
+	m_gui.loadWidgetsFromFile("GUI/SideGUI.txt"); 
+	m_GravitySwitch = getGravityButton();
+	m_FrictionSwitch = getFrictionButton();
+	m_AirResistanceSwitch = getAirResistanceButton();
+}
+
+void windowSettings::updateLogicGUI(Particles& particles)
+{	
+	if (m_GravitySwitch->getValue() == false) m_GravitySwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Gravity); });
+	else m_GravitySwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Gravity); });
+
+	if (m_FrictionSwitch->getValue() == false) m_FrictionSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Friction); });
+	else m_FrictionSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Friction); });
+
+	if (m_AirResistanceSwitch->getValue() == false) m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::AirResistance); });
+	else m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::AirResistance); });
+}
+

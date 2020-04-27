@@ -2,6 +2,7 @@
 #include <iostream>
 #include "SFML/Graphics.hpp"
 #include <TGUI/TGUI.hpp>
+#include "Particles.h"
 
 //#include "UI.h"
 
@@ -12,6 +13,10 @@ private:
 	sf::Vector2f m_GUIWindowSize;
 
 	tgui::Gui m_gui;
+	tgui::Slider::Ptr m_GravitySwitch;
+	tgui::Slider::Ptr m_FrictionSwitch;
+	tgui::Slider::Ptr m_AirResistanceSwitch;
+
 //	UI m_UI_Objects;
 public:
 	windowSettings(sf::RenderWindow& window, float border = 500.0f);
@@ -20,16 +25,20 @@ public:
 
 	void transitionParticle(std::vector<sf::Vertex>&);
 
-	void loadGUI() { m_gui.loadWidgetsFromFile("GUI/SideGUI.txt"); }
+	void loadGUI();
 	void updateGUI(sf::Event& event) { m_gui.handleEvent(event); }
+	void updateLogicGUI(Particles&);
 	void drawGUI() { m_gui.draw(); }
 
 	auto& getObjectsUI() { return m_gui.getWidgets(); }
-	auto getGravityButton() { return m_gui.get<tgui::CheckBox>("Gravity"); }
-	auto getFrictionButton() { return m_gui.get<tgui::CheckBox>("Friction"); }
-	auto getAirResistanceButton() { return m_gui.get<tgui::CheckBox>("AirResistance"); 
-
-
+	auto getGravityButton() { return m_gui.get<tgui::Slider>("gravity"); }
+	auto getGravityText() { return m_gui.get("tGravity"); }
+	auto getFrictionButton() { return m_gui.get<tgui::Slider>("friction"); }
+	auto getFrictionText() { return m_gui.get("tFriction"); }
+	auto getAirResistanceButton() { return m_gui.get<tgui::Slider>("airResistance"); }
+	auto getAirResistanceText() { return m_gui.get("tAirResistance"); }
+	//auto getToggleSwitch() { return m_gui.get("ToggleSwitch"); }
+	//auto getTest() { return m_gui.get("Slider1"); }
 	/*void createButton(sf::Vector2f size, sf::Vector2f position);
 	void drawButton(sf::RenderWindow&);*/
 };

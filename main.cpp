@@ -6,16 +6,6 @@
 #include "Timer.h"
 #include "Particles.h"
 
-/*
-Źle jest i nie działa, przerobić trzeba co nie co. Spróbować najpierw zrobić działającą klasę Particles. Wygenerować 
-je w mainie normalnie i później sprawdzić jak reagują na podążanie za myszką. Jeśli atrybuty te będą zmieniały 
-się przyzwoicie i będzie dobra hermetyzacja danych to wtedy spróbować zaprogramować dopiero w ParticleManage klasie
-odpowiednie algorytmy zachowań.
-*/
-
-/*OGARNĄĆ JEDNOSTKI!*/
-/*POPRAWIĆ SIŁY - SZCZEGÓLNIE DZIAŁANIE ARGUMENTU DLA METODY APPLYAIRRESISTANCE*/
-
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
@@ -30,11 +20,7 @@ int main()
     particles.setMass(0, 3.0f);
        
     //// ParticleManage particles;
-    //// particles.setActiveAreaSize(windowSettings.getActiveWindowSize());
-    auto gravityCheckBox = windowSettings.getGravityButton();
-    auto frictionCheckBox = windowSettings.getFrictionButton();
-    auto airResistanceCheckBox = windowSettings.getAirResistanceButton();
-
+    
    while (window.isOpen())
    {
        auto dt = getTime(start);
@@ -60,7 +46,7 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                  ////  particles.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 1000);
+                    ////  particles.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 1000);
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
@@ -68,13 +54,7 @@ int main()
                 }
             }
             windowSettings.updateGUI(event);
-
-            gravityCheckBox->connect("Checked", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Gravity); });
-            gravityCheckBox->connect("Unchecked", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Gravity); });
-            frictionCheckBox->connect("Checked", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Friction); });
-            frictionCheckBox->connect("Unchecked", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Friction); });
-            airResistanceCheckBox->connect("Checked", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::AirResistance); });
-            airResistanceCheckBox->connect("Unchecked", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::AirResistance); });
+            windowSettings.updateLogicGUI(particles);  
         }
 
        particles.update(dt);
