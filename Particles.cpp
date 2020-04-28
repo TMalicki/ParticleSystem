@@ -2,7 +2,7 @@
 #include <algorithm>
 
 Particles::Particles(long int amount, sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f direction, sf::PrimitiveType tempType) :
-	m_type(tempType), m_particleVertex(amount), m_particleAttributes(amount)
+	m_type(tempType), m_particleVertex(amount), m_particleAttributes(amount), m_maxVelocity(30.0f)
 {
 	for (size_t i = 0; i < m_particleVertex.size(); i++)
 	{
@@ -28,9 +28,9 @@ void Particles::update(float dt) // in parameter - dt
 			tempVelocity.y += tempAcceleration.y; 
 
 			float magnitudeVector = sqrt(pow(tempVelocity.x, 2) + pow(tempVelocity.y, 2));
-			if (magnitudeVector > 30.0f)
+			if (magnitudeVector > m_maxVelocity)
 			{
-				tempVelocity = tempVelocity / magnitudeVector * 30.0f;
+				tempVelocity = tempVelocity / magnitudeVector * m_maxVelocity;
 			}
 
 			tempPosition += tempVelocity * dt / 100.0f;

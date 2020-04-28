@@ -65,7 +65,8 @@ int main()
         /**/particlesMan.update(dt);
         
         /**/windowSettings.transitionParticles(particlesMan.getExplodedParticles());/////
-       
+        windowSettings.colorParticlesByVelocity(particlesMan);
+
        window.clear();
        
        /**/particlesMan.draw(window);

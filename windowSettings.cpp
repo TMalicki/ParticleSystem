@@ -73,3 +73,24 @@ void windowSettings::updateLogicGUI(ParticleManage& particles)
 	//}
 }
 
+void windowSettings::colorParticlesByVelocity(ParticleManage& particles)
+{
+	if (particles.getExplodedParticles().size() > 0)
+	{
+		auto maxVelocity = particles.getExplodedParticles()[0]->getMaxVelocity();
+
+		for (auto& particle : particles.getExplodedParticles())
+		{
+			for (size_t i = 0; i < particle->getParticleVertex().size(); i++)
+			{
+				auto velocity = particle->getParticleAttributes()[i].getVelocity();
+				auto modVelocity = sqrt(pow(velocity.x, 2) + pow(velocity.y, 2));
+
+				int tempColor = 255 - static_cast<int>(modVelocity / maxVelocity * 255.0f);
+
+				particle->getParticleVertex()[i].color = sf::Color(255, tempColor, tempColor, 255);
+			}
+		}
+	}
+}
+

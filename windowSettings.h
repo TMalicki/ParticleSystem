@@ -33,6 +33,8 @@ public:
 	void updateLogicGUI(ParticleManage&);
 	void drawGUI() { m_gui.draw(); }
 
+	void colorParticlesByVelocity(ParticleManage&);
+
 	auto& getObjectsUI() { return m_gui.getWidgets(); }
 	auto getGravityButton() { return m_gui.get<tgui::Slider>("gravity"); }
 	auto getGravityText() { return m_gui.get("tGravity"); }
