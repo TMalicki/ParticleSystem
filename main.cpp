@@ -6,7 +6,6 @@
 #include "Particles.h"
 
 // forceWave push should push particles
-// color particles by its velocity
 
 int main()
 {

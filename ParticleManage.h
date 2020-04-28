@@ -18,7 +18,7 @@ private:
 	bool											m_AirResistanceOn;
 	float											m_forceWaveVelocity;
 public:
-	ParticleManage() : m_forceWaveVelocity{ 0 }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false } {};
+	ParticleManage() : m_forceWaveVelocity{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false } {};
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; }
 

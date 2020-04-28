@@ -58,7 +58,7 @@ void ParticleManage::createForceWave(sf::Vector2i mousePosition, float radius)
 	m_force.back().setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 	m_force.back().setFillColor(sf::Color::Transparent);
 	m_force.back().setOutlineColor(sf::Color::White);
-	setForceVelocity(0.2f);
+	setForceVelocity(0.5f);
 }
 
 void ParticleManage::forceWaveExpand(float velocity, sf::Vector2f windowSize)
@@ -121,7 +121,6 @@ const auto ParticleManage::isForceWaveCollided()
 					if ((distanceFromForceWave - actualForceRadius > -40.0f) && (distanceFromForceWave - actualForceRadius) <= 20.0f)
 					{
 						indexes.push_back({ i,j, k });
-						m_explodedParticles[i]->setParticleColor(j, sf::Color::Green);
 					}
 				}
 			}
@@ -138,30 +137,25 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 {
 	if (collision == true)
 	{
-		auto maxVelocity = 0.0f;
 		// update of already existing particle groups
 		for (auto pushedParticleIndex : pushedParticlesIndex)
 		{
 			//pushedParticlesIndex[0]
 			auto [particleGroup, particleInGroup, forceWave] = pushedParticleIndex;
 
-			auto actualParticle = m_explodedParticles.at(particleGroup)->getParticleVertex()[particleInGroup];
+			auto& actualParticleVertex = m_explodedParticles.at(particleGroup)->getParticleVertex()[particleInGroup];
 			auto& actualParticleAttribute = m_explodedParticles.at(particleGroup)->getParticleAttributes().at(particleInGroup);
-			auto actualPosition = actualParticle.position;
+			auto actualPosition = actualParticleVertex.position;
 
 			auto actualRadius = m_force[forceWave].getRadius();
-			auto actualVelocity = sf::Vector2f{ (actualParticleAttribute.getVelocity().x - (getForceVelocity()/actualRadius)) , (actualParticleAttribute.getVelocity().y - (getForceVelocity()/actualRadius)) };
+			auto actualVelocity = 1.1f * sf::Vector2f{ (actualParticleAttribute.getVelocity().x - (getForceVelocity()/actualRadius)) , (actualParticleAttribute.getVelocity().y - (getForceVelocity()/actualRadius)) };
 			
-			auto tempVelocity = sqrt(pow(actualVelocity.x, 2) + pow(actualVelocity.y, 2));
-			if (tempVelocity > maxVelocity) maxVelocity = tempVelocity;
-
 			auto newDirectionVector = sf::Vector2f{ (actualPosition.x - m_force[forceWave].getPosition().x), (actualPosition.y - m_force[forceWave].getPosition().y) };
 			auto newDirectionMagnitude = abs(newDirectionVector.x) + abs(newDirectionVector.y);
 			auto newDirection = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
 
 			m_explodedParticles.at(particleGroup)->setParticleAttributes(particleInGroup, actualPosition, actualVelocity, newDirection);
 		}
-	//	std::cout << maxVelocity << "\n";
 	}
 }
 
@@ -252,7 +246,7 @@ void ParticleManage::update(float dt)
 	}
 	
 	////// here should be activeWindow size - not 1000/1000
-	forceWaveExpand(getForceVelocity() * 2.0f * dt, m_activeArea);
+	forceWaveExpand(getForceVelocity() * dt, m_activeArea);
 	
 
 	auto particlesPushed = isForceWaveCollided();
