@@ -7,7 +7,9 @@ class ParticleManage
 {
 private:
 	std::default_random_engine						m_generator;
-	
+	sf::Vector2f									m_activeArea;
+
+
 	std::vector<std::unique_ptr<Particles>>			m_explodedParticles;
 	std::vector<sf::CircleShape>					m_force;	// make class for m_force
 
@@ -17,6 +19,8 @@ private:
 	float											m_forceWaveVelocity;
 public:
 	ParticleManage() : m_forceWaveVelocity{ 0 }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false } {};
+
+	void setActiveArea(sf::Vector2f area) { m_activeArea = area; }
 
 	void explode(sf::Vector2i, sf::PrimitiveType, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
 	void vacuum(sf::Vector2i);

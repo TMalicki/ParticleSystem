@@ -28,9 +28,9 @@ void Particles::update(float dt) // in parameter - dt
 			tempVelocity.y += tempAcceleration.y; 
 
 			float magnitudeVector = sqrt(pow(tempVelocity.x, 2) + pow(tempVelocity.y, 2));
-			if (magnitudeVector > 100.0f)
+			if (magnitudeVector > 30.0f)
 			{
-				tempVelocity = tempVelocity / magnitudeVector * 100.0f;
+				tempVelocity = tempVelocity / magnitudeVector * 30.0f;
 			}
 
 			tempPosition += tempVelocity * dt / 100.0f;

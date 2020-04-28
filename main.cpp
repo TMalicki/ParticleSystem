@@ -5,10 +5,8 @@
 #include "Timer.h"
 #include "Particles.h"
 
-// mouse should work differently in activeArea, and in settingsArea
-// something with forceWave is not right (dependent of click placement)
-// windowTransition should be applied to exploded particles
-// check if max velocity is limited
+// forceWave push should push particles
+// color particles by its velocity
 
 int main()
 {
@@ -21,7 +19,8 @@ int main()
     windowSettings.loadGUI();
          
     /**/ParticleManage particlesMan;
-    
+    particlesMan.setActiveArea(windowSettings.getActiveWindowSize());
+
    while (window.isOpen())
    {
        auto dt = getTime(start);

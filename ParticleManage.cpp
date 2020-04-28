@@ -11,10 +11,13 @@ void ParticleManage::createParticles(sf::PrimitiveType type, sf::Vector2i mouseP
 
 void ParticleManage::explode(sf::Vector2i mousePosition, sf::PrimitiveType type, sf::Vector2f randomRange, int amount)
 {
-	createParticles(type, mousePosition, amount);
-	setParticleExpandAttributes(m_explodedParticles, mousePosition, type, randomRange, amount);
+	if (m_activeArea.x > mousePosition.x)
+	{
+		createParticles(type, mousePosition, amount);
+		setParticleExpandAttributes(m_explodedParticles, mousePosition, type, randomRange, amount);
 
-	createForceWave(mousePosition);
+		createForceWave(mousePosition);
+	}
 }
 
 void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particles>>& particleGroup, sf::Vector2i mousePosition, sf::PrimitiveType type, sf::Vector2f randomRange, int amount)
@@ -38,7 +41,7 @@ void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particle
 		sf::Vector2f mousePos = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 		randomDirections.at(i) = sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i)));
 
-		randomMasses.at(i) = getRandomFloat(1.0f, 3.0f);
+		randomMasses.at(i) = getRandomFloat(1.5f, 3.0f);
 	}
 
 	actualParticleGroup->setMass(randomMasses);
@@ -248,7 +251,8 @@ void ParticleManage::update(float dt)
 		particleGroup->update(dt* 2.0f);
 	}
 	
-	forceWaveExpand(getForceVelocity() * 2.0f * dt, sf::Vector2f{ 1000.0f,1000.0f });
+	////// here should be activeWindow size - not 1000/1000
+	forceWaveExpand(getForceVelocity() * 2.0f * dt, m_activeArea);
 	
 
 	auto particlesPushed = isForceWaveCollided();
