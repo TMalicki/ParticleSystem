@@ -14,7 +14,7 @@ Particles::Particles(long int amount, sf::Vector2f position, sf::Vector2f veloci
 
 void Particles::update(float dt) // in parameter - dt
 {
-	forceUpdate();
+	//forceUpdate();
 	for (size_t i = 0; i < m_particleVertex.size(); i++)
 	{
 		auto tempPosition = m_particleVertex[i].position;
@@ -42,7 +42,7 @@ void Particles::update(float dt) // in parameter - dt
 	}
 }
 
-void Particles::getDirectionTowardsPoint(sf::Vector2f goalPosition)
+void Particles::setDirectionTowardsPoint(sf::Vector2f goalPosition)
 {
 	for (size_t i = 0; i < m_particleVertex.size(); i++)
 	{
@@ -56,6 +56,19 @@ void Particles::getDirectionTowardsPoint(sf::Vector2f goalPosition)
 	}
 }
 
+void Particles::setDirection(size_t index, sf::Vector2f direction)
+{
+	m_particleAttributes[index].setDirection(direction);
+}
+
+void Particles::setDirection(std::vector<sf::Vector2f> directionVector)
+{
+	for (size_t i = 0; i < directionVector.size(); i++)
+	{
+		m_particleAttributes[i].setDirection(directionVector.at(i));
+	}
+}
+/*
 void Particles::TurnOnForce(bool logic, ParticleSettings::Forces force)
 { 
 	if (force == ParticleSettings::Forces::Gravity)
@@ -78,10 +91,18 @@ void Particles::forceUpdate()
 	if (m_AirResistanceOn == true) applyAirResistance();
 	if (m_FrictionOn == true) applyFriction();
 }
-
+*/
 void Particles::applyForce(sf::Vector2f force, ParticleSettings::Forces forceType, float constant)
 {
 	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [=](ParticleSettings& particle) {particle.applyForce(force, forceType, constant); });
+}
+
+void Particles::applyForce(std::vector<sf::Vector2f> forceVector, ParticleSettings::Forces forceType, float constant)
+{
+	for (size_t i = 0; i < forceVector.size(); i++)
+	{
+		m_particleAttributes[i].applyForce(forceVector.at(i), forceType, constant);
+	}
 }
 
 void Particles::applyGravityForce(sf::Vector2f force)
@@ -97,6 +118,14 @@ void Particles::applyAirResistance(float coefficent)
 void Particles::applyFriction(float mi)
 {
 	applyForce(sf::Vector2f{ 0.0f, 0.0f }, ParticleSettings::Forces::Friction, mi);
+}
+
+void Particles::setMass(std::vector<float> masses)
+{
+	for (size_t i = 0; i < masses.size(); i++)
+	{
+		m_particleAttributes[i].setMass(masses[i]);
+	}
 }
 
 void Particles::setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f direction)

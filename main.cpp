@@ -1,10 +1,14 @@
 ﻿#include <iostream>
 #include <TGUI/TGUI.hpp>
-//#include <SFML/Graphics.hpp>
 #include "windowSettings.h"
-////#include "ParticleManage.h"
+#include "ParticleManage.h"
 #include "Timer.h"
 #include "Particles.h"
+
+// mouse should work differently in activeArea, and in settingsArea
+// something with forceWave is not right (dependent of click placement)
+// windowTransition should be applied to exploded particles
+// check if max velocity is limited
 
 int main()
 {
@@ -15,11 +19,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)), "ParticleSystem");
     windowSettings windowSettings(window);
     windowSettings.loadGUI();
-    
-    Particles particles(1, sf::Vector2f(100.0, 100.0)); 
-    particles.setMass(0, 3.0f);
-       
-    //// ParticleManage particles;
+         
+    /**/ParticleManage particlesMan;
     
    while (window.isOpen())
    {
@@ -29,8 +30,11 @@ int main()
        
        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
        {
-           particles.getDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
-           particles.applyForce(sf::Vector2f{ 0.1f , 0.1f });
+           for (auto& particle : particlesMan.getExplodedParticles())
+           {
+               /**/particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
+               /**/particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
+           }
            ////particles.vacuum(mousePosition);
        }
        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -46,7 +50,7 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    ////  particles.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 1000);
+                    particlesMan.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 1000);
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
@@ -54,17 +58,22 @@ int main()
                 }
             }
             windowSettings.updateGUI(event);
-            windowSettings.updateLogicGUI(particles);  
         }
 
-       particles.update(dt);
-       windowSettings.transitionParticle(particles.getParticleVertex());
+        /**///windowSettings.updateLogicGUI(particles);
+        windowSettings.updateLogicGUI(particlesMan);
+
+        /**/particlesMan.update(dt);
+        
+        /**/windowSettings.transitionParticles(particlesMan.getExplodedParticles());/////
        
        window.clear();
        
-       particles.draw(window);
-       windowSettings.drawGUI();
+       /**/particlesMan.draw(window);
        
+       /**/windowSettings.drawGUI();
+      
+
        window.display();
     }
     return 0;

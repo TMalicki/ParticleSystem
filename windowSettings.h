@@ -2,6 +2,7 @@
 #include <iostream>
 #include "SFML/Graphics.hpp"
 #include <TGUI/TGUI.hpp>
+#include "ParticleManage.h"
 #include "Particles.h"
 
 //#include "UI.h"
@@ -23,11 +24,13 @@ public:
 	const auto getActiveWindowSize() { return m_activeWindowSize; }
 	const auto getGUIWindowSize() { return m_GUIWindowSize; }
 
-	void transitionParticle(std::vector<sf::Vertex>&);
+	//void transitionParticle(std::vector<sf::Vertex>&);
+	void transitionParticles(std::vector<std::unique_ptr<Particles>>&);
 
 	void loadGUI();
 	void updateGUI(sf::Event& event) { m_gui.handleEvent(event); }
-	void updateLogicGUI(Particles&);
+	//void updateLogicGUI(Particles&);
+	void updateLogicGUI(ParticleManage&);
 	void drawGUI() { m_gui.draw(); }
 
 	auto& getObjectsUI() { return m_gui.getWidgets(); }

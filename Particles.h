@@ -12,9 +12,9 @@ private:
 
 	sf::PrimitiveType				m_type;
 
-	bool m_GravityOn;
-	bool m_FrictionOn;
-	bool m_AirResistanceOn;
+	//bool m_GravityOn;
+	//bool m_FrictionOn;
+	//bool m_AirResistanceOn;
 public:
 	Particles(long int amount = 100, sf::Vector2f position = { 0.0,0.0 }, sf::Vector2f velocity = { 0.0,0.0 }, 
 				sf::Vector2f direction = { 0,0 }, sf::PrimitiveType tempType = sf::Points);
@@ -25,16 +25,20 @@ public:
 	void setParticleAttributes(size_t index = 0, sf::Vector2f position = { 0.0, 0.0 }, sf::Vector2f velocity = { 0.0, 0.0 }, sf::Vector2f direction = { 0.0, 0.0 });///?
 	void setParticleAttributesN(size_t index = 0, sf::Vector2f position = { 0.0, 0.0 }, sf::Vector2f velocity = { 0.0, 0.0 });///?
 
-	void getDirectionTowardsPoint(sf::Vector2f);
+	void setDirectionTowardsPoint(sf::Vector2f);
+	void setDirection(size_t, sf::Vector2f);
+	void setDirection(std::vector<sf::Vector2f>);
 
-	void TurnOnForce(bool, ParticleSettings::Forces);
-	void forceUpdate();
+	//void TurnOnForce(bool, ParticleSettings::Forces);
+	//void forceUpdate();
 	void applyForce(sf::Vector2f force, ParticleSettings::Forces forceType = ParticleSettings::Forces::External, float constant = 0.0f);
+	void applyForce(std::vector<sf::Vector2f>, ParticleSettings::Forces forceType = ParticleSettings::Forces::External, float constant = 0.0f);
 	void applyGravityForce(sf::Vector2f force);
 	void applyAirResistance(float coefficent = 0.0001f);
 	void applyFriction(float mi = 0.01);
 
 	void setMass(size_t index, float mass) { m_particleAttributes[index].setMass(mass); }
+	void setMass(std::vector<float> masses);
 
 	void setType(sf::PrimitiveType type) { this->m_type = type; }
 	const sf::PrimitiveType& getType() { return m_type; }
