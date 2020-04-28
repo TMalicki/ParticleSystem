@@ -5,7 +5,7 @@
 #include "Timer.h"
 #include "Particles.h"
 
-// forceWave push should push particles
+// forceWave push should be force dependent
 
 int main()
 {
@@ -48,7 +48,7 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    particlesMan.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 1000);
+                    particlesMan.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 2000);
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {

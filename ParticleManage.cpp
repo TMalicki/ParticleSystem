@@ -58,7 +58,7 @@ void ParticleManage::createForceWave(sf::Vector2i mousePosition, float radius)
 	m_force.back().setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 	m_force.back().setFillColor(sf::Color::Transparent);
 	m_force.back().setOutlineColor(sf::Color::White);
-	setForceVelocity(0.5f);
+	setWaveForce(0.5f);
 }
 
 void ParticleManage::forceWaveExpand(float velocity, sf::Vector2f windowSize)
@@ -140,21 +140,19 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 		// update of already existing particle groups
 		for (auto pushedParticleIndex : pushedParticlesIndex)
 		{
-			//pushedParticlesIndex[0]
 			auto [particleGroup, particleInGroup, forceWave] = pushedParticleIndex;
+
 
 			auto& actualParticleVertex = m_explodedParticles.at(particleGroup)->getParticleVertex()[particleInGroup];
 			auto& actualParticleAttribute = m_explodedParticles.at(particleGroup)->getParticleAttributes().at(particleInGroup);
 			auto actualPosition = actualParticleVertex.position;
 
-			auto actualRadius = m_force[forceWave].getRadius();
-			auto actualVelocity = 1.1f * sf::Vector2f{ (actualParticleAttribute.getVelocity().x - (getForceVelocity()/actualRadius)) , (actualParticleAttribute.getVelocity().y - (getForceVelocity()/actualRadius)) };
-			
 			auto newDirectionVector = sf::Vector2f{ (actualPosition.x - m_force[forceWave].getPosition().x), (actualPosition.y - m_force[forceWave].getPosition().y) };
 			auto newDirectionMagnitude = abs(newDirectionVector.x) + abs(newDirectionVector.y);
 			auto newDirection = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
 
-			m_explodedParticles.at(particleGroup)->setParticleAttributes(particleInGroup, actualPosition, actualVelocity, newDirection);
+			m_explodedParticles.at(particleGroup)->setDirection(particleInGroup, newDirection);
+			m_explodedParticles.at(particleGroup)->applyForce(particleInGroup, sf::Vector2f{ m_forceWaveForce ,m_forceWaveForce });
 		}
 	}
 }
@@ -246,7 +244,7 @@ void ParticleManage::update(float dt)
 	}
 	
 	////// here should be activeWindow size - not 1000/1000
-	forceWaveExpand(getForceVelocity() * dt, m_activeArea);
+	forceWaveExpand(getWaveForce() * dt, m_activeArea);
 	
 
 	auto particlesPushed = isForceWaveCollided();

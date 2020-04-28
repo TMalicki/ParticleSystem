@@ -16,9 +16,9 @@ private:
 	bool											m_FrictionOn;
 	bool											m_GravityOn;
 	bool											m_AirResistanceOn;
-	float											m_forceWaveVelocity;
+	float											m_forceWaveForce;
 public:
-	ParticleManage() : m_forceWaveVelocity{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false } {};
+	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false } {};
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; }
 
@@ -35,8 +35,8 @@ public:
 	void forceWaveExpand(float, sf::Vector2f);
 	const auto isForceWaveCollided();
 
-	void setForceVelocity(float velocity) { m_forceWaveVelocity = velocity; }
-	const float getForceVelocity() { return m_forceWaveVelocity; }
+	void setWaveForce(float force) { m_forceWaveForce = force; }
+	const float getWaveForce() { return m_forceWaveForce; }
 
 	void TurnOnForce(bool, ParticleSettings::Forces);
 	void forceUpdate();

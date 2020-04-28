@@ -68,6 +68,10 @@ void Particles::setDirection(std::vector<sf::Vector2f> directionVector)
 		m_particleAttributes[i].setDirection(directionVector.at(i));
 	}
 }
+void Particles::applyForce(size_t index, sf::Vector2f force, ParticleSettings::Forces forceType, float constant)
+{
+	m_particleAttributes[index].applyForce(force, forceType, constant);
+}
 /*
 void Particles::TurnOnForce(bool logic, ParticleSettings::Forces force)
 { 

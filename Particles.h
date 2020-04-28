@@ -35,6 +35,7 @@ public:
 
 	//void TurnOnForce(bool, ParticleSettings::Forces);
 	//void forceUpdate();
+	void applyForce(size_t index, sf::Vector2f force, ParticleSettings::Forces forceType = ParticleSettings::Forces::External, float constant = 0.0f);
 	void applyForce(sf::Vector2f force, ParticleSettings::Forces forceType = ParticleSettings::Forces::External, float constant = 0.0f);
 	void applyForce(std::vector<sf::Vector2f>, ParticleSettings::Forces forceType = ParticleSettings::Forces::External, float constant = 0.0f);
 	void applyGravityForce(sf::Vector2f force);
