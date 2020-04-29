@@ -48,7 +48,7 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    particlesMan.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 10);
+                    particlesMan.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 1);
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
@@ -64,7 +64,7 @@ int main()
         /**/particlesMan.update(dt);
         
         /**///windowSettings.transitionParticles(particlesMan.getExplodedParticles());/////
-        windowSettings.erasingBorders(particlesMan.getExplodedParticles());
+        windowSettings.reboundBorders(particlesMan.getExplodedParticles());
         windowSettings.colorParticlesByVelocity(particlesMan);
 
        window.clear();

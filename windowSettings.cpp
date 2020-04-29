@@ -62,7 +62,6 @@ void windowSettings::erasingBorders(std::vector<std::unique_ptr<Particles>>& par
 		{
 			particlesVertex.erase(particlesVertex.begin() + erase);
 			particlesAttributes.erase(particlesAttributes.begin() + erase);
-			std::cout << "Erased Particle\n";
 		}
 		if (particlesVertex.size() == 0) toEraseGroup.push_back(counter);
 		counter++;
@@ -70,7 +69,6 @@ void windowSettings::erasingBorders(std::vector<std::unique_ptr<Particles>>& par
 	for (auto erase : toEraseGroup)
 	{
 		particles.erase(particles.begin() + erase);
-		std::cout << "Erased Group\n";
 	}
 }
 
@@ -84,10 +82,12 @@ void windowSettings::reboundBorders(std::vector<std::unique_ptr<Particles>>& par
 		for (size_t i = 0; i < particlesVertex.size(); i++)
 		{
 			auto tempPosition = particlesVertex[i].position;
-			auto tempDir = particlesAttributes.at(i).getDirection();
+			auto tempVelocity = particlesAttributes.at(i).getVelocity();
 
-			if (tempPosition.y <= 0 && tempDir.x <= 0 || tempPosition.y >= m_activeWindowSize.y && tempDir.x >= 0)	particlesAttributes.at(i).setDirection(sf::Vector2f{ tempDir.x, -tempDir.y });
-			else if (tempPosition.x < 0 || tempPosition.x > m_activeWindowSize.x) particlesAttributes.at(i).setDirection(sf::Vector2f{ -tempDir.x, tempDir.y });
+			if (tempPosition.y <= 0 && tempPosition.y <= 0 || tempPosition.y >= m_activeWindowSize.y && tempPosition.y >= 0) {
+				particlesAttributes.at(i).setVelocity(sf::Vector2f{ tempVelocity.x, -tempVelocity.y });
+			}
+			else if (tempPosition.x < 0 || tempPosition.x > m_activeWindowSize.x) particlesAttributes.at(i).setVelocity(sf::Vector2f{ -tempVelocity.x, tempVelocity.y });
 		}
 	}
 }
