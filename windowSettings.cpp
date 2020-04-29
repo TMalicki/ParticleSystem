@@ -20,7 +20,7 @@ void windowSettings::transitionParticle(std::vector<sf::Vertex>& particlesVertex
 	}
 }
 */
-void windowSettings::transitionParticles(std::vector<std::unique_ptr<Particles>>& particles)
+void windowSettings::transitionBorders(std::vector<std::unique_ptr<Particles>>& particles)
 {
 	for (auto& particle : particles)
 	{
@@ -34,6 +34,60 @@ void windowSettings::transitionParticles(std::vector<std::unique_ptr<Particles>>
 			else if (tempPosition.y > m_activeWindowSize.y) particlesVertex[i].position.y = 0;
 			else if (tempPosition.x < 0) particlesVertex[i].position.x = m_activeWindowSize.x;
 			else if (tempPosition.x > m_activeWindowSize.x) particlesVertex[i].position.x = 0;
+		}
+	}
+}
+
+void windowSettings::erasingBorders(std::vector<std::unique_ptr<Particles>>& particles)
+{
+	std::vector<size_t> toEraseGroup{};
+	size_t counter{ 0 };
+
+	for (auto& particle : particles)
+	{
+		auto& particlesVertex = particle->getParticleVertex();
+		auto& particlesAttributes = particle->getParticleAttributes();
+
+		std::vector<size_t> toErase{};
+
+		for (size_t i = 0; i < particlesVertex.size(); i++)
+		{
+			auto tempPosition = particlesVertex[i].position;
+
+			if (tempPosition.y <= 0 || tempPosition.y >= m_activeWindowSize.y) toErase.push_back(i);
+			else if (tempPosition.x < 0 || tempPosition.x > m_activeWindowSize.x) toErase.push_back(i);
+		}
+
+		for (auto erase : toErase)
+		{
+			particlesVertex.erase(particlesVertex.begin() + erase);
+			particlesAttributes.erase(particlesAttributes.begin() + erase);
+			std::cout << "Erased Particle\n";
+		}
+		if (particlesVertex.size() == 0) toEraseGroup.push_back(counter);
+		counter++;
+	}
+	for (auto erase : toEraseGroup)
+	{
+		particles.erase(particles.begin() + erase);
+		std::cout << "Erased Group\n";
+	}
+}
+
+void windowSettings::reboundBorders(std::vector<std::unique_ptr<Particles>>& particles)
+{
+	for (auto& particle : particles)
+	{
+		auto& particlesVertex = particle->getParticleVertex();
+		auto& particlesAttributes = particle->getParticleAttributes();
+
+		for (size_t i = 0; i < particlesVertex.size(); i++)
+		{
+			auto tempPosition = particlesVertex[i].position;
+			auto tempDir = particlesAttributes.at(i).getDirection();
+
+			if (tempPosition.y <= 0 && tempDir.x <= 0 || tempPosition.y >= m_activeWindowSize.y && tempDir.x >= 0)	particlesAttributes.at(i).setDirection(sf::Vector2f{ tempDir.x, -tempDir.y });
+			else if (tempPosition.x < 0 || tempPosition.x > m_activeWindowSize.x) particlesAttributes.at(i).setDirection(sf::Vector2f{ -tempDir.x, tempDir.y });
 		}
 	}
 }

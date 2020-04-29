@@ -25,7 +25,9 @@ public:
 	const auto getGUIWindowSize() { return m_GUIWindowSize; }
 
 	//void transitionParticle(std::vector<sf::Vertex>&);
-	void transitionParticles(std::vector<std::unique_ptr<Particles>>&);
+	void transitionBorders(std::vector<std::unique_ptr<Particles>>&);
+	void erasingBorders(std::vector<std::unique_ptr<Particles>>&);
+	void reboundBorders(std::vector<std::unique_ptr<Particles>>&);
 
 	void loadGUI();
 	void updateGUI(sf::Event& event) { m_gui.handleEvent(event); }
