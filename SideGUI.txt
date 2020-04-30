@@ -1,18 +1,4 @@
 Renderer.1 {
-    bordercolor = #3C3C3C;
-    bordercolorhover = black;
-    borders = (1, 1, 1, 1);
-    texturethumb = "GUI/themes/switch_p2.png";
-    texturethumbhover = "GUI/themes/switch_p2.png";
-    texturetrack = "GUI/themes/switch_p1.png";
-    texturetrackhover = "GUI/themes/switch_p1.png";
-    thumbcolor = #F5F5F5;
-    thumbcolorhover = white;
-    trackcolor = #F5F5F5;
-    trackcolorhover = white;
-}
-
-Renderer.2 {
     backgroundcolor = rgb(210, 210, 210);
     bordercolor = White;
     borders = (2, 2, 2, 2);
@@ -34,34 +20,34 @@ TextBox.tGravity {
     DefaultText = Gravity;
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1600, 50);
+    Position = (1510, 60);
     ReadOnly = true;
     Size = (98, 26.5972);
     Text = "  GRAVITY";
     TextSize = 16;
-    renderer = &2;
+    renderer = &1;
 }
 
 TextBox.tFriction {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1600, 110);
+    Position = (1510, 160);
     ReadOnly = true;
     Size = (98, 26.5972);
     Text = " FRICTION";
     TextSize = 16;
-    renderer = &2;
+    renderer = &1;
 }
 
 TextBox.tAirResistance {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1560, 170);
+    Position = (1460, 250);
     ReadOnly = true;
     Size = (148, 26.5972);
     Text = " AIR RESISTANCE";
     TextSize = 16;
-    renderer = &2;
+    renderer = &1;
 }
 
 Slider.gravity {
@@ -69,8 +55,34 @@ Slider.gravity {
     InvertedDirection = false;
     Maximum = 1;
     Minimum = 0;
-    Position = (1740, 50);
-    Size = (60, 32);
+    Position = (1680, 44);
+    Size = (120, 64);
+    Step = 1;
+    Value = 0;
+
+    Renderer {
+        bordercolor = #3C3C3C;
+        bordercolorhover = black;
+        borders = (1, 1, 1, 1);
+        texturethumb = "GUI/themes/switch_p2.png";
+        texturethumbhover = "GUI/themes/switch_p2.png";
+        texturetrack = "GUI/themes/switch_p1.png";
+        texturetrackhover = "GUI/themes/switch_p1.png";
+        thumbcolor = #F5F5F5;
+        thumbcolorhover = white;
+        trackcolor = #F5F5F5;
+        trackcolorhover = white;
+        transparenttexture = true;
+    }
+}
+
+Slider.friction {
+    ChangeValueOnScroll = true;
+    InvertedDirection = false;
+    Maximum = 1;
+    Minimum = 0;
+    Position = (1680, 140);
+    Size = (120, 64);
     Step = 1;
     Value = 0;
 
@@ -89,26 +101,54 @@ Slider.gravity {
     }
 }
 
-Slider.friction {
-    ChangeValueOnScroll = true;
-    InvertedDirection = false;
-    Maximum = 1;
-    Minimum = 0;
-    Position = (1740, 110);
-    Size = (60, 32);
-    Step = 1;
-    Value = 0;
-    renderer = &1;
-}
-
 Slider.airResistance {
     ChangeValueOnScroll = true;
     InvertedDirection = false;
     Maximum = 1;
     Minimum = 0;
-    Position = (1740, 170);
-    Size = (60, 32);
+    Position = (1680, 230);
+    Size = (120, 64);
     Step = 1;
     Value = 0;
-    renderer = &1;
+
+    Renderer {
+        bordercolor = #3C3C3C;
+        bordercolorhover = black;
+        borders = (1, 1, 1, 1);
+        texturethumb = "GUI/themes/switch_p2.png";
+        texturethumbhover = "GUI/themes/switch_p2.png";
+        texturetrack = "GUI/themes/switch_p1.png";
+        texturetrackhover = "GUI/themes/switch_p1.png";
+        thumbcolor = #F5F5F5;
+        thumbcolorhover = white;
+        trackcolor = #F5F5F5;
+        trackcolorhover = white;
+    }
+}
+
+ListBox.Borders {
+    ItemHeight = 20;
+    Items = ["Transition Border", "Erasing Border", "Rebound Border"];
+    MaximumItems = 0;
+    Position = (1650, 340);
+    Size = (160, 142);
+    TextSize = 13;
+    UserData = "";
+
+    Renderer {
+        backgroundcolor = rgb(210, 210, 210);
+        bordercolor = White;
+        borders = (2, 2, 2, 2);
+        selectedbackgroundcolor = rgb(190, 225, 235);
+        selectedtextcolor = rgb(150, 150, 150);
+        textcolor = rgb(100, 100, 100);
+        texturebackground = None;
+
+        scrollbar {
+            texturearrowdown = "GUI/themes/BabyBlue.png" Part(20, 2, 16, 16);
+            texturearrowup = "GUI/themes/BabyBlue.png" Part(2, 2, 16, 16);
+            texturethumb = "GUI/themes/BabyBlue.png" Part(414, 2, 16, 32);
+            texturetrack = "GUI/themes/BabyBlue.png" Part(432, 2, 16, 32);
+        }
+    }
 }

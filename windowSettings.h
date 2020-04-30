@@ -18,6 +18,8 @@ private:
 	tgui::Slider::Ptr m_FrictionSwitch;
 	tgui::Slider::Ptr m_AirResistanceSwitch;
 
+	tgui::ListBox::Ptr m_Border;
+
 //	UI m_UI_Objects;
 public:
 	windowSettings(sf::RenderWindow& window, float border = 500.0f);
@@ -32,7 +34,7 @@ public:
 	void loadGUI();
 	void updateGUI(sf::Event& event) { m_gui.handleEvent(event); }
 	//void updateLogicGUI(Particles&);
-	void updateLogicGUI(ParticleManage&);
+	void updateLogicGUI(windowSettings&, ParticleManage&);
 	void drawGUI() { m_gui.draw(); }
 
 	void colorParticlesByVelocity(ParticleManage&);
@@ -44,6 +46,8 @@ public:
 	auto getFrictionText() { return m_gui.get("tFriction"); }
 	auto getAirResistanceButton() { return m_gui.get<tgui::Slider>("airResistance"); }
 	auto getAirResistanceText() { return m_gui.get("tAirResistance"); }
+
+	auto getBorders() { return m_gui.get<tgui::ListBox>("Borders"); }
 	//auto getToggleSwitch() { return m_gui.get("ToggleSwitch"); }
 	//auto getTest() { return m_gui.get("Slider1"); }
 	/*void createButton(sf::Vector2f size, sf::Vector2f position);

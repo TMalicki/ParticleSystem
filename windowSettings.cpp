@@ -84,10 +84,8 @@ void windowSettings::reboundBorders(std::vector<std::unique_ptr<Particles>>& par
 			auto tempPosition = particlesVertex[i].position;
 			auto tempVelocity = particlesAttributes.at(i).getVelocity();
 
-			if (tempPosition.y <= 0 && tempPosition.y <= 0 || tempPosition.y >= m_activeWindowSize.y && tempPosition.y >= 0) {
-				particlesAttributes.at(i).setVelocity(sf::Vector2f{ tempVelocity.x, -tempVelocity.y });
-			}
-			else if (tempPosition.x < 0 || tempPosition.x > m_activeWindowSize.x) particlesAttributes.at(i).setVelocity(sf::Vector2f{ -tempVelocity.x, tempVelocity.y });
+			if (tempPosition.y <= 0 /*&& tempVelocity.y < 0*/ || tempPosition.y >= m_activeWindowSize.y /*&& tempVelocity.y < 0*/) particlesAttributes.at(i).setVelocity(sf::Vector2f{ tempVelocity.x, -tempVelocity.y });
+			else if (tempPosition.x < 0 /*&& tempVelocity.x < 0*/ || tempPosition.x > m_activeWindowSize.x /*&& tempVelocity.x < 0*/) particlesAttributes.at(i).setVelocity(sf::Vector2f{ -tempVelocity.x, tempVelocity.y });
 		}
 	}
 }
@@ -98,21 +96,11 @@ void windowSettings::loadGUI()
 	m_GravitySwitch = getGravityButton();
 	m_FrictionSwitch = getFrictionButton();
 	m_AirResistanceSwitch = getAirResistanceButton();
-}
-/*
-void windowSettings::updateLogicGUI(Particles& particles)
-{	
-	if (m_GravitySwitch->getValue() == 0.0f) m_GravitySwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Gravity); });
-	else m_GravitySwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Gravity); });
 
-	if (m_FrictionSwitch->getValue() == 0.0f) m_FrictionSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Friction); });
-	else m_FrictionSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Friction); });
-
-	if (m_AirResistanceSwitch->getValue() == 0.0f) m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::AirResistance); });
-	else m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::AirResistance); });
+	m_Border = getBorders();
 }
-*/
-void windowSettings::updateLogicGUI(ParticleManage& particles)
+
+void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleManage& particles)
 {
 	if (m_GravitySwitch->getValue() == 0.0f) m_GravitySwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Gravity); });
 	else m_GravitySwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Gravity); });
@@ -122,6 +110,10 @@ void windowSettings::updateLogicGUI(ParticleManage& particles)
 
 	if (m_AirResistanceSwitch->getValue() == 0.0f) m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::AirResistance); });
 	else m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::AirResistance); });
+
+	if (m_Border->getSelectedItem() == "Erasing Border") windowSettings.erasingBorders(particles.getExplodedParticles());
+	else if (m_Border->getSelectedItem() == "Rebound Border") windowSettings.reboundBorders(particles.getExplodedParticles());
+	else if (m_Border->getSelectedItem() == "Transition Border") windowSettings.transitionBorders(particles.getExplodedParticles());
 }
 
 void windowSettings::colorParticlesByVelocity(ParticleManage& particles)
