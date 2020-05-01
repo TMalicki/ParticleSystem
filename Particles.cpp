@@ -1,15 +1,26 @@
 #include "Particles.h"
 #include <algorithm>
 
-Particles::Particles(long int amount, sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f direction, sf::PrimitiveType tempType) :
-	m_type(tempType), m_particleVertex(amount), m_particleAttributes(amount), m_maxVelocity(30.0f)
+Particles::Particles(long int amount, sf::Vector2f position,  sf::PrimitiveType tempType) :
+	m_type(tempType), m_particleVertex(amount), m_maxVelocity(30.0f)
 {
-	for (size_t i = 0; i < m_particleVertex.size(); i++)
-	{
-		m_particleVertex[i].position = position;
-		m_particleAttributes[i].setVelocity(velocity);
-		m_particleAttributes[i].setDirection(direction);
-	}
+	auto edgeAmount = getEdgeAmount(tempType);
+
+	m_particleAttributes = std::move(std::vector<ParticleSettings>(amount / edgeAmount));
+	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particle) {particle.position = position; });
+}
+
+int Particles::getEdgeAmount(sf::PrimitiveType tempType)
+{
+	Types type{};
+
+	if (tempType == sf::PrimitiveType::Points) type = Types::Points;
+	else if (tempType == sf::PrimitiveType::Lines) type = Types::Lines;
+	else if (tempType == sf::PrimitiveType::Triangles) type = Types::Triangles;
+	else if (tempType == sf::PrimitiveType::Quads) type = Types::Quads;
+	else if (tempType == sf::PrimitiveType::TriangleFan) type = Types::Circles;
+
+	return static_cast<int>(type);
 }
 
 void Particles::update(float dt) // in parameter - dt
@@ -72,30 +83,7 @@ void Particles::applyForce(size_t index, sf::Vector2f force, ParticleSettings::F
 {
 	m_particleAttributes[index].applyForce(force, forceType, constant);
 }
-/*
-void Particles::TurnOnForce(bool logic, ParticleSettings::Forces force)
-{ 
-	if (force == ParticleSettings::Forces::Gravity)
-	{
-		m_GravityOn = logic;
-	}
-	else if (force == ParticleSettings::Forces::AirResistance)
-	{
-		m_AirResistanceOn = logic;
-	}
-	else if (force == ParticleSettings::Forces::Friction)
-	{
-		m_FrictionOn = logic;
-	}
-}
 
-void Particles::forceUpdate()
-{
-	if (m_GravityOn == true) applyGravityForce(sf::Vector2f{ 0.0f,0.02f });
-	if (m_AirResistanceOn == true) applyAirResistance();
-	if (m_FrictionOn == true) applyFriction();
-}
-*/
 void Particles::applyForce(sf::Vector2f force, ParticleSettings::Forces forceType, float constant)
 {
 	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [=](ParticleSettings& particle) {particle.applyForce(force, forceType, constant); });

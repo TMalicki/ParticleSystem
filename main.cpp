@@ -3,12 +3,12 @@
 #include "windowSettings.h"
 #include "ParticleManage.h"
 #include "Timer.h"
-#include "Particles.h"
-
-// forceWave push should be force dependent
 
 int main()
 {
+    /// attributes should have position because it will be for objects (like quads) and not all pixels
+
+
     auto start = std::chrono::high_resolution_clock::now();
     sf::Vector2f windowSize = sf::Vector2f{ 1920.0f, 1080.0f };
     float settingWindowWidth = 320;
@@ -17,7 +17,7 @@ int main()
     windowSettings windowSettings(window);
     windowSettings.loadGUI();
          
-    /**/ParticleManage particlesMan;
+    ParticleManage particlesMan;
     particlesMan.setActiveArea(windowSettings.getActiveWindowSize());
 
    while (window.isOpen())
@@ -30,10 +30,9 @@ int main()
        {
            for (auto& particle : particlesMan.getExplodedParticles())
            {
-               /**/particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
-               /**/particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
+               particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
+               particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
            }
-           ////particles.vacuum(mousePosition);
        }
        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
        {
@@ -48,7 +47,7 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    particlesMan.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 1000);
+                    particlesMan.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 100);
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
@@ -58,22 +57,18 @@ int main()
             windowSettings.updateGUI(event);
         }
 
-        /**///windowSettings.updateLogicGUI(particles);
         windowSettings.updateLogicGUI(windowSettings, particlesMan);
-
-        /**/particlesMan.update(dt);
+        particlesMan.update(dt);
         
-        /**///windowSettings.transitionParticles(particlesMan.getExplodedParticles());/////
+        //windowSettings.transitionParticles(particlesMan.getExplodedParticles());/////
         //windowSettings.reboundBorders(particlesMan.getExplodedParticles());
         windowSettings.colorParticlesByVelocity(particlesMan);
 
        window.clear();
        
-       /**/particlesMan.draw(window);
-       
-       /**/windowSettings.drawGUI();
-      
-
+       particlesMan.draw(window);  
+       windowSettings.drawGUI();
+     
        window.display();
     }
     return 0;

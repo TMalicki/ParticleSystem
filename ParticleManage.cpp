@@ -5,7 +5,7 @@ using std::vector;
 
 void ParticleManage::createParticles(sf::PrimitiveType type, sf::Vector2i mousePosition, int amount)
 {
-	m_explodedParticles.push_back(std::unique_ptr<Particles>(new Particles(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)), sf::Vector2f(0.0, 0.0), sf::Vector2f(0.0, 0.0), type)));
+	m_explodedParticles.push_back(std::unique_ptr<Particles>(new Particles(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)), type)));
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
@@ -14,13 +14,13 @@ void ParticleManage::explode(sf::Vector2i mousePosition, sf::PrimitiveType type,
 	if (m_activeArea.x > mousePosition.x)
 	{
 		createParticles(type, mousePosition, amount);
-		setParticleExpandAttributes(m_explodedParticles, mousePosition, type, randomRange, amount);
+		setParticleExpandAttributes(m_explodedParticles, mousePosition, randomRange);
 
 		createForceWave(mousePosition);
 	}
 }
 
-void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particles>>& particleGroup, sf::Vector2i mousePosition, sf::PrimitiveType type, sf::Vector2f randomRange, int amount)
+void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particles>>& particleGroup, sf::Vector2i mousePosition, sf::Vector2f randomRange)
 {
 	auto& actualParticleGroup = particleGroup.back();
 	auto& actualParticleGroupAttributes = actualParticleGroup->getParticleAttributes();
