@@ -1,12 +1,11 @@
 #include "ParticleSettings.h"
 
-sf::Vector2f ParticleSettings::getDirectionFromVelocity()
+const sf::Vector2f ParticleSettings::getDirectionFromVelocity()
 {
 	auto newDirectionMagnitude = sqrt(pow(m_velocity.x, 2) + pow(m_velocity.y, 2));
-	auto newDirection = sf::Vector2f{};
+	sf::Vector2f newDirection{};
 
-	if (newDirectionMagnitude == 0.0f) newDirection = sf::Vector2f{ 0.0f,0.0f };
-	else newDirection = sf::Vector2f{ m_velocity.x / newDirectionMagnitude, m_velocity.y / newDirectionMagnitude };
+	if (newDirectionMagnitude != 0.0f) sf::Vector2f{ m_velocity.x / newDirectionMagnitude, m_velocity.y / newDirectionMagnitude };
 
 	return newDirection;
 }

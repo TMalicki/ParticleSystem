@@ -26,7 +26,7 @@ public:
 	void vacuum(sf::Vector2i);
 
 	void createParticles(sf::PrimitiveType type = sf::Points, sf::Vector2i mousePosition = sf::Vector2i(0, 0), int amount = 1000);
-	void setParticleExpandAttributes(std::vector<std::unique_ptr<Particles>>&, sf::Vector2i, sf::PrimitiveType, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
+	void setParticleExpandAttributes(std::vector<std::unique_ptr<Particles>>&, sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f));
 	
 	std::vector<std::unique_ptr<Particles>>& getExplodedParticles() { return m_explodedParticles; }
 

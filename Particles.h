@@ -7,19 +7,22 @@
 class Particles
 {
 private:							
-	std::vector<ParticleSettings>	m_particleAttributes;	
+	std::vector<ParticleSettings>	m_particleAttributes;	/// this should be calculated by amount of m_particleVertex divided by m_type;
 	std::vector<sf::Vertex>			m_particleVertex;
-
+	
 	sf::PrimitiveType				m_type;
 
 	float							m_maxVelocity;
+
 	//bool m_GravityOn;
 	//bool m_FrictionOn;
 	//bool m_AirResistanceOn;
 public:
-	Particles(long int amount = 100, sf::Vector2f position = { 0.0,0.0 }, sf::Vector2f velocity = { 0.0,0.0 }, 
-				sf::Vector2f direction = { 0,0 }, sf::PrimitiveType tempType = sf::Points);
-	
+	Particles(long int amount = 100, sf::Vector2f position = { 0.0,0.0 }, sf::PrimitiveType tempType = sf::Points);
+
+	enum class Types { Points = 1, Lines, Triangles, Quads, Circles = 20 };
+	int getEdgeAmount(sf::PrimitiveType);
+
 	void setMaxVelocity(float max) { m_maxVelocity = max; }
 	float getMaxVelocity() { return m_maxVelocity; }
 
