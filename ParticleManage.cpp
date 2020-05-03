@@ -5,7 +5,7 @@ using std::vector;
 
 void ParticleManage::createParticles(sf::PrimitiveType type, sf::Vector2i mousePosition, int amount)
 {
-	m_explodedParticles.push_back(std::unique_ptr<Particles>(new Particles(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)), type)));
+	m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)) )));
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
@@ -20,10 +20,16 @@ void ParticleManage::explode(sf::Vector2i mousePosition, sf::PrimitiveType type,
 	}
 }
 
-void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particles>>& particleGroup, sf::Vector2i mousePosition, sf::Vector2f randomRange)
+void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<ParticlesInterface>>& particleGroup, sf::Vector2i mousePosition, sf::Vector2f randomRange)
 {
 	auto& actualParticleGroup = particleGroup.back();
 	auto& actualParticleGroupAttributes = actualParticleGroup->getParticleAttributes();
+
+	////////////////////////////////////////////////	////////////////////////////////////////////////	////////////////////////////////////////////////
+	//ParticlesInterface* ptr = new ParticlesVertex(100);
+	//auto* ptr2 = dynamic_cast<ParticlesVertex*>(ptr);
+	//ptr2->getParticleVertex();
+	////////////////////////////////////////////////	////////////////////////////////////////////////	
 
 	// random forces, and random masses
 	vector<sf::Vector2f> randomDirections(actualParticleGroupAttributes.size());
@@ -213,17 +219,17 @@ void ParticleManage::forceUpdate()
 
 void ParticleManage::applyGravityForce(sf::Vector2f force)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<Particles>& particles) {particles->applyGravityForce(force); });
+	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
 }
 
 void ParticleManage::applyAirResistance(float coefficent)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<Particles>& particles) {particles->applyAirResistance(coefficent); });
+	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
 }
 
 void ParticleManage::applyFriction(float mi)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<Particles>& particles) {particles->applyFriction(mi); });
+	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
 }
 
 float ParticleManage::getRandomFloat(float min, float max)

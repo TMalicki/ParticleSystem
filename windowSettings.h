@@ -3,7 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include <TGUI/TGUI.hpp>
 #include "ParticleManage.h"
-#include "Particles.h"
+#include "ParticlesInterface.h"
 
 //#include "UI.h"
 
@@ -26,10 +26,11 @@ public:
 	const auto getActiveWindowSize() { return m_activeWindowSize; }
 	const auto getGUIWindowSize() { return m_GUIWindowSize; }
 
+	void transitionBorders(std::vector<std::unique_ptr<ParticlesInterface>>&);
+	void erasingBorders(std::vector<std::unique_ptr<ParticlesInterface>>&);
+	void reboundBorders(std::vector<std::unique_ptr<ParticlesInterface>>&);
+
 	//void transitionParticle(std::vector<sf::Vertex>&);
-	void transitionBorders(std::vector<std::unique_ptr<Particles>>&);
-	void erasingBorders(std::vector<std::unique_ptr<Particles>>&);
-	void reboundBorders(std::vector<std::unique_ptr<Particles>>&);
 
 	void loadGUI();
 	void updateGUI(sf::Event& event) { m_gui.handleEvent(event); }
@@ -50,6 +51,6 @@ public:
 	auto getBorders() { return m_gui.get<tgui::ListBox>("Borders"); }
 	//auto getToggleSwitch() { return m_gui.get("ToggleSwitch"); }
 	//auto getTest() { return m_gui.get("Slider1"); }
-	/*void createButton(sf::Vector2f size, sf::Vector2f position);
-	void drawButton(sf::RenderWindow&);*/
+	//void createButton(sf::Vector2f size, sf::Vector2f position);
+	//void drawButton(sf::RenderWindow&);
 };
