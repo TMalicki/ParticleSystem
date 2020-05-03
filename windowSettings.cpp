@@ -1,5 +1,6 @@
 #include "windowSettings.h"
 
+
 windowSettings::windowSettings(sf::RenderWindow& window, float border) : m_gui{window}
 {
 	auto windowSize = sf::Vector2f{ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y) };
@@ -7,7 +8,7 @@ windowSettings::windowSettings(sf::RenderWindow& window, float border) : m_gui{w
 	m_GUIWindowSize = sf::Vector2f{ border, windowSize.y };
 }
 
-void windowSettings::transitionBorders(std::vector<std::unique_ptr<Particles>>& particles)
+void windowSettings::transitionBorders(std::vector<std::unique_ptr<ParticlesInterface>>& particles)
 {
 	for (auto& particle : particles)
 	{
@@ -25,7 +26,7 @@ void windowSettings::transitionBorders(std::vector<std::unique_ptr<Particles>>& 
 	}
 }
 
-void windowSettings::erasingBorders(std::vector<std::unique_ptr<Particles>>& particles)
+void windowSettings::erasingBorders(std::vector<std::unique_ptr<ParticlesInterface>>& particles)
 {
 	std::vector<size_t> toEraseGroup{};
 	size_t counter{ 0 };
@@ -42,7 +43,7 @@ void windowSettings::erasingBorders(std::vector<std::unique_ptr<Particles>>& par
 			auto tempPosition = particlesVertex[i].position;
 
 			if (tempPosition.y <= 0 || tempPosition.y >= m_activeWindowSize.y) toErase.push_back(i);
-			else if (tempPosition.x < 0 || tempPosition.x > m_activeWindowSize.x) toErase.push_back(i);
+			else if (tempPosition.x <= 0 || tempPosition.x = m_activeWindowSize.x) toErase.push_back(i);
 		}
 
 		for (auto erase : toErase)
@@ -59,7 +60,7 @@ void windowSettings::erasingBorders(std::vector<std::unique_ptr<Particles>>& par
 	}
 }
 
-void windowSettings::reboundBorders(std::vector<std::unique_ptr<Particles>>& particles)
+void windowSettings::reboundBorders(std::vector<std::unique_ptr<ParticlesInterface>>& particles)
 {
 	for (auto& particle : particles)
 	{
@@ -71,8 +72,8 @@ void windowSettings::reboundBorders(std::vector<std::unique_ptr<Particles>>& par
 			auto tempPosition = particlesVertex[i].position;
 			auto tempVelocity = particlesAttributes.at(i).getVelocity();
 
-			if (tempPosition.y <= 0 /*&& tempVelocity.y < 0*/ || tempPosition.y >= m_activeWindowSize.y /*&& tempVelocity.y < 0*/) particlesAttributes.at(i).setVelocity(sf::Vector2f{ tempVelocity.x, -tempVelocity.y });
-			else if (tempPosition.x < 0 /*&& tempVelocity.x < 0*/ || tempPosition.x > m_activeWindowSize.x /*&& tempVelocity.x < 0*/) particlesAttributes.at(i).setVelocity(sf::Vector2f{ -tempVelocity.x, tempVelocity.y });
+			if (tempPosition.y <= 0 || tempPosition.y >= m_activeWindowSize.y) particlesAttributes.at(i).setVelocity(sf::Vector2f{ tempVelocity.x, -tempVelocity.y });
+			else if (tempPosition.x <= 0  || tempPosition.x >= m_activeWindowSize.x ) particlesAttributes.at(i).setVelocity(sf::Vector2f{ -tempVelocity.x, tempVelocity.y });
 		}
 	}
 }
