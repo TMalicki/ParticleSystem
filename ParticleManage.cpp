@@ -6,6 +6,7 @@ using std::vector;
 void ParticleManage::createParticles(sf::PrimitiveType type, sf::Vector2i mousePosition, int amount)
 {
 	m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)) )));
+	//m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
@@ -36,7 +37,7 @@ void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particle
 	vector<sf::Vector2f> randomForces(actualParticleGroupAttributes.size());
 	vector<float> randomMasses(actualParticleGroupAttributes.size());
 
-	for (size_t i = 0; i < actualParticleGroup->getParticleVertex().size(); i++)
+	for (size_t i = 0; i < actualParticleGroupAttributes.size(); i++)
 	{
 		float random_x = getRandomFloat(randomRange.x, randomRange.y);
 		float random_y = getRandomFloat(randomRange.x, randomRange.y);
@@ -117,11 +118,14 @@ const auto ParticleManage::isForceWaveCollided()
 		{
 			 if(!((i == m_explodedParticles.size() - 1) && (k == m_force.size() - 1)))
 			{
-				auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
+				//auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
+				auto size = m_explodedParticles[i]->getParticlesAmount();
+				auto positionsVector = m_explodedParticles.at(i)->getPosition();
 
-				for (size_t j = 0; j < actualParticleGroup.size(); j++)
+				for (size_t j = 0; j < size; j++)
 				{
-					auto positionFromForceWave = (actualParticleGroup[j].position - actualForcePosition);
+					auto positionFromForceWave = positionsVector.at(i) - actualForcePosition;
+					//auto positionFromForceWave = (actualParticleGroup[j].position - actualForcePosition);
 					auto distanceFromForceWave = sqrt(pow(positionFromForceWave.x, 2) + pow(positionFromForceWave.y, 2));
 
 					if ((distanceFromForceWave - actualForceRadius > -40.0f) && (distanceFromForceWave - actualForceRadius) <= 20.0f)
@@ -148,10 +152,10 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 		{
 			auto [particleGroup, particleInGroup, forceWave] = pushedParticleIndex;
 
-
-			auto& actualParticleVertex = m_explodedParticles.at(particleGroup)->getParticleVertex()[particleInGroup];
+			//auto& actualParticleVertex = m_explodedParticles.at(particleGroup)->getParticleVertex()[particleInGroup];
 			auto& actualParticleAttribute = m_explodedParticles.at(particleGroup)->getParticleAttributes().at(particleInGroup);
-			auto actualPosition = actualParticleVertex.position;
+			auto actualPosition = m_explodedParticles.at(particleGroup)->getPosition().at(particleInGroup);
+			//auto actualPosition = actualParticleVertex.position;
 
 			auto newDirectionVector = sf::Vector2f{ (actualPosition.x - m_force[forceWave].getPosition().x), (actualPosition.y - m_force[forceWave].getPosition().y) };
 			auto newDirectionMagnitude = abs(newDirectionVector.x) + abs(newDirectionVector.y);
@@ -165,6 +169,7 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 
 void ParticleManage::vacuum(sf::Vector2i mousePosition)
 {
+	/*
 	for (size_t i = 0; i < m_explodedParticles.size(); i++)
 	{
 		auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
@@ -190,6 +195,7 @@ void ParticleManage::vacuum(sf::Vector2i mousePosition)
 			// sort particles by vector length and stop setting new attributes when it is nearer than...
 		}
 	}
+	*/
 }
 
 void ParticleManage::TurnOnForce(bool logic, ParticleSettings::Forces force)

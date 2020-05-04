@@ -3,6 +3,7 @@
 #include <random>
 #include "ParticlesInterface.h"
 #include "ParticlesVertex.h"
+#include "ParticlesCircle.h"
 
 class ParticleManage
 {
