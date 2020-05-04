@@ -15,7 +15,7 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)), "ParticleSystem");
     windowSettings windowSettings(window);
-    // windowSettings.loadGUI();
+    windowSettings.loadGUI();
 
      ParticleManage particlesMan;
      particlesMan.setActiveArea(windowSettings.getActiveWindowSize());
@@ -27,14 +27,12 @@ int main()
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-        {
-            /*
+        {       
             for (auto& particle : particlesMan.getExplodedParticles())
             {
                 particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
                 particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
             }
-            */
         }
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
@@ -49,27 +47,27 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    // particlesMan.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 100);
+                     particlesMan.explode(mousePosition, sf::Points, sf::Vector2f(-3.0, 3.0), 1000);
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
 
                 }
             }
-           // windowSettings.updateGUI(event);
+            windowSettings.updateGUI(event);
         }
 
-        //  windowSettings.updateLogicGUI(windowSettings, particlesMan);
-        //  particlesMan.update(dt);
+          windowSettings.updateLogicGUI(windowSettings, particlesMan);
+          particlesMan.update(dt);
 
-        //  windowSettings.colorParticlesByVelocity(particlesMan);
+          windowSettings.colorParticlesByVelocity(particlesMan);
 
         window.clear();
 
-        // particlesMan.draw(window);  
-       //  windowSettings.drawGUI();
+        particlesMan.draw(window);  
+        windowSettings.drawGUI();
 
-       //  window.display();
+         window.display();
     }
     return 0;
 }

@@ -3,7 +3,7 @@
 
 ParticlesInterface::ParticlesInterface(long int amount, sf::Vector2f position) : m_particleAttributes(amount), m_maxVelocity(100.0f)
 {
-	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particle) {particle.setPosition(position); });
+	//std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particle) {particle.setPosition(position); });
 }
 
 void ParticlesInterface::setDirection(size_t index, sf::Vector2f direction)
@@ -13,10 +13,8 @@ void ParticlesInterface::setDirection(size_t index, sf::Vector2f direction)
 
 void ParticlesInterface::setDirection(std::vector<sf::Vector2f> directionVector)
 {
-	for (size_t i = 0; i < directionVector.size(); i++)
-	{
-		m_particleAttributes[i].setDirection(directionVector.at(i));
-	}
+	size_t index{};
+	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSettings) {particleSettings.setDirection(directionVector.at(index)); index++; });
 }
 void ParticlesInterface::applyForce(size_t index, sf::Vector2f force, ParticleSettings::Forces forceType, float constant)
 {
@@ -30,10 +28,8 @@ void ParticlesInterface::applyForce(sf::Vector2f force, ParticleSettings::Forces
 
 void ParticlesInterface::applyForce(std::vector<sf::Vector2f> forceVector, ParticleSettings::Forces forceType, float constant)
 {
-	for (size_t i = 0; i < forceVector.size(); i++)
-	{
-		m_particleAttributes[i].applyForce(forceVector.at(i), forceType, constant);
-	}
+	size_t index{};
+	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSettings) {particleSettings.applyForce(forceVector.at(index), forceType, constant); index++; });
 }
 
 void ParticlesInterface::applyGravityForce(sf::Vector2f force)
@@ -53,10 +49,8 @@ void ParticlesInterface::applyFriction(float mi)
 
 void ParticlesInterface::setMass(std::vector<float> masses)
 {
-	for (size_t i = 0; i < masses.size(); i++)
-	{
-		m_particleAttributes[i].setMass(masses[i]);
-	}
+	size_t index{};
+	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSettings) {particleSettings.setMass(masses.at(index)); index++; });
 }
 
 /*
@@ -91,10 +85,6 @@ void ParticlesInterface::update(float dt) // in parameter - dt
 	}
 }
 
-
-
-
-
 void ParticlesInterface::setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f direction)
 {
 	m_particleVertex[index].position = position;
@@ -102,3 +92,18 @@ void ParticlesInterface::setParticleAttributes(size_t index, sf::Vector2f positi
 	m_particleAttributes[index].setDirection(direction);
 }
 */
+
+const std::vector<sf::Vector2f> ParticlesInterface::getVelocity()
+{
+	std::vector<sf::Vector2f> tempVelocity(m_particleAttributes.size());
+	size_t counter{};
+	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSetting) {tempVelocity.at(counter) = particleSetting.getVelocity(); counter++; });
+
+	return tempVelocity;
+}
+
+void ParticlesInterface::setVelocity(std::vector<sf::Vector2f> velocities)
+{
+	size_t index{};
+	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSetting) {particleSetting.setVelocity(velocities.at(index)); index++; });
+}
