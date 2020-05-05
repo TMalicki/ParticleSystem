@@ -7,8 +7,6 @@
 
 int main()
 {
-    /// attributes should have position because it will be for objects (like quads) and not all pixels
- 
     auto start = std::chrono::high_resolution_clock::now();
     sf::Vector2f windowSize = sf::Vector2f{ 1920.0f, 1080.0f };
     float settingWindowWidth = 320;

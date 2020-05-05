@@ -6,8 +6,9 @@ ParticlesCircle::ParticlesCircle(long int amount, sf::Vector2f position) : m_par
 	std::for_each(m_particleCircle.begin(), m_particleCircle.end(), 
 		[&](sf::CircleShape& particle) 
 		{
-			particle.setRadius(10.0f);
-			particle.setOrigin(10.0f, 10.0f); 
+			auto x = 5.0f;
+			particle.setRadius(x);
+			particle.setOrigin(x, x); 
 			particle.setPosition(position);
 		});
 }
@@ -16,7 +17,7 @@ const std::vector<sf::Vector2f> ParticlesCircle::getPosition()
 {
 	std::vector<sf::Vector2f> tempPosition(m_particleCircle.size());
 	size_t counter{};
-	std::for_each(m_particleCircle.begin(), m_particleCircle.end(), [&](sf::CircleShape particleCircle) {tempPosition.at(counter) = particleCircle.getPosition(); counter++; });
+	std::for_each(m_particleCircle.begin(), m_particleCircle.end(), [&](sf::CircleShape& particleCircle) {tempPosition.at(counter) = particleCircle.getPosition(); counter++; });
 
 	return tempPosition;
 }
@@ -24,7 +25,7 @@ const std::vector<sf::Vector2f> ParticlesCircle::getPosition()
 void ParticlesCircle::setPosition(std::vector<sf::Vector2f> positions)
 {
 	size_t index{};
-	std::for_each(m_particleCircle.begin(), m_particleCircle.end(), [&](sf::CircleShape particleCircle) {particleCircle.setPosition(positions.at(index)); index++; });
+	std::for_each(m_particleCircle.begin(), m_particleCircle.end(), [&](sf::CircleShape& particleCircle) {particleCircle.setPosition(positions.at(index)); index++; });
 }
 
 void ParticlesCircle::eraseParticles(std::vector<size_t> index)
@@ -42,7 +43,7 @@ void ParticlesCircle::eraseParticles(std::vector<size_t> index)
 void ParticlesCircle::setColor(std::vector<sf::Color> colorVector)
 {
 	size_t index{};
-	std::for_each(m_particleCircle.begin(), m_particleCircle.end(), [&](sf::CircleShape particle) {particle.setFillColor(colorVector.at(index)); index++; });
+	std::for_each(m_particleCircle.begin(), m_particleCircle.end(), [&](sf::CircleShape& particle) {particle.setFillColor(colorVector.at(index)); index++; });
 }
 
 void ParticlesCircle::setDirectionTowardsPoint(sf::Vector2f goalPosition)
@@ -86,8 +87,7 @@ void ParticlesCircle::update(float dt) // in parameter - dt
 		tempPosition += tempVelocity * dt / 100.0f;
 
 		setParticleAttributesN(i, tempPosition, tempVelocity);
-		//setParticleAttributes(i, tempPosition, tempVelocity, tempDirection);
-
+		
 		m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
 	}
 }

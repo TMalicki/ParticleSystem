@@ -21,6 +21,7 @@ private:
 	float														m_forceWaveForce;
 public:
 	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false } {};
+	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; }
 

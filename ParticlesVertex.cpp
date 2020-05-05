@@ -10,15 +10,16 @@ const std::vector<sf::Vector2f> ParticlesVertex::getPosition()
 {
 	std::vector<sf::Vector2f> tempPosition(m_particleVertex.size());
 	size_t counter{};
-	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex particleVertex) {tempPosition.at(counter) = particleVertex.position; counter++; });
+	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particleVertex) {tempPosition.at(counter) = particleVertex.position; counter++; });
 	
 	return tempPosition;
 }
 
 void ParticlesVertex::setPosition(std::vector<sf::Vector2f> positions)
 {
+	//m_particleVertex.insert()
 	size_t index{};
-	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex particleVertex) {particleVertex = positions.at(index); index++; });
+	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particleVertex) {particleVertex = positions.at(index); index++; });
 }
 
 void ParticlesVertex::eraseParticles(std::vector<size_t> index)
@@ -36,7 +37,7 @@ void ParticlesVertex::eraseParticles(std::vector<size_t> index)
 void ParticlesVertex::setColor(std::vector<sf::Color> colorVector)
 {
 	size_t index{};
-	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex particle) {particle.color = colorVector.at(index); index++; });
+	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particle) {particle.color = colorVector.at(index); index++; });
 }
 
 void ParticlesVertex::setDirectionTowardsPoint(sf::Vector2f goalPosition)
