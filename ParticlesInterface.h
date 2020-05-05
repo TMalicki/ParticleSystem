@@ -14,6 +14,7 @@ private:
 
 public:
 	ParticlesInterface(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
+	//ParticlesInterface(const ParticlesInterface&) { std::cout << "ParticlesInterface kopia"; };
 
 	virtual const sf::Color& getParticleColor(size_t index) = 0;
 	virtual void setParticleColor(size_t index, sf::Color color) = 0;

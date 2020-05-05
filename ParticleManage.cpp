@@ -5,8 +5,8 @@ using std::vector;
 
 void ParticleManage::createParticles(sf::PrimitiveType type, sf::Vector2i mousePosition, int amount)
 {
-	m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)) )));
-	//m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
+	//m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)) )));
+	m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
@@ -96,16 +96,16 @@ void ParticleManage::forceWaveExpand(float velocity, sf::Vector2f windowSize)
 		}
 	}
 	
+	std::sort(toDestroy.begin(), toDestroy.end(), std::greater<size_t>());
 	for (auto destroy : toDestroy)
 	{
-		m_force.erase(m_force.begin() + destroy);
+		m_force.at(destroy) = m_force.back();
+		m_force.pop_back();
 	}
 }
 
 const auto ParticleManage::isForceWaveCollided()
 {
-	// czasteczki ktore wychodza poza ekran powinny byc w zaleznosci od trybu usuwane, odbijane od krawedzi, lub powinny wychodzic z innej strony ekranu 
-
 	bool collision = false;
 	vector<std::tuple<size_t, size_t, size_t>> indexes{};
 	
@@ -124,8 +124,7 @@ const auto ParticleManage::isForceWaveCollided()
 
 				for (size_t j = 0; j < size; j++)
 				{
-					auto positionFromForceWave = positionsVector.at(i) - actualForcePosition;
-					//auto positionFromForceWave = (actualParticleGroup[j].position - actualForcePosition);
+					auto positionFromForceWave = positionsVector.at(j) - actualForcePosition;
 					auto distanceFromForceWave = sqrt(pow(positionFromForceWave.x, 2) + pow(positionFromForceWave.y, 2));
 
 					if ((distanceFromForceWave - actualForceRadius > -40.0f) && (distanceFromForceWave - actualForceRadius) <= 20.0f)
@@ -165,6 +164,7 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 			m_explodedParticles.at(particleGroup)->applyForce(particleInGroup, sf::Vector2f{ m_forceWaveForce ,m_forceWaveForce });
 		}
 	}
+	bool t = false;
 }
 
 void ParticleManage::vacuum(sf::Vector2i mousePosition)
@@ -255,12 +255,10 @@ void ParticleManage::update(float dt)
 		particleGroup->update(dt* 2.0f);
 	}
 	
-	////// here should be activeWindow size - not 1000/1000
 	forceWaveExpand(getWaveForce() * dt, m_activeArea);
-	
 
 	auto particlesPushed = isForceWaveCollided();
-	particlePush(particlesPushed.second, particlesPushed.first);
+	//particlePush(particlesPushed.second, particlesPushed.first);
 }
 
 void ParticleManage::draw(sf::RenderWindow& window)

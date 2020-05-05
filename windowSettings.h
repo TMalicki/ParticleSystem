@@ -19,22 +19,17 @@ private:
 	tgui::Slider::Ptr m_AirResistanceSwitch;
 
 	tgui::ListBox::Ptr m_Border;
-
-//	UI m_UI_Objects;
 public:
 	windowSettings(sf::RenderWindow& window, float border = 500.0f);
-	const auto getActiveWindowSize() { return m_activeWindowSize; }
-	const auto getGUIWindowSize() { return m_GUIWindowSize; }
+	const sf::Vector2f& getActiveWindowSize() { return m_activeWindowSize; }
+	const sf::Vector2f& getGUIWindowSize() { return m_GUIWindowSize; }
 
 	void transitionBorders(std::vector<std::unique_ptr<ParticlesInterface>>&);
 	void erasingBorders(std::vector<std::unique_ptr<ParticlesInterface>>&);
 	void reboundBorders(std::vector<std::unique_ptr<ParticlesInterface>>&);
 
-	//void transitionParticle(std::vector<sf::Vertex>&);
-
 	void loadGUI();
 	void updateGUI(sf::Event& event) { m_gui.handleEvent(event); }
-	//void updateLogicGUI(Particles&);
 	void updateLogicGUI(windowSettings&, ParticleManage&);
 	void drawGUI() { m_gui.draw(); }
 
@@ -49,8 +44,4 @@ public:
 	auto getAirResistanceText() { return m_gui.get("tAirResistance"); }
 
 	auto getBorders() { return m_gui.get<tgui::ListBox>("Borders"); }
-	//auto getToggleSwitch() { return m_gui.get("ToggleSwitch"); }
-	//auto getTest() { return m_gui.get("Slider1"); }
-	//void createButton(sf::Vector2f size, sf::Vector2f position);
-	//void drawButton(sf::RenderWindow&);
 };
