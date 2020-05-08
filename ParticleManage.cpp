@@ -3,18 +3,24 @@
 
 using std::vector;
 
-void ParticleManage::createParticles(sf::PrimitiveType type, sf::Vector2i mousePosition, int amount)
+void ParticleManage::createParticles(sf::Vector2i mousePosition, int amount)
 {
-	m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)) )));
-	//m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
+	if (m_type == ParticleType::Vertex)
+	{
+		m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
+	}
+	else if (m_type == ParticleType::CircleShape)
+	{
+		m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
+	}
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
-void ParticleManage::explode(sf::Vector2i mousePosition, sf::PrimitiveType type, sf::Vector2f randomRange, int amount)
+void ParticleManage::explode(sf::Vector2i mousePosition, sf::Vector2f randomRange, int amount)
 {
 	if (m_activeArea.x > mousePosition.x)
 	{
-		createParticles(type, mousePosition, amount);
+		createParticles(mousePosition, amount);
 		setParticleExpandAttributes(m_explodedParticles, mousePosition, randomRange);
 
 		createForceWave(mousePosition);

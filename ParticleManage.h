@@ -7,6 +7,9 @@
 
 class ParticleManage
 {
+public:
+	enum class ParticleType { Vertex, CircleShape };
+
 private:
 	std::default_random_engine									m_generator;
 	sf::Vector2f												m_activeArea;
@@ -19,16 +22,18 @@ private:
 	bool														m_GravityOn;
 	bool														m_AirResistanceOn;
 	float														m_forceWaveForce;
+	ParticleType												m_type;
 public:
-	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false } {};
+	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_type{ ParticleType::Vertex } {};
 	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; }
+	void setParticleType(ParticleType type) { m_type = type; }
 
-	void explode(sf::Vector2i, sf::PrimitiveType, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
+	void explode(sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
 	void vacuum(sf::Vector2i);
 
-	void createParticles(sf::PrimitiveType type = sf::Points, sf::Vector2i mousePosition = sf::Vector2i(0, 0), int amount = 1000);
+	void createParticles(sf::Vector2i mousePosition = sf::Vector2i(0, 0), int amount = 1000);
 	void setParticleExpandAttributes(std::vector<std::unique_ptr<ParticlesInterface>>&, sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f));
 	
 	std::vector<std::unique_ptr<ParticlesInterface>>& getExplodedParticles() { return m_explodedParticles; }

@@ -127,6 +127,7 @@ void windowSettings::loadGUI()
 	m_AirResistanceSwitch = getAirResistanceButton();
 
 	m_Border = getBorders();
+	m_ObjectType = getObjectsType();
 }
 
 void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleManage& particles)
@@ -143,6 +144,9 @@ void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleMana
 	if (m_Border->getSelectedItem() == "Erasing Border") windowSettings.erasingBorders(particles.getExplodedParticles());
 	else if (m_Border->getSelectedItem() == "Rebound Border") windowSettings.reboundBorders(particles.getExplodedParticles());
 	else if (m_Border->getSelectedItem() == "Transition Border") windowSettings.transitionBorders(particles.getExplodedParticles());
+
+	if (m_ObjectType->getSelectedItem() == "Vertex") { particles.setParticleType(ParticleManage::ParticleType::Vertex); } // particleVertex
+	else if (m_ObjectType->getSelectedItem() == "Circle") { particles.setParticleType(ParticleManage::ParticleType::CircleShape); } // circleShape
 }
 
 

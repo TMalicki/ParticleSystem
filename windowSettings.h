@@ -19,6 +19,7 @@ private:
 	tgui::Slider::Ptr m_AirResistanceSwitch;
 
 	tgui::ListBox::Ptr m_Border;
+	tgui::ListBox::Ptr m_ObjectType;
 public:
 	windowSettings(sf::RenderWindow& window, float border = 500.0f);
 	const sf::Vector2f& getActiveWindowSize() { return m_activeWindowSize; }
@@ -43,5 +44,6 @@ public:
 	auto getAirResistanceButton() { return m_gui.get<tgui::Slider>("airResistance"); }
 	auto getAirResistanceText() { return m_gui.get("tAirResistance"); }
 
-	auto getBorders() { return m_gui.get<tgui::ListBox>("Borders"); }
+	auto getBorders() { return m_gui.get<tgui::ListBox>("borderList"); }
+	auto getObjectsType() { return m_gui.get<tgui::ListBox>("object list"); }
 };
