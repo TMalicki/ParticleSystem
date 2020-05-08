@@ -5,8 +5,8 @@ using std::vector;
 
 void ParticleManage::createParticles(sf::PrimitiveType type, sf::Vector2i mousePosition, int amount)
 {
-	//m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)) )));
-	m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
+	m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)) )));
+	//m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
@@ -252,13 +252,16 @@ void ParticleManage::update(float dt)
 	// for moving
 	for (auto& particleGroup : m_explodedParticles)
 	{
+		/// gdyby w update dla kazdej iteracji byl obliczany dirTempRebound ktory ma kierunek wzgledem punktów środka forceWave wszystkich. Wtedy gdyby doszło do kolizji, nie musiał bym
+		/// obliczać tych wszystkich nowych kierunkow, a jedynie przekazal byl do direction obliczony juz wczesniej dirTempRebound, czy to by cos przyspieszylo?
+		// raczej nie bo tuz przed obiciem tez bylo by to liczone, no i to dla wszystkiego wiec raczej spowolnilo by to program
 		particleGroup->update(dt* 2.0f);
 	}
 	
 	forceWaveExpand(getWaveForce() * dt, m_activeArea);
 
 	auto particlesPushed = isForceWaveCollided();
-	//particlePush(particlesPushed.second, particlesPushed.first);
+	particlePush(particlesPushed.second, particlesPushed.first);
 }
 
 void ParticleManage::draw(sf::RenderWindow& window)

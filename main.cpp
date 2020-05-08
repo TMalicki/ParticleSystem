@@ -5,6 +5,8 @@
 #include "ParticleManage.h"
 #include "Timer.h"
 
+// turn on randomness walk particle - needed
+
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();

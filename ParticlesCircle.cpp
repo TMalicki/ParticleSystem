@@ -30,14 +30,14 @@ void ParticlesCircle::setPosition(std::vector<sf::Vector2f> positions)
 
 void ParticlesCircle::eraseParticles(std::vector<size_t> index)
 {
-	/////////////////// TO JEST ŹLE chyba bo po wykonaniu erase dla pojedynczej iteracji indeksy się chyba zmieniają, więc jak np do usunięcia są elementy o indeksach 1,4,8,12,
-	/////////////////// to na początku usunie element o indeksie 1, a później będzie chciał usunąć element o indeksie 4, przy czym wcześniej chyba nastąpi relokacja wektora?
-	///////////////////	czy wtedy czasami element o indeksie 4 (początkowym indeksie), po usunięciu elementu wcześniejszego nie będzie na indexie 3? Bo cały wektor się zmniejszy.
-	/////////////////// sprawdzić to!!!!!!!!!!!
-	size_t indx{};
-	//std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&]() {m_particleAttributes.erase(m_particleAttributes.begin() + index.at(indx)); indx++; });
-	indx = 0;
-	//std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&]() {m_particleVertex.erase(m_particleVertex.begin() + index.at(indx)); indx++; });
+	std::sort(index.begin(), index.end(), std::greater<size_t>());
+	for (auto erase : index)
+	{
+		m_particleAttributes.at(erase) = m_particleAttributes.back();
+		m_particleAttributes.pop_back();
+		m_particleCircle.at(erase) = m_particleCircle.back();
+		m_particleCircle.pop_back();
+	}
 }
 
 void ParticlesCircle::setColor(std::vector<sf::Color> colorVector)

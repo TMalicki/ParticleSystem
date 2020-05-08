@@ -5,7 +5,7 @@ const sf::Vector2f ParticleSettings::getDirectionFromVelocity()
 	auto newDirectionMagnitude = sqrt(pow(m_velocity.x, 2) + pow(m_velocity.y, 2));
 	sf::Vector2f newDirection{};
 
-	if (newDirectionMagnitude != 0.0f) sf::Vector2f{ m_velocity.x / newDirectionMagnitude, m_velocity.y / newDirectionMagnitude };
+	if (newDirectionMagnitude != 0.0f) newDirection = sf::Vector2f{ m_velocity.x / newDirectionMagnitude, m_velocity.y / newDirectionMagnitude };
 
 	return newDirection;
 }
