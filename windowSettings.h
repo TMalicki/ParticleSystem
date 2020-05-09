@@ -5,8 +5,6 @@
 #include "ParticleManage.h"
 #include "ParticlesInterface.h"
 
-//#include "UI.h"
-
 class windowSettings
 {
 private:
@@ -25,9 +23,9 @@ public:
 	const sf::Vector2f& getActiveWindowSize() { return m_activeWindowSize; }
 	const sf::Vector2f& getGUIWindowSize() { return m_GUIWindowSize; }
 
-	void transitionBorders(std::vector<std::unique_ptr<ParticlesInterface>>&);
-	void erasingBorders(std::vector<std::unique_ptr<ParticlesInterface>>&);
-	void reboundBorders(std::vector<std::unique_ptr<ParticlesInterface>>&);
+	std::vector<sf::Vector2f> transitionBorders(const std::vector<sf::Vector2f>&);
+	std::vector<size_t> erasingBorders(const std::vector<sf::Vector2f>&);
+	std::vector<sf::Vector2f> reboundBorders(const std::vector<sf::Vector2f>&, const std::vector<sf::Vector2f>&);
 
 	void loadGUI();
 	void updateGUI(sf::Event& event) { m_gui.handleEvent(event); }
