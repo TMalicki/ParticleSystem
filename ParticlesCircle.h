@@ -21,7 +21,7 @@ public:
 
 	virtual void setColor(std::vector<sf::Color>);
 
-	void setParticleAttributesN(size_t index, sf::Vector2f position, sf::Vector2f velocity);
+	void setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity);
 	virtual const sf::Color& getParticleColor(size_t index) { return m_particleCircle.at(index).getFillColor(); }
 	virtual void setParticleColor(size_t index, sf::Color color) { m_particleCircle.at(index).setFillColor(color); }
 	virtual void setDirectionTowardsPoint(sf::Vector2f);

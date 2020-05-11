@@ -6,6 +6,7 @@
 #include "Timer.h"
 
 // turn on randomness walk particle - needed
+// after all particles on the screen erased and new explosion wanna be made - error occured
 
 int main()
 {
@@ -16,6 +17,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)), "ParticleSystem");
     windowSettings windowSettings(window);
     windowSettings.loadGUI();
+
 
      ParticleManage particlesMan;
      particlesMan.setActiveArea(windowSettings.getActiveWindowSize());
@@ -57,17 +59,17 @@ int main()
             windowSettings.updateGUI(event);
         }
 
-          windowSettings.updateLogicGUI(windowSettings, particlesMan);
-          particlesMan.update(dt);
+        windowSettings.updateLogicGUI(windowSettings, particlesMan);
+        particlesMan.update(dt);
 
-          windowSettings.colorParticlesByVelocity(particlesMan);
+        windowSettings.colorParticlesByVelocity(particlesMan);
 
         window.clear();
 
         particlesMan.draw(window);  
         windowSettings.drawGUI();
 
-         window.display();
+        window.display();
     }
     return 0;
 }

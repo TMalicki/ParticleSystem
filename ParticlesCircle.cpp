@@ -31,13 +31,9 @@ void ParticlesCircle::setPosition(std::vector<sf::Vector2f> positions)
 void ParticlesCircle::eraseParticles(std::vector<size_t> index)
 {
 	std::sort(index.begin(), index.end(), std::greater<size_t>());
-	for (auto erase : index)
-	{
-		m_particleAttributes.at(erase) = m_particleAttributes.back();
-		m_particleAttributes.pop_back();
-		m_particleCircle.at(erase) = m_particleCircle.back();
-		m_particleCircle.pop_back();
-	}
+
+	std::for_each(index.begin(), index.end(), [&](size_t& actualIndex) {m_particleAttributes[actualIndex] = m_particleAttributes.back(); m_particleAttributes.pop_back(); });
+	std::for_each(index.begin(), index.end(), [&](size_t& actualIndex) {m_particleCircle[actualIndex] = m_particleCircle.back(); m_particleCircle.pop_back(); });
 }
 
 void ParticlesCircle::setColor(std::vector<sf::Color> colorVector)
@@ -69,8 +65,6 @@ void ParticlesCircle::update(float dt) // in parameter - dt
 		auto tempPosition = m_particleCircle[i].getPosition();
 		auto maxVelocity = getMaxVelocity();
 
-		//if (tempPosition.x >= 0 && tempPosition.x <= s_activeAreaSize.x && tempPosition.y >= 0 && tempPosition.y <= s_activeAreaSize.y)
-		//{
 		sf::Vector2f tempDirection = m_particleAttributes[i].getDirection();
 		sf::Vector2f tempVelocity = m_particleAttributes[i].getVelocity();
 		sf::Vector2f tempAcceleration = m_particleAttributes[i].getAcceleration();
@@ -86,13 +80,12 @@ void ParticlesCircle::update(float dt) // in parameter - dt
 
 		tempPosition += tempVelocity * dt / 100.0f;
 
-		setParticleAttributesN(i, tempPosition, tempVelocity);
-		
+		setParticleAttributes(i, tempPosition, tempVelocity);
 		m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
 	}
 }
 
-void ParticlesCircle::setParticleAttributesN(size_t index, sf::Vector2f position, sf::Vector2f velocity)
+void ParticlesCircle::setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity)
 {
 	m_particleCircle[index].setPosition(position);
 	m_particleAttributes[index].setVelocity(velocity);

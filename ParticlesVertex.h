@@ -8,7 +8,8 @@
 class ParticlesVertex : public ParticlesInterface
 {
 private:							
-	std::vector<sf::Vertex>			m_particleVertex;
+	std::vector<sf::Vertex>				m_particleVertex;
+
 public:
 	ParticlesVertex(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
 	//ParticlesVertex(const ParticlesVertex&) { std::cout << "ParticlesVertex kopia"; };
@@ -22,7 +23,7 @@ public:
 
 	virtual void setColor(std::vector<sf::Color>);
 
-	void setParticleAttributesN(size_t index, sf::Vector2f position, sf::Vector2f velocity);
+	void setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity);
 	virtual const sf::Color& getParticleColor(size_t index) { return m_particleVertex.at(index).color; }
 	virtual void setParticleColor(size_t index, sf::Color color) { m_particleVertex.at(index).color = color; }
 	virtual void setDirectionTowardsPoint(sf::Vector2f);

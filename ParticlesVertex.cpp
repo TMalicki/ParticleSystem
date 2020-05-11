@@ -11,46 +11,36 @@ const std::vector<sf::Vector2f> ParticlesVertex::getPosition()
 {
 	std::vector<sf::Vector2f> tempPosition(m_particleVertex.size());
 	size_t counter{};
-	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particleVertex) {tempPosition.at(counter) = particleVertex.position; counter++; });
+	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particleVertex) {tempPosition[counter] = particleVertex.position; counter++; });
 	
 	return tempPosition;
 }
 
 void ParticlesVertex::setPosition(std::vector<sf::Vector2f> positions)
 {
-	//m_particleVertex.insert()
 	size_t index{};
-	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particleVertex) {particleVertex = positions.at(index); index++; });
+	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particleVertex) {particleVertex = positions[index]; index++; });
 }
 
 void ParticlesVertex::eraseParticles(std::vector<size_t> index)
 {
 	std::sort(index.begin(), index.end(), std::greater<size_t>());
-	for (auto erase : index)
-	{
-		m_particleAttributes.at(erase) = m_particleAttributes.back();
-		m_particleAttributes.pop_back();
-		m_particleVertex.at(erase) = m_particleVertex.back();
-		m_particleVertex.pop_back();
-	}
-		
-	//size_t indx{};
-	//std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&]() {m_particleAttributes.erase(m_particleAttributes.begin() + index.at(indx)); indx++; });
-	//indx = 0;
-	//std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&]() {m_particleVertex.erase(m_particleVertex.begin() + index.at(indx)); indx++; });
+	
+	std::for_each(index.begin(), index.end(), [&](size_t& actualIndex) {m_particleAttributes[actualIndex] = m_particleAttributes.back(); m_particleAttributes.pop_back(); });
+	std::for_each(index.begin(), index.end(), [&](size_t& actualIndex) {m_particleVertex[actualIndex] = m_particleVertex.back(); m_particleVertex.pop_back(); });
 }
 
-void ParticlesVertex::setColor(std::vector<sf::Color> colorVector)
+void ParticlesVertex::setColor(std::vector<sf::Color> colorVector) // use reference?
 {
 	size_t index{};
 	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particle) {particle.color = colorVector.at(index); index++; });
 }
 
-void ParticlesVertex::setDirectionTowardsPoint(sf::Vector2f goalPosition)
+void ParticlesVertex::setDirectionTowardsPoint(sf::Vector2f goalPosition) //?
 {
 	for (size_t i = 0; i < m_particleVertex.size(); i++)
 	{
-		auto actualPosition = m_particleVertex[i].position;
+		auto& actualPosition = m_particleVertex[i].position;
 		auto newDirectionVector = sf::Vector2f{ goalPosition.x - actualPosition.x, goalPosition.y - actualPosition.y };
 		auto newDirectionMagnitude = sqrt(pow(newDirectionVector.x, 2) + pow(newDirectionVector.y, 2));
 		if (newDirectionMagnitude == 0.0f) newDirectionMagnitude = 1.0f;
@@ -60,41 +50,36 @@ void ParticlesVertex::setDirectionTowardsPoint(sf::Vector2f goalPosition)
 	}
 }
 
-void ParticlesVertex::update(float dt) // in parameter - dt
+void ParticlesVertex::update(float dt) //?
 {
 	//forceUpdate();
 	for (size_t i = 0; i < m_particleVertex.size(); i++)
 	{
-		// is it needed to update both: position of each pixel and object of pixels like sf::Lines?
 		auto tempPosition = m_particleVertex[i].position;
 		auto maxVelocity = getMaxVelocity();
 
-		//if (tempPosition.x >= 0 && tempPosition.x <= s_activeAreaSize.x && tempPosition.y >= 0 && tempPosition.y <= s_activeAreaSize.y)
-		//{
-			sf::Vector2f tempDirection = m_particleAttributes[i].getDirection();
-			sf::Vector2f tempVelocity = m_particleAttributes[i].getVelocity();
-			sf::Vector2f tempAcceleration = m_particleAttributes[i].getAcceleration();
+		sf::Vector2f tempDirection = m_particleAttributes[i].getDirection();
+		sf::Vector2f tempVelocity = m_particleAttributes[i].getVelocity();
+		sf::Vector2f tempAcceleration = m_particleAttributes[i].getAcceleration();
 
-			tempVelocity.x += tempAcceleration.x; 
-			tempVelocity.y += tempAcceleration.y; 
+		tempVelocity.x += tempAcceleration.x; 
+		tempVelocity.y += tempAcceleration.y; 
 
-			float magnitudeVector = sqrt(pow(tempVelocity.x, 2) + pow(tempVelocity.y, 2));
-			if (magnitudeVector > maxVelocity)
-			{
-				tempVelocity = tempVelocity / magnitudeVector * maxVelocity;
-			}
+		float magnitudeVector = sqrt(pow(tempVelocity.x, 2) + pow(tempVelocity.y, 2));
+		if (magnitudeVector > maxVelocity)
+		{
+			tempVelocity = tempVelocity / magnitudeVector * maxVelocity;
+		}
 
-			tempPosition += tempVelocity * dt / 100.0f;
+		tempPosition += tempVelocity * dt / 100.0f;
 
-			setParticleAttributesN(i, tempPosition, tempVelocity);
-			//setParticleAttributes(i, tempPosition, tempVelocity, tempDirection);
-
-			m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
+		// make setParticleAttributes for vector maybe?
+		setParticleAttributes(i, tempPosition, tempVelocity);
+		m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
 	}
 }
 
-
-void ParticlesVertex::setParticleAttributesN(size_t index, sf::Vector2f position, sf::Vector2f velocity)
+void ParticlesVertex::setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity) // is it used?
 {
 	m_particleVertex[index].position = position;
 	m_particleAttributes[index].setVelocity(velocity);

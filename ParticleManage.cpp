@@ -5,6 +5,7 @@ using std::vector;
 
 void ParticleManage::createParticles(sf::Vector2i mousePosition, int amount)
 {
+	// here reserve should be added to optimize that section
 	if (m_type == ParticleType::Vertex)
 	{
 		m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
@@ -173,36 +174,6 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 	bool t = false;
 }
 
-void ParticleManage::vacuum(sf::Vector2i mousePosition)
-{
-	/*
-	for (size_t i = 0; i < m_explodedParticles.size(); i++)
-	{
-		auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
-
-		for (size_t j = 0; j < actualParticleGroup.size(); j++)
-		{
-			auto& actualParticleAttribute = m_explodedParticles.at(i)->getParticleAttributes().at(j);
-
-			auto newDirectionVector = sf::Vector2f{ mousePosition.x - actualParticleGroup[j].position.x, mousePosition.y - actualParticleGroup[j].position.y };
-			auto newDirectionMagnitude = abs(newDirectionVector.x) + abs(newDirectionVector.y);
-			auto newDirectionNormalized = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
-
-			auto actualVelocity = actualParticleAttribute.getVelocity();
-			auto actualAcceleration = actualParticleAttribute.getAcceleration();
-			
-			actualVelocity.x += actualAcceleration.x * newDirectionNormalized.x;
-			actualVelocity.y += actualAcceleration.y * newDirectionNormalized.y;
-
-			if (abs(actualVelocity.x) + abs(actualVelocity.y) >= 40.0f) actualVelocity = sf::Vector2f{ 40.0f * newDirectionNormalized.x, 40.0f * newDirectionNormalized.y };
-	
-			m_explodedParticles.at(i)->setParticleAttributes(j, actualParticleGroup[j].position, actualVelocity, newDirectionNormalized);
-
-			// sort particles by vector length and stop setting new attributes when it is nearer than...
-		}
-	}
-	*/
-}
 
 void ParticleManage::TurnOnForce(bool logic, ParticleSettings::Forces force)
 {
@@ -258,9 +229,6 @@ void ParticleManage::update(float dt)
 	// for moving
 	for (auto& particleGroup : m_explodedParticles)
 	{
-		/// gdyby w update dla kazdej iteracji byl obliczany dirTempRebound ktory ma kierunek wzgledem punktów środka forceWave wszystkich. Wtedy gdyby doszło do kolizji, nie musiał bym
-		/// obliczać tych wszystkich nowych kierunkow, a jedynie przekazal byl do direction obliczony juz wczesniej dirTempRebound, czy to by cos przyspieszylo?
-		// raczej nie bo tuz przed obiciem tez bylo by to liczone, no i to dla wszystkiego wiec raczej spowolnilo by to program
 		particleGroup->update(dt* 2.0f);
 	}
 	

@@ -108,6 +108,11 @@ void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleMana
 	if (m_AirResistanceSwitch->getValue() == 0.0f) m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::AirResistance); });
 	else m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::AirResistance); });
 
+	if (m_ObjectType->getSelectedItem() == "Vertex") { particles.setParticleType(ParticleManage::ParticleType::Vertex); } // particleVertex
+	else if (m_ObjectType->getSelectedItem() == "Circle") { particles.setParticleType(ParticleManage::ParticleType::CircleShape); } // circleShape
+
+
+	///////
 	if (m_Border->getSelectedItem() == "Rebound Border")
 	{
 		auto& temp = particles.getExplodedParticles();
@@ -145,9 +150,6 @@ void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleMana
 			temp[i]->setPosition(windowSettings.transitionBorders(temp[i]->getPosition()));
 		}
 	}
-	
-	if (m_ObjectType->getSelectedItem() == "Vertex") { particles.setParticleType(ParticleManage::ParticleType::Vertex); } // particleVertex
-	else if (m_ObjectType->getSelectedItem() == "Circle") { particles.setParticleType(ParticleManage::ParticleType::CircleShape); } // circleShape
 }
 
 

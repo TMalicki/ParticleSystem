@@ -16,7 +16,7 @@ private:
 
 
 	std::vector<std::unique_ptr<ParticlesInterface>>			m_explodedParticles;
-	std::vector<sf::CircleShape>								m_force;	// make class for m_force
+	std::vector<sf::CircleShape>								m_force;	
 
 	bool														m_FrictionOn;
 	bool														m_GravityOn;
@@ -31,8 +31,7 @@ public:
 	void setParticleType(ParticleType type) { m_type = type; }
 
 	void explode(sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
-	void vacuum(sf::Vector2i);
-
+	
 	void createParticles(sf::Vector2i mousePosition = sf::Vector2i(0, 0), int amount = 1000);
 	void setParticleExpandAttributes(std::vector<std::unique_ptr<ParticlesInterface>>&, sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f));
 	
@@ -57,6 +56,3 @@ public:
 	void update(float dt);
 	void draw(sf::RenderWindow&);
 };
-
-// predefinedExplosion zamiast explosion
-// predefinedVacuum
