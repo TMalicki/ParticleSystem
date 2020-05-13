@@ -6,6 +6,11 @@ ParticlesInterface::ParticlesInterface(long int amount, sf::Vector2f position) :
 	//std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particle) {particle.setPosition(position); });
 }
 
+void ParticlesInterface::setDirection(sf::Vector2f direction)
+{
+	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSettings) {particleSettings.setDirection(direction);});
+}
+
 void ParticlesInterface::setDirection(size_t index, sf::Vector2f direction)
 {
 	m_particleAttributes[index].setDirection(direction);
@@ -23,11 +28,13 @@ void ParticlesInterface::applyForce(size_t index, sf::Vector2f force, ParticleSe
 
 void ParticlesInterface::applyForce(sf::Vector2f force, ParticleSettings::Forces forceType, float constant)
 {
-	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [=](ParticleSettings& particle) {particle.applyForce(force, forceType, constant); });
+	// the same force for every particle
+	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particle) {particle.applyForce(force, forceType, constant); });
 }
 
 void ParticlesInterface::applyForce(std::vector<sf::Vector2f> forceVector, ParticleSettings::Forces forceType, float constant)
 {
+	// different force for every particle
 	size_t index{};
 	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSettings) {particleSettings.applyForce(forceVector[index], forceType, constant); index++; });
 }

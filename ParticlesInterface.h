@@ -41,6 +41,7 @@ public:
 	void setMaxVelocity(float max) { m_maxVelocity = max; }
 	float getMaxVelocity() { return m_maxVelocity; }
 		
+	void setDirection(sf::Vector2f);
 	void setDirection(size_t, sf::Vector2f);
 	void setDirection(std::vector<sf::Vector2f>);
 

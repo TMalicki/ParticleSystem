@@ -21,10 +21,12 @@ private:
 	bool														m_FrictionOn;
 	bool														m_GravityOn;
 	bool														m_AirResistanceOn;
+	bool														m_WindOn;
+	sf::Vector2f												m_WindDirection;
 	float														m_forceWaveForce;
 	ParticleType												m_type;
 public:
-	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_type{ ParticleType::Vertex } {};
+	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex } {};
 	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; }
@@ -37,6 +39,8 @@ public:
 	
 	std::vector<std::unique_ptr<ParticlesInterface>>& getExplodedParticles() { return m_explodedParticles; }
 
+	void setWindDirection(sf::Vector2f direction) { m_WindDirection = direction; }
+
 	void particlePush(const std::vector<std::tuple<size_t, size_t, size_t>>&, bool collision = false);
 	void createForceWave(sf::Vector2i, float radius = 1.0f);
 	void forceWaveExpand(float, sf::Vector2f);
@@ -47,6 +51,7 @@ public:
 
 	void TurnOnForce(bool, ParticleSettings::Forces);
 	void forceUpdate();
+	void applyWindForce(sf::Vector2f force);
 	void applyGravityForce(sf::Vector2f force);
 	void applyAirResistance(float coefficent = 0.0001f);
 	void applyFriction(float mi = 0.01);

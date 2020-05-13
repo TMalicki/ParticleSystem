@@ -13,6 +13,8 @@ void windowSettings::loadGUI()
 	m_GravitySwitch = getGravityButton();
 	m_FrictionSwitch = getFrictionButton();
 	m_AirResistanceSwitch = getAirResistanceButton();
+	m_WindSwitch = getWindSwitch();
+	m_WindDirection = getWindDirection();
 
 	m_Border = getBorders();
 	m_ObjectType = getObjectsType();
@@ -108,10 +110,18 @@ void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleMana
 	if (m_AirResistanceSwitch->getValue() == 0.0f) m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::AirResistance); });
 	else m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::AirResistance); });
 
+	if (m_WindSwitch->getValue() == 0.0f) m_WindSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::External); });
+	else m_WindSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::External); });
+
 	if (m_ObjectType->getSelectedItem() == "Vertex") { particles.setParticleType(ParticleManage::ParticleType::Vertex); } // particleVertex
-	else if (m_ObjectType->getSelectedItem() == "Circle") { particles.setParticleType(ParticleManage::ParticleType::CircleShape); } // circleShape
+	else if (m_ObjectType->getSelectedItem() == "Circle") { particles.setParticleType(ParticleManage::ParticleType::CircleShape); };  // circleShape
 
-
+	if (m_WindDirection->connect("ValueChanged", [&]()
+	{
+		float temp = static_cast<float>(m_WindDirection->getValue());
+		particles.setWindDirection(sf::Vector2f{ -sin(temp * 3.14f / 180.0f), cos(temp * 3.14f / 180.0f) });
+	}
+	)) {}
 	///////
 	if (m_Border->getSelectedItem() == "Rebound Border")
 	{

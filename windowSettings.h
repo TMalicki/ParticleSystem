@@ -15,6 +15,9 @@ private:
 	tgui::Slider::Ptr m_GravitySwitch;
 	tgui::Slider::Ptr m_FrictionSwitch;
 	tgui::Slider::Ptr m_AirResistanceSwitch;
+	tgui::Slider::Ptr m_WindSwitch;
+
+	tgui::Knob::Ptr m_WindDirection;
 
 	tgui::ListBox::Ptr m_Border;
 	tgui::ListBox::Ptr m_ObjectType;
@@ -36,11 +39,13 @@ public:
 
 	auto& getObjectsUI() { return m_gui.getWidgets(); }
 	auto getGravityButton() { return m_gui.get<tgui::Slider>("gravity"); }
-	auto getGravityText() { return m_gui.get("tGravity"); }
+//	auto getGravityText() { return m_gui.get("tGravity"); }
 	auto getFrictionButton() { return m_gui.get<tgui::Slider>("friction"); }
-	auto getFrictionText() { return m_gui.get("tFriction"); }
+//	auto getFrictionText() { return m_gui.get("tFriction"); }
 	auto getAirResistanceButton() { return m_gui.get<tgui::Slider>("airResistance"); }
-	auto getAirResistanceText() { return m_gui.get("tAirResistance"); }
+//	auto getAirResistanceText() { return m_gui.get("tAirResistance"); }
+	auto getWindSwitch() { return m_gui.get<tgui::Slider>("windSwitch"); }
+	auto getWindDirection() { return m_gui.get<tgui::Knob>("windDirection"); }
 
 	auto getBorders() { return m_gui.get<tgui::ListBox>("borderList"); }
 	auto getObjectsType() { return m_gui.get<tgui::ListBox>("object list"); }

@@ -7,7 +7,7 @@
 
 // turn on randomness walk particle - needed
 // after all particles on the screen erased and new explosion wanna be made - error occured
-
+// friction should be working only in y direction? Or should i choose in which direction that works (x and y, or just one of them)
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
@@ -58,9 +58,8 @@ int main()
             }
             windowSettings.updateGUI(event);
         }
-
-        windowSettings.updateLogicGUI(windowSettings, particlesMan);
         particlesMan.update(dt);
+        windowSettings.updateLogicGUI(windowSettings, particlesMan);
 
         windowSettings.colorParticlesByVelocity(particlesMan);
 

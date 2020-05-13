@@ -111,6 +111,7 @@ void ParticleManage::forceWaveExpand(float velocity, sf::Vector2f windowSize)
 	}
 }
 
+/// here is something wrong
 const auto ParticleManage::isForceWaveCollided()
 {
 	bool collision = false;
@@ -127,7 +128,7 @@ const auto ParticleManage::isForceWaveCollided()
 			{
 				//auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
 				auto size = m_explodedParticles[i]->getParticlesAmount();
-				auto positionsVector = m_explodedParticles.at(i)->getPosition();
+				auto positionsVector = m_explodedParticles.at(i)->getPosition(); 
 
 				for (size_t j = 0; j < size; j++)
 				{
@@ -153,23 +154,40 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 {
 	if (collision == true)
 	{
+		//std::vector<std::tuple<size_t,sf::Vector2f>> tempPositions;
+		//std::vector<std::tuple<size_t, sf::Vector2f>> tempDirections;
+		//std::vector<size_t> tempIndexes;
+
+		//tempIndexes.reserve(100);
+		//tempPositions.reserve(10000);
+		//tempDirections.reserve(10000);
+
 		// update of already existing particle groups
 		for (auto pushedParticleIndex : pushedParticlesIndex)
 		{
 			auto [particleGroup, particleInGroup, forceWave] = pushedParticleIndex;
 
-			//auto& actualParticleVertex = m_explodedParticles.at(particleGroup)->getParticleVertex()[particleInGroup];
+			//tempIndexes.push_back(particleGroup);
 			auto& actualParticleAttribute = m_explodedParticles.at(particleGroup)->getParticleAttributes().at(particleInGroup);
 			auto actualPosition = m_explodedParticles.at(particleGroup)->getPosition().at(particleInGroup);
-			//auto actualPosition = actualParticleVertex.position;
-
+			
 			auto newDirectionVector = sf::Vector2f{ (actualPosition.x - m_force[forceWave].getPosition().x), (actualPosition.y - m_force[forceWave].getPosition().y) };
 			auto newDirectionMagnitude = abs(newDirectionVector.x) + abs(newDirectionVector.y);
 			auto newDirection = sf::Vector2f{ newDirectionVector.x / newDirectionMagnitude, newDirectionVector.y / newDirectionMagnitude };
-
+			
+			//tempDirections.push_back(std::make_tuple(particleInGroup, newDirection));
+			//tempPositions.push_back(std::make_tuple(particleInGroup, sf::Vector2f{ m_forceWaveForce, m_forceWaveForce }));
+			
 			m_explodedParticles.at(particleGroup)->setDirection(particleInGroup, newDirection);
 			m_explodedParticles.at(particleGroup)->applyForce(particleInGroup, sf::Vector2f{ m_forceWaveForce ,m_forceWaveForce });
 		}
+		/*
+		for (auto index : tempIndexes)
+		{
+			m_explodedParticles.at(index)->setDirection(tempDirections);
+			m_explodedParticles.at(index)->applyForce(tempPositions);
+		}
+		*/
 	}
 	bool t = false;
 }
@@ -189,6 +207,10 @@ void ParticleManage::TurnOnForce(bool logic, ParticleSettings::Forces force)
 	{
 		m_FrictionOn = logic;
 	}
+	else if (force == ParticleSettings::Forces::External)
+	{
+		m_WindOn = logic;
+	}
 }
 
 void ParticleManage::forceUpdate()
@@ -196,9 +218,21 @@ void ParticleManage::forceUpdate()
 	if (m_GravityOn == true) applyGravityForce(sf::Vector2f{ 0.0f,0.02f });
 	if (m_AirResistanceOn == true) applyAirResistance();
 	if (m_FrictionOn == true) applyFriction();
+	if (m_WindOn == true)
+	{
+		for (auto& particlesGroup : m_explodedParticles)
+		{
+			particlesGroup->setDirection(m_WindDirection);
+		}
+		applyWindForce(sf::Vector2f{ 0.02f,0.02f });
+	}
 }
 
-
+void ParticleManage::applyWindForce(sf::Vector2f force)
+{
+	//std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->setDirection(sf::Vector2f{ 1.0f,0.0f }); });
+	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
+}
 
 void ParticleManage::applyGravityForce(sf::Vector2f force)
 {
@@ -231,7 +265,6 @@ void ParticleManage::update(float dt)
 	{
 		particleGroup->update(dt* 2.0f);
 	}
-	
 	forceWaveExpand(getWaveForce() * dt, m_activeArea);
 
 	auto particlesPushed = isForceWaveCollided();
