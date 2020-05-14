@@ -31,11 +31,11 @@ void ParticleSettings::applyForce(sf::Vector2f force, Forces forceType, float co
 		float mi = constant;
 
 		m_direction = -getDirectionFromVelocity();
-		m_force = normal * mi * sf::Vector2f{ 1.0f, 1.0f };
+		m_force = normal * sf::Vector2f{ 1.0f * mi / 2.0f, 1.0f * mi };
 	}
 	else
 	{
 		m_force = (force / m_mass);
 	}
-	m_acceleration += sf::Vector2f{ m_force.x * m_direction.x, m_force.y * m_direction.y }; 
+	m_acceleration += sf::Vector2f{ abs(m_force.x) * m_direction.x, abs(m_force.y) * m_direction.y }; 
 }

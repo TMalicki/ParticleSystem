@@ -8,6 +8,7 @@
 // turn on randomness walk particle - needed
 // after all particles on the screen erased and new explosion wanna be made - error occured
 // friction should be working only in y direction? Or should i choose in which direction that works (x and y, or just one of them)
+// emiter sometimes is erasing while using erasingBorders when it should not happen
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
@@ -36,7 +37,7 @@ int main()
                 particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
             }
         }
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
         }
 
@@ -49,13 +50,47 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                     particlesMan.explode(mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
+                    if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Explode)
+                    {
+                        particlesMan.explode(mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
+                    }
+                    else if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
+                    {
+                        particlesMan.emitter(mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
+                    }
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
 
                 }
             }
+            else if (event.type == sf::Event::MouseWheelScrolled)
+            {
+                int temp = static_cast<int>(particlesMan.getParticleEffect());
+                int max = static_cast<int>((ParticleManage::ParticleEffect::NUMBER_OF_EFFECTS));
+                if (event.mouseWheelScroll.delta > 0)
+                {
+                    if (temp < max)
+                    {
+                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((temp + 1)));
+                    }
+                    else
+                    {
+                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((0)));
+                    }
+                }
+                else if (event.mouseWheelScroll.delta < 0)
+                {
+                    if (temp > 0)
+                    {
+                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((temp - 1)));
+                    }
+                    else
+                    {
+                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((max)));
+                    }
+                }
+             }
             windowSettings.updateGUI(event);
         }
         particlesMan.update(dt);

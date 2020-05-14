@@ -18,6 +18,8 @@ void windowSettings::loadGUI()
 
 	m_Border = getBorders();
 	m_ObjectType = getObjectsType();
+
+	m_effectType = getEffectType();
 }
 
 std::vector<sf::Vector2f> windowSettings::transitionBorders(const std::vector<sf::Vector2f>& positions)

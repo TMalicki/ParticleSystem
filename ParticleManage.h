@@ -9,13 +9,14 @@ class ParticleManage
 {
 public:
 	enum class ParticleType { Vertex, CircleShape };
-
+	enum class ParticleEffect { Explode, Emiter, NUMBER_OF_EFFECTS };
 private:
 	std::default_random_engine									m_generator;
 	sf::Vector2f												m_activeArea;
 
 
 	std::vector<std::unique_ptr<ParticlesInterface>>			m_explodedParticles;
+	std::vector < std::unique_ptr<ParticlesInterface>>			m_emiterParticles;
 	std::vector<sf::CircleShape>								m_force;	
 
 	bool														m_FrictionOn;
@@ -25,17 +26,23 @@ private:
 	sf::Vector2f												m_WindDirection;
 	float														m_forceWaveForce;
 	ParticleType												m_type;
+	ParticleEffect												m_effectType;
 public:
-	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex } {};
+	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex } 
+	, m_effectType{ ParticleEffect::Explode } {};
 	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; }
 	void setParticleType(ParticleType type) { m_type = type; }
 
 	void explode(sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
-	
+	void emitter(sf::Vector2i, sf::Vector2f andomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
+
+	void setEffectType(ParticleEffect effect) { m_effectType = effect; }
+	const ParticleEffect& getParticleEffect() { return m_effectType; }
+
 	void createParticles(sf::Vector2i mousePosition = sf::Vector2i(0, 0), int amount = 1000);
-	void setParticleExpandAttributes(std::vector<std::unique_ptr<ParticlesInterface>>&, sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f));
+	void setParticleExpandAttributes(std::vector<std::unique_ptr<ParticlesInterface>>&, sf::Vector2i, std::vector<sf::Vector2f> direction, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f));
 	
 	std::vector<std::unique_ptr<ParticlesInterface>>& getExplodedParticles() { return m_explodedParticles; }
 

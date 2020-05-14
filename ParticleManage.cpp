@@ -22,13 +22,39 @@ void ParticleManage::explode(sf::Vector2i mousePosition, sf::Vector2f randomRang
 	if (m_activeArea.x > mousePosition.x)
 	{
 		createParticles(mousePosition, amount);
-		setParticleExpandAttributes(m_explodedParticles, mousePosition, randomRange);
+
+		vector<sf::Vector2f> directionVector(amount);
+
+		for (size_t index = 0; index < amount; index++)
+		{
+			float i = getRandomFloat(0.0f,2.0f*3.14f);
+			directionVector[index] = sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i))); // this should be in as argument
+		}
+		setParticleExpandAttributes(m_explodedParticles, mousePosition, directionVector, randomRange);
 
 		createForceWave(mousePosition);
 	}
 }
 
-void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<ParticlesInterface>>& particleGroup, sf::Vector2i mousePosition, sf::Vector2f randomRange)
+void ParticleManage::emitter(sf::Vector2i mousePosition, sf::Vector2f randomRange, int amount)
+{
+	if (m_activeArea.x > mousePosition.x)
+	{
+
+		createParticles(mousePosition, amount);
+
+		vector<sf::Vector2f> directionVector(amount);
+
+		for (size_t index = 0; index < amount; index++)
+		{
+			float i = getRandomFloat(230.0f * 3.14f / 180.0f, 310.0f * 3.14f / 180.0f);
+			directionVector[index] = sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i))); // this should be in as argument
+		}
+		setParticleExpandAttributes(m_explodedParticles, mousePosition, directionVector, randomRange);
+	}
+}
+
+void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<ParticlesInterface>>& particleGroup, sf::Vector2i mousePosition, vector<sf::Vector2f> direction, sf::Vector2f randomRange)
 {
 	auto& actualParticleGroup = particleGroup.back();
 	auto& actualParticleGroupAttributes = actualParticleGroup->getParticleAttributes();
@@ -40,7 +66,7 @@ void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particle
 	////////////////////////////////////////////////	////////////////////////////////////////////////	
 
 	// random forces, and random masses
-	vector<sf::Vector2f> randomDirections(actualParticleGroupAttributes.size());
+	//vector<sf::Vector2f> randomDirections(actualParticleGroupAttributes.size());
 	vector<sf::Vector2f> randomForces(actualParticleGroupAttributes.size());
 	vector<float> randomMasses(actualParticleGroupAttributes.size());
 
@@ -53,13 +79,12 @@ void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particle
 		randomForces.at(i) = tempForce;
 
 		sf::Vector2f mousePos = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
-		randomDirections.at(i) = sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i)));
-
+		
 		randomMasses.at(i) = getRandomFloat(1.5f, 3.0f);
 	}
 
 	actualParticleGroup->setMass(randomMasses);
-	actualParticleGroup->setDirection(randomDirections);
+	actualParticleGroup->setDirection(direction);
 	actualParticleGroup->applyForce(randomForces);
 }
 
