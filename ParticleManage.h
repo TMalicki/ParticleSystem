@@ -16,7 +16,7 @@ private:
 
 
 	std::vector<std::unique_ptr<ParticlesInterface>>			m_explodedParticles;
-	std::vector < std::unique_ptr<ParticlesInterface>>			m_emiterParticles;
+	std::vector<std::unique_ptr<ParticlesInterface>>			m_emiterParticles;
 	std::vector<sf::CircleShape>								m_force;	
 
 	bool														m_FrictionOn;
@@ -41,10 +41,11 @@ public:
 	void setEffectType(ParticleEffect effect) { m_effectType = effect; }
 	const ParticleEffect& getParticleEffect() { return m_effectType; }
 
-	void createParticles(sf::Vector2i mousePosition = sf::Vector2i(0, 0), int amount = 1000);
+	void createParticles(std::vector<std::unique_ptr<ParticlesInterface>>&, sf::Vector2i mousePosition = sf::Vector2i(0, 0), int amount = 1000);
 	void setParticleExpandAttributes(std::vector<std::unique_ptr<ParticlesInterface>>&, sf::Vector2i, std::vector<sf::Vector2f> direction, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f));
 	
 	std::vector<std::unique_ptr<ParticlesInterface>>& getExplodedParticles() { return m_explodedParticles; }
+	std::vector<std::unique_ptr<ParticlesInterface>>& getEmiterParticles() { return m_emiterParticles; }
 
 	void setWindDirection(sf::Vector2f direction) { m_WindDirection = direction; }
 

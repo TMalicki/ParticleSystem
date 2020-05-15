@@ -58,31 +58,39 @@ void ParticlesCircle::setDirectionTowardsPoint(sf::Vector2f goalPosition)
 
 void ParticlesCircle::update(float dt) // in parameter - dt
 {
-	//forceUpdate();
-	for (size_t i = 0; i < m_particleCircle.size(); i++)
-	{
-		// is it needed to update both: position of each pixel and object of pixels like sf::Lines?
-		auto tempPosition = m_particleCircle[i].getPosition();
-		auto maxVelocity = getMaxVelocity();
-
-		sf::Vector2f tempDirection = m_particleAttributes[i].getDirection();
-		sf::Vector2f tempVelocity = m_particleAttributes[i].getVelocity();
-		sf::Vector2f tempAcceleration = m_particleAttributes[i].getAcceleration();
-
-		tempVelocity.x += tempAcceleration.x;
-		tempVelocity.y += tempAcceleration.y;
-
-		float magnitudeVector = sqrt(pow(tempVelocity.x, 2) + pow(tempVelocity.y, 2));
-		if (magnitudeVector > maxVelocity)
+	//m_lifeTimeMs -= dt;
+	//if (m_lifeTimeMs > 0.0f)
+	//{
+		//forceUpdate();
+		for (size_t i = 0; i < m_particleCircle.size(); i++)
 		{
-			tempVelocity = tempVelocity / magnitudeVector * maxVelocity;
+			// is it needed to update both: position of each pixel and object of pixels like sf::Lines?
+			auto tempPosition = m_particleCircle[i].getPosition();
+			auto maxVelocity = getMaxVelocity();
+
+			sf::Vector2f tempDirection = m_particleAttributes[i].getDirection();
+			sf::Vector2f tempVelocity = m_particleAttributes[i].getVelocity();
+			sf::Vector2f tempAcceleration = m_particleAttributes[i].getAcceleration();
+
+			tempVelocity.x += tempAcceleration.x;
+			tempVelocity.y += tempAcceleration.y;
+
+			float magnitudeVector = sqrt(pow(tempVelocity.x, 2) + pow(tempVelocity.y, 2));
+			if (magnitudeVector > maxVelocity)
+			{
+				tempVelocity = tempVelocity / magnitudeVector * maxVelocity;
+			}
+
+			tempPosition += tempVelocity * dt / 100.0f;
+
+			setParticleAttributes(i, tempPosition, tempVelocity);
+			m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
 		}
-
-		tempPosition += tempVelocity * dt / 100.0f;
-
-		setParticleAttributes(i, tempPosition, tempVelocity);
-		m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
-	}
+	//}
+	//else
+	//{
+		//eraseParticle
+	//}
 }
 
 void ParticlesCircle::setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity)

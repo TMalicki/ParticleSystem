@@ -1,7 +1,8 @@
 #include "ParticlesVertex.h"
 #include <algorithm>
 
-ParticlesInterface::ParticlesInterface(long int amount, sf::Vector2f position) : m_particleAttributes(amount), m_maxVelocity(100.0f)
+ParticlesInterface::ParticlesInterface(long int amount, sf::Vector2f position) :
+	m_particleAttributes(amount), m_maxVelocity(100.0f)//, m_lifeTimeMs(1000.0f)
 {
 	//std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particle) {particle.setPosition(position); });
 }
@@ -73,4 +74,12 @@ void ParticlesInterface::setVelocity(std::vector<sf::Vector2f> velocities)
 {
 	size_t index{};
 	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSetting) {particleSetting.setVelocity(velocities[index]); index++; });
+}
+
+void ParticlesInterface::reduceLifeTime(float dt)
+{
+	size_t index{};
+	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSetting) {particleSetting.reduceLifeTime(dt); index++; });
+	// check the lowest value (first in the container) and delete as many a many have valuee less than 0 (or equal)
+	//if()
 }

@@ -12,6 +12,7 @@ private:
 	sf::Vector2f				 m_direction;
 	sf::Vector2f				 m_position;
 
+	float						 m_lifeTimeMs;
 	float						 m_mass;
 public:
 	ParticleSettings(sf::Vector2f force = { 0.0,0.0 }, sf::Vector2f position = { 0.0f, 0.0f }, sf::Vector2f direction = { 0.0f, 0.0f }) :
@@ -20,6 +21,7 @@ public:
 		m_velocity{}, 
 		m_position{ position },
 		m_direction{ direction },
+		m_lifeTimeMs{ 10000.0f },
 		m_mass{ 1.0f } {};
 	
 	enum class Forces { Gravity, AirResistance, External, Friction };
@@ -43,6 +45,10 @@ public:
 
 	void setVelocity(sf::Vector2f velocity) { this->m_velocity = velocity; }
 	const sf::Vector2f& getVelocity() { return m_velocity; }
+
+	void setLifeTime(float time) { m_lifeTimeMs = time; }
+	void reduceLifeTime(float dt) { m_lifeTimeMs -= dt; }
+	const float getLifeTime() { return m_lifeTimeMs; }
 };
 
 // sort by angle : 0, 14, 46, 78, 90, 96, 106 ??

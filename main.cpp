@@ -9,6 +9,7 @@
 // after all particles on the screen erased and new explosion wanna be made - error occured
 // friction should be working only in y direction? Or should i choose in which direction that works (x and y, or just one of them)
 // emiter sometimes is erasing while using erasingBorders when it should not happen
+// also - emiter should be sigle particle at the time, it should have life spawn and it should have rateSpawn method
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
@@ -32,6 +33,11 @@ int main()
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {       
             for (auto& particle : particlesMan.getExplodedParticles())
+            {
+                particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
+                particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
+            }
+            for (auto& particle : particlesMan.getEmiterParticles())
             {
                 particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
                 particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });

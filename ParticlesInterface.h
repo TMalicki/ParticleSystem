@@ -8,6 +8,7 @@ class ParticlesInterface
 {
 protected:
 	std::vector<ParticleSettings>	m_particleAttributes;	
+//	float							m_lifeTimeMs;
 private:
 	float							m_maxVelocity;
 
@@ -34,6 +35,8 @@ public:
 	virtual const std::vector<sf::Vector2f> getVelocity();
 	virtual void setVelocity(size_t index, sf::Vector2f velocity) { m_particleAttributes.at(index).setVelocity(velocity); };
 	virtual void setVelocity(std::vector<sf::Vector2f>);
+
+	void reduceLifeTime(float dt);
 
 	size_t getParticlesAmount() { return m_particleAttributes.size(); }
 	const std::vector<ParticleSettings>& getParticleAttributes() { return m_particleAttributes; }

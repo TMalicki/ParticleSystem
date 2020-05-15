@@ -3,16 +3,16 @@
 
 using std::vector;
 
-void ParticleManage::createParticles(sf::Vector2i mousePosition, int amount)
+void ParticleManage::createParticles(std::vector<std::unique_ptr<ParticlesInterface>>& particles, sf::Vector2i mousePosition, int amount)
 {
 	// here reserve should be added to optimize that section
 	if (m_type == ParticleType::Vertex)
 	{
-		m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
+		particles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
 	}
 	else if (m_type == ParticleType::CircleShape)
 	{
-		m_explodedParticles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
+		particles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
 	}
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
@@ -21,7 +21,7 @@ void ParticleManage::explode(sf::Vector2i mousePosition, sf::Vector2f randomRang
 {
 	if (m_activeArea.x > mousePosition.x)
 	{
-		createParticles(mousePosition, amount);
+		createParticles(m_explodedParticles, mousePosition, amount);
 
 		vector<sf::Vector2f> directionVector(amount);
 
@@ -40,8 +40,7 @@ void ParticleManage::emitter(sf::Vector2i mousePosition, sf::Vector2f randomRang
 {
 	if (m_activeArea.x > mousePosition.x)
 	{
-
-		createParticles(mousePosition, amount);
+		createParticles(m_emiterParticles, mousePosition, amount);
 
 		vector<sf::Vector2f> directionVector(amount);
 
@@ -50,7 +49,7 @@ void ParticleManage::emitter(sf::Vector2i mousePosition, sf::Vector2f randomRang
 			float i = getRandomFloat(230.0f * 3.14f / 180.0f, 310.0f * 3.14f / 180.0f);
 			directionVector[index] = sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i))); // this should be in as argument
 		}
-		setParticleExpandAttributes(m_explodedParticles, mousePosition, directionVector, randomRange);
+		setParticleExpandAttributes(m_emiterParticles, mousePosition, directionVector, randomRange);
 	}
 }
 
@@ -249,6 +248,10 @@ void ParticleManage::forceUpdate()
 		{
 			particlesGroup->setDirection(m_WindDirection);
 		}
+		for (auto& particlesGroup : m_emiterParticles)
+		{
+			particlesGroup->setDirection(m_WindDirection);
+		}
 		applyWindForce(sf::Vector2f{ 0.02f,0.02f });
 	}
 }
@@ -257,29 +260,25 @@ void ParticleManage::applyWindForce(sf::Vector2f force)
 {
 	//std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->setDirection(sf::Vector2f{ 1.0f,0.0f }); });
 	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
+	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
 }
 
 void ParticleManage::applyGravityForce(sf::Vector2f force)
 {
 	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
+	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
 }
 
 void ParticleManage::applyAirResistance(float coefficent)
 {
 	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
+	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
 }
 
 void ParticleManage::applyFriction(float mi)
 {
 	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
-}
-
-float ParticleManage::getRandomFloat(float min, float max)
-{
-	std::uniform_real_distribution<float> distribution(min, max);
-	float temp = distribution(m_generator);
-
-	return temp;
+	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
 }
 
 void ParticleManage::update(float dt)
@@ -289,6 +288,10 @@ void ParticleManage::update(float dt)
 	for (auto& particleGroup : m_explodedParticles)
 	{
 		particleGroup->update(dt* 2.0f);
+	}
+	for (auto& particleGroup : m_emiterParticles)
+	{
+		particleGroup->update(dt * 2.0f);
 	}
 	forceWaveExpand(getWaveForce() * dt, m_activeArea);
 
@@ -302,8 +305,20 @@ void ParticleManage::draw(sf::RenderWindow& window)
 	{
 		particleGroup->draw(window);
 	}
+	for (const auto& particleGroup : m_emiterParticles)
+	{
+		particleGroup->draw(window);
+	}
 	for (const auto& force : m_force)
 	{
 		window.draw(force);
 	}
+}
+
+float ParticleManage::getRandomFloat(float min, float max)
+{
+	std::uniform_real_distribution<float> distribution(min, max);
+	float temp = distribution(m_generator);
+
+	return temp;
 }
