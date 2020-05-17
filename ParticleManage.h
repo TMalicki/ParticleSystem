@@ -4,6 +4,7 @@
 #include "ParticlesInterface.h"
 #include "ParticlesVertex.h"
 #include "ParticlesCircle.h"
+#include "EmiterEffect.h"
 
 class ParticleManage
 {
@@ -27,19 +28,20 @@ private:
 	float														m_forceWaveForce;
 	ParticleType												m_type;
 	ParticleEffect												m_effectType;
-	bool														m_EmiterOn;
-	std::vector<sf::CircleShape>								m_EmiterObject;
-	std::vector<size_t>											m_EmiterCounter;
-	std::vector<float>											m_EmiterTimer;
+	//bool														m_EmiterOn;
+	//std::vector<sf::CircleShape>								m_EmiterObject;
+	//std::vector<size_t>											m_EmiterCounter;
+	//std::vector<float>											m_EmiterTimer;
+	EmiterEffect												emiterEffect;
 public:
 	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex } 
-	, m_effectType{ ParticleEffect::Explode } {};
+	, m_effectType{ ParticleEffect::Explode }, emiterEffect{} {};
 	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; }
 	void setParticleType(ParticleType type) { m_type = type; }
 
-	void createEmiter(bool flag, sf::Vector2i);
+	void createEmiter(sf::Vector2i);
 
 	void explode(sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
 	void emitter(sf::Vector2i, sf::Vector2f andomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);

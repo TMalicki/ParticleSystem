@@ -62,7 +62,7 @@ int main()
                     }
                     else if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
                     {
-                        particlesMan.createEmiter(true, mousePosition);
+                        particlesMan.createEmiter(mousePosition);
                     }
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)

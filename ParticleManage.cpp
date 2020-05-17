@@ -17,15 +17,9 @@ void ParticleManage::createParticles(std::vector<std::unique_ptr<ParticlesInterf
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
-void ParticleManage::createEmiter(bool flag, sf::Vector2i mousePosition)
+void ParticleManage::createEmiter(sf::Vector2i mousePosition)
 {
-	m_EmiterOn = flag; 
-	m_EmiterObject.push_back(sf::CircleShape(4.0f, 20));
-	m_EmiterObject.back().setOutlineColor(sf::Color::White);
-	m_EmiterObject.back().setOrigin(4.0f, 4.0f);
-	m_EmiterObject.back().setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
-	m_EmiterCounter.push_back(size_t(0));
-	m_EmiterTimer.push_back(0.0f);
+	emiterEffect.createEmiter(mousePosition);
 }
 
 void ParticleManage::explode(sf::Vector2i mousePosition, sf::Vector2f randomRange, int amount)
@@ -315,24 +309,15 @@ void ParticleManage::update(float dt)
 		}
 	}
 	*/
-
-	for (size_t i = 0; i < m_EmiterObject.size(); i++) 
+	emiterEffect.updateEmiter(dt);
+	if (emiterEffect.getEmiterLogic() == true)
 	{
-		auto mousePosition = m_EmiterObject[i].getPosition();
-		if (m_EmiterTimer[i] >= 200.0f)
+		auto emiterPositions = emiterEffect.getEmitersPositions();
+		for (auto& emiterPos : emiterPositions)
 		{
-			emitter(sf::Vector2i{ static_cast<int>(mousePosition.x),static_cast<int>(mousePosition.y) }, sf::Vector2f(-3.0, 3.0), 1);
-			m_EmiterCounter[i] += 1;
-			m_EmiterTimer[i] = 0.0f;
+			emitter(sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, sf::Vector2f(-3.0, 3.0), 1);
 		}
-		if (m_EmiterCounter[i] >= 10)
-		{
-			m_EmiterCounter[i] = 0;
-			m_EmiterOn = false;
-			m_EmiterObject[i] = m_EmiterObject.back();
-			m_EmiterObject.pop_back();
-		}
-		m_EmiterTimer[i] += dt;
+		emiterEffect.setEmiterLogic(false);
 	}
 
 	for (auto& particleGroup : m_emiterParticles)
@@ -347,10 +332,13 @@ void ParticleManage::update(float dt)
 
 void ParticleManage::draw(sf::RenderWindow& window)
 {
+	/*
 	for (auto& emiterObj : m_EmiterObject)
 	{
 		window.draw(emiterObj);
 	}
+	*/
+	emiterEffect.draw(window);
 	for (const auto& particleGroup : m_explodedParticles)
 	{
 		particleGroup->draw(window);
