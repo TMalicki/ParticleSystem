@@ -17,6 +17,17 @@ void ParticleManage::createParticles(std::vector<std::unique_ptr<ParticlesInterf
 	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
+void ParticleManage::createEmiter(bool flag, sf::Vector2i mousePosition)
+{
+	m_EmiterOn = flag; 
+	m_EmiterObject.push_back(sf::CircleShape(4.0f, 20));
+	m_EmiterObject.back().setOutlineColor(sf::Color::White);
+	m_EmiterObject.back().setOrigin(4.0f, 4.0f);
+	m_EmiterObject.back().setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
+	m_EmiterCounter.push_back(size_t(0));
+	m_EmiterTimer.push_back(0.0f);
+}
+
 void ParticleManage::explode(sf::Vector2i mousePosition, sf::Vector2f randomRange, int amount)
 {
 	if (m_activeArea.x > mousePosition.x)
@@ -289,6 +300,41 @@ void ParticleManage::update(float dt)
 	{
 		particleGroup->update(dt* 2.0f);
 	}
+
+	/*// fire 
+	for (size_t i = 0; i < m_EmiterObject.size(); i++)
+	{
+		auto mousePosition = m_EmiterObject[i].getPosition();
+
+		emitter(sf::Vector2i{ static_cast<int>(mousePosition.x),static_cast<int>(mousePosition.y) }, sf::Vector2f(-3.0, 3.0), 1);
+		m_EmiterCounter[i] += 1;
+		if (m_EmiterCounter[i] >= 10)
+		{
+			m_EmiterCounter[i] = 0;
+			m_EmiterOn = false;
+		}
+	}
+	*/
+
+	for (size_t i = 0; i < m_EmiterObject.size(); i++) 
+	{
+		auto mousePosition = m_EmiterObject[i].getPosition();
+		if (m_EmiterTimer[i] >= 200.0f)
+		{
+			emitter(sf::Vector2i{ static_cast<int>(mousePosition.x),static_cast<int>(mousePosition.y) }, sf::Vector2f(-3.0, 3.0), 1);
+			m_EmiterCounter[i] += 1;
+			m_EmiterTimer[i] = 0.0f;
+		}
+		if (m_EmiterCounter[i] >= 10)
+		{
+			m_EmiterCounter[i] = 0;
+			m_EmiterOn = false;
+			m_EmiterObject[i] = m_EmiterObject.back();
+			m_EmiterObject.pop_back();
+		}
+		m_EmiterTimer[i] += dt;
+	}
+
 	for (auto& particleGroup : m_emiterParticles)
 	{
 		particleGroup->update(dt * 2.0f);
@@ -301,6 +347,10 @@ void ParticleManage::update(float dt)
 
 void ParticleManage::draw(sf::RenderWindow& window)
 {
+	for (auto& emiterObj : m_EmiterObject)
+	{
+		window.draw(emiterObj);
+	}
 	for (const auto& particleGroup : m_explodedParticles)
 	{
 		particleGroup->draw(window);
