@@ -30,6 +30,21 @@ void ParticlesVertex::eraseParticles(std::vector<size_t> index)
 	std::for_each(index.begin(), index.end(), [&](size_t& actualIndex) {m_particleVertex[actualIndex] = m_particleVertex.back(); m_particleVertex.pop_back(); });
 }
 
+void ParticlesVertex::eraseParticles(std::vector<ParticleSettings>::iterator cutOff)
+{
+	m_particleVertex.erase(m_particleVertex.begin(), m_particleVertex.begin() + std::distance(m_particleAttributes.begin(), cutOff));
+	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
+}
+
+void ParticlesVertex::fadingParticle(float dt)
+{
+	reduceLifeTime(dt);
+	auto cutOff = std::lower_bound(m_particleAttributes.begin(), m_particleAttributes.end(), 0.0f, [&](ParticleSettings attributes, const float b) { return attributes.getLifeTime() < b; });
+
+	m_particleVertex.erase(m_particleVertex.begin(), m_particleVertex.begin() + std::distance(m_particleAttributes.begin(), cutOff));
+	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
+}
+
 void ParticlesVertex::setColor(std::vector<sf::Color> colorVector) // use reference?
 {
 	size_t index{};
@@ -53,11 +68,8 @@ void ParticlesVertex::setDirectionTowardsPoint(sf::Vector2f goalPosition) //?
 void ParticlesVertex::update(float dt) //?
 {
 	///// this should be added to emiterEffect class? or somewhere else
-	reduceLifeTime(dt);
-	auto cutOff = std::lower_bound(m_particleAttributes.begin(), m_particleAttributes.end(), 0.0f, [&](ParticleSettings attributes, const float b) { return attributes.getLifeTime() < b; });
-	
-	m_particleVertex.erase(m_particleVertex.begin(), m_particleVertex.begin() + std::distance(m_particleAttributes.begin(), cutOff));
-	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
+	//if()
+	//fadingParticle(dt);
 	// erase everything to cutOff, also color should be less visible with lower lifeTime value
 	////////
 

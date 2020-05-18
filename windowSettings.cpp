@@ -17,13 +17,11 @@ void windowSettings::loadGUI()
 	m_WindDirection = getWindDirection();
 
 	m_EffectText = getEffectType();
+	m_LifeTime = getLifeTime();
 	//m_EffectText->setDefaultText("BRAK");
 
 	m_Border = getBorders();
 	m_ObjectType = getObjectsType();
-
-	//m_effectType = getEffectType();
-	//setEffectType("Brak");
 }
 
 std::vector<sf::Vector2f> windowSettings::transitionBorders(const std::vector<sf::Vector2f>& positions)
@@ -121,6 +119,9 @@ void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleMana
 
 	if (m_ObjectType->getSelectedItem() == "Vertex") { particles.setParticleType(ParticleManage::ParticleType::Vertex); } // particleVertex
 	else if (m_ObjectType->getSelectedItem() == "Circle") { particles.setParticleType(ParticleManage::ParticleType::CircleShape); };  // circleShape
+
+	m_LifeTime->connect("Checked", [&]() { particles.applyFading(true); });
+	m_LifeTime->connect("unchecked", [&]() { particles.applyFading(false); });
 
 	if (m_WindDirection->connect("ValueChanged", [&]()
 	{

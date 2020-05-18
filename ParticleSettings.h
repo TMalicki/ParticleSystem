@@ -21,7 +21,7 @@ public:
 		m_velocity{}, 
 		m_position{ position },
 		m_direction{ direction },
-		m_lifeTimeMs{ 10000.0f },
+		m_lifeTimeMs{ 5000.0f },
 		m_mass{ 1.0f } {};
 	
 	enum class Forces { Gravity, AirResistance, External, Friction };

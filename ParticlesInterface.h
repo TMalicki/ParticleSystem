@@ -29,6 +29,7 @@ public:
 	virtual void setPosition(std::vector<sf::Vector2f>) = 0;
 
 	virtual void eraseParticles(std::vector<size_t>) = 0;
+	virtual void eraseParticles(std::vector<ParticleSettings>::iterator) = 0;
 	virtual void setColor(std::vector<sf::Color>) = 0;
 
 	virtual const sf::Vector2f getVelocity(size_t index) { return m_particleAttributes.at(index).getVelocity(); }
@@ -36,6 +37,8 @@ public:
 	virtual void setVelocity(size_t index, sf::Vector2f velocity) { m_particleAttributes.at(index).setVelocity(velocity); };
 	virtual void setVelocity(std::vector<sf::Vector2f>);
 
+	virtual void fadingParticle(float dt) = 0;
+	void toErase();
 	void reduceLifeTime(float dt);
 
 	size_t getParticlesAmount() { return m_particleAttributes.size(); }

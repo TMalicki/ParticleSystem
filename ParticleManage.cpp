@@ -58,6 +58,34 @@ void ParticleManage::emitter(sf::Vector2i mousePosition, sf::Vector2f randomRang
 	}
 }
 
+void ParticleManage::updateFading(float dt)
+{
+	//if (m_fading == true)
+	//{
+		for (auto& particle : m_explodedParticles)
+		{
+			particle->reduceLifeTime(dt);
+			if (m_fading == true)
+			{
+				particle->toErase();
+			}
+		}
+		for (auto& particle : m_emiterParticles)
+		{
+			particle->reduceLifeTime(dt);
+			if (m_fading == true)
+			{
+				particle->toErase();
+			}
+		}
+	//}
+}
+
+void ParticleManage::applyFading(bool logic)
+{
+	m_fading = logic;
+}
+
 void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<ParticlesInterface>>& particleGroup, sf::Vector2i mousePosition, vector<sf::Vector2f> direction, sf::Vector2f randomRange)
 {
 	auto& actualParticleGroup = particleGroup.back();
@@ -263,7 +291,6 @@ void ParticleManage::forceUpdate()
 
 void ParticleManage::applyWindForce(sf::Vector2f force)
 {
-	//std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->setDirection(sf::Vector2f{ 1.0f,0.0f }); });
 	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
 	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
 }
@@ -295,6 +322,7 @@ sf::String ParticleManage::getEffectText()
 
 void ParticleManage::update(float dt)
 {
+	updateFading(dt);
 	forceUpdate();
 	// for moving
 	for (auto& particleGroup : m_explodedParticles)
@@ -339,12 +367,6 @@ void ParticleManage::update(float dt)
 
 void ParticleManage::draw(sf::RenderWindow& window)
 {
-	/*
-	for (auto& emiterObj : m_EmiterObject)
-	{
-		window.draw(emiterObj);
-	}
-	*/
 	emiterEffect.draw(window);
 	for (const auto& particleGroup : m_explodedParticles)
 	{

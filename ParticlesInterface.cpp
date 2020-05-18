@@ -61,6 +61,7 @@ void ParticlesInterface::setMass(std::vector<float> masses)
 	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSettings) {particleSettings.setMass(masses[index]); index++; });
 }
 
+
 const std::vector<sf::Vector2f> ParticlesInterface::getVelocity()
 {
 	std::vector<sf::Vector2f> tempVelocity(m_particleAttributes.size());
@@ -74,6 +75,12 @@ void ParticlesInterface::setVelocity(std::vector<sf::Vector2f> velocities)
 {
 	size_t index{};
 	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSetting) {particleSetting.setVelocity(velocities[index]); index++; });
+}
+
+void ParticlesInterface::toErase()
+{
+	auto cutOff = std::lower_bound(m_particleAttributes.begin(), m_particleAttributes.end(), 0.0f, [&](ParticleSettings attributes, const float b) { return attributes.getLifeTime() < b; });
+	eraseParticles(cutOff);
 }
 
 void ParticlesInterface::reduceLifeTime(float dt)

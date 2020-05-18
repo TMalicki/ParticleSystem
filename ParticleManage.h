@@ -28,6 +28,8 @@ private:
 	float														m_forceWaveForce;
 	ParticleType												m_type;
 	ParticleEffect												m_effectType;
+
+	bool														m_fading;
 	//bool														m_EmiterOn;
 	//std::vector<sf::CircleShape>								m_EmiterObject;
 	//std::vector<size_t>											m_EmiterCounter;
@@ -45,6 +47,9 @@ public:
 
 	void explode(sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
 	void emitter(sf::Vector2i, sf::Vector2f andomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
+
+	void applyFading(bool logic);
+	void updateFading(float dt);
 
 	void setEffectType(ParticleEffect effect) { m_effectType = effect; }
 	const ParticleEffect& getParticleEffect() { return m_effectType; }

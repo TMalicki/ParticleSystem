@@ -23,6 +23,8 @@ private:
 	tgui::ListBox::Ptr m_ObjectType;
 	tgui::ListBox::Ptr m_effectType;
 
+	tgui::CheckBox::Ptr m_LifeTime;
+
 	tgui::EditBox::Ptr m_EffectText;
 public:
 	windowSettings(sf::RenderWindow& window, float border = 500.0f);
@@ -41,18 +43,18 @@ public:
 	void colorParticlesByVelocity(ParticleManage&);
 
 	auto& getObjectsUI() { return m_gui.getWidgets(); }
+
 	auto getGravityButton() { return m_gui.get<tgui::Slider>("gravity"); }
-//	auto getGravityText() { return m_gui.get("tGravity"); }
 	auto getFrictionButton() { return m_gui.get<tgui::Slider>("friction"); }
-//	auto getFrictionText() { return m_gui.get("tFriction"); }
 	auto getAirResistanceButton() { return m_gui.get<tgui::Slider>("airResistance"); }
-//	auto getAirResistanceText() { return m_gui.get("tAirResistance"); }
 	auto getWindSwitch() { return m_gui.get<tgui::Slider>("windSwitch"); }
 	auto getWindDirection() { return m_gui.get<tgui::Knob>("windDirection"); }
-	//auto getEffectType() { return m_gui.get<tgui::ListBox>("effectType"); }
+
+	auto getLifeTime() { return m_gui.get<tgui::CheckBox>("lifeTime"); }
+
+	auto getEffectType() { return m_gui.get<tgui::EditBox>("effectText"); }
 	void setEffectType(sf::String effect) { m_EffectText->setText(effect); }
 
 	auto getBorders() { return m_gui.get<tgui::ListBox>("borderList"); }
 	auto getObjectsType() { return m_gui.get<tgui::ListBox>("object list"); }
-	auto getEffectType() { return m_gui.get<tgui::EditBox>("effectText"); }
 };

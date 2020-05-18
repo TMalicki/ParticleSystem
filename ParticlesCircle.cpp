@@ -36,6 +36,21 @@ void ParticlesCircle::eraseParticles(std::vector<size_t> index)
 	std::for_each(index.begin(), index.end(), [&](size_t& actualIndex) {m_particleCircle[actualIndex] = m_particleCircle.back(); m_particleCircle.pop_back(); });
 }
 
+void ParticlesCircle::fadingParticle(float dt)
+{
+	reduceLifeTime(dt);
+	auto cutOff = std::lower_bound(m_particleAttributes.begin(), m_particleAttributes.end(), 0.0f, [&](ParticleSettings attributes, const float b) { return attributes.getLifeTime() < b; });
+
+	m_particleCircle.erase(m_particleCircle.begin(), m_particleCircle.begin() + std::distance(m_particleAttributes.begin(), cutOff));
+	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
+}
+
+void ParticlesCircle::eraseParticles(std::vector<ParticleSettings>::iterator cutOff)
+{
+	m_particleCircle.erase(m_particleCircle.begin(), m_particleCircle.begin() + std::distance(m_particleAttributes.begin(), cutOff));
+	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
+}
+
 void ParticlesCircle::setColor(std::vector<sf::Color> colorVector)
 {
 	size_t index{};
@@ -59,13 +74,15 @@ void ParticlesCircle::setDirectionTowardsPoint(sf::Vector2f goalPosition)
 void ParticlesCircle::update(float dt) // in parameter - dt
 {
 	///// this should be added to emiterEffect class?
+	fadingParticle(dt);
+	/*
 	reduceLifeTime(dt);
 	auto cutOff = std::lower_bound(m_particleAttributes.begin(), m_particleAttributes.end(), 0.0f, [&](ParticleSettings attributes, const float b) { return attributes.getLifeTime() < b; });
 
 	m_particleCircle.erase(m_particleCircle.begin(), m_particleCircle.begin() + std::distance(m_particleAttributes.begin(), cutOff));
 	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
 	/////
-
+	*/
 	//forceUpdate();
 	for (size_t i = 0; i < m_particleCircle.size(); i++)
 	{

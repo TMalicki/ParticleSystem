@@ -19,6 +19,8 @@ public:
 	virtual void setPosition(std::vector<sf::Vector2f> positions);
 
 	virtual void eraseParticles(std::vector<size_t> index);
+	virtual void eraseParticles(std::vector<ParticleSettings>::iterator);
+	virtual void fadingParticle(float dt);
 
 	virtual void setColor(std::vector<sf::Color>);
 
