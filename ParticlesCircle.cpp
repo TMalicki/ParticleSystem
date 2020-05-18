@@ -58,34 +58,39 @@ void ParticlesCircle::setDirectionTowardsPoint(sf::Vector2f goalPosition)
 
 void ParticlesCircle::update(float dt) // in parameter - dt
 {
-	//m_lifeTimeMs -= dt;
-	//if (m_lifeTimeMs > 0.0f)
-	//{
-		//forceUpdate();
-		for (size_t i = 0; i < m_particleCircle.size(); i++)
+	///// this should be added to emiterEffect class?
+	reduceLifeTime(dt);
+	auto cutOff = std::lower_bound(m_particleAttributes.begin(), m_particleAttributes.end(), 0.0f, [&](ParticleSettings attributes, const float b) { return attributes.getLifeTime() < b; });
+
+	m_particleCircle.erase(m_particleCircle.begin(), m_particleCircle.begin() + std::distance(m_particleAttributes.begin(), cutOff));
+	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
+	/////
+
+	//forceUpdate();
+	for (size_t i = 0; i < m_particleCircle.size(); i++)
+	{
+		// is it needed to update both: position of each pixel and object of pixels like sf::Lines?
+		auto tempPosition = m_particleCircle[i].getPosition();
+		auto maxVelocity = getMaxVelocity();
+
+		sf::Vector2f tempDirection = m_particleAttributes[i].getDirection();
+		sf::Vector2f tempVelocity = m_particleAttributes[i].getVelocity();
+		sf::Vector2f tempAcceleration = m_particleAttributes[i].getAcceleration();
+
+		tempVelocity.x += tempAcceleration.x;
+		tempVelocity.y += tempAcceleration.y;
+
+		float magnitudeVector = sqrt(pow(tempVelocity.x, 2) + pow(tempVelocity.y, 2));
+		if (magnitudeVector > maxVelocity)
 		{
-			// is it needed to update both: position of each pixel and object of pixels like sf::Lines?
-			auto tempPosition = m_particleCircle[i].getPosition();
-			auto maxVelocity = getMaxVelocity();
-
-			sf::Vector2f tempDirection = m_particleAttributes[i].getDirection();
-			sf::Vector2f tempVelocity = m_particleAttributes[i].getVelocity();
-			sf::Vector2f tempAcceleration = m_particleAttributes[i].getAcceleration();
-
-			tempVelocity.x += tempAcceleration.x;
-			tempVelocity.y += tempAcceleration.y;
-
-			float magnitudeVector = sqrt(pow(tempVelocity.x, 2) + pow(tempVelocity.y, 2));
-			if (magnitudeVector > maxVelocity)
-			{
-				tempVelocity = tempVelocity / magnitudeVector * maxVelocity;
-			}
-
-			tempPosition += tempVelocity * dt / 100.0f;
-
-			setParticleAttributes(i, tempPosition, tempVelocity);
-			m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
+			tempVelocity = tempVelocity / magnitudeVector * maxVelocity;
 		}
+
+		tempPosition += tempVelocity * dt / 100.0f;
+
+		setParticleAttributes(i, tempPosition, tempVelocity);
+		m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
+	}
 	//}
 	//else
 	//{

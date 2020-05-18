@@ -16,10 +16,14 @@ void windowSettings::loadGUI()
 	m_WindSwitch = getWindSwitch();
 	m_WindDirection = getWindDirection();
 
+	m_EffectText = getEffectType();
+	//m_EffectText->setDefaultText("BRAK");
+
 	m_Border = getBorders();
 	m_ObjectType = getObjectsType();
 
-	m_effectType = getEffectType();
+	//m_effectType = getEffectType();
+	//setEffectType("Brak");
 }
 
 std::vector<sf::Vector2f> windowSettings::transitionBorders(const std::vector<sf::Vector2f>& positions)

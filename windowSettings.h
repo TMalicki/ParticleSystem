@@ -22,6 +22,8 @@ private:
 	tgui::ListBox::Ptr m_Border;
 	tgui::ListBox::Ptr m_ObjectType;
 	tgui::ListBox::Ptr m_effectType;
+
+	tgui::EditBox::Ptr m_EffectText;
 public:
 	windowSettings(sf::RenderWindow& window, float border = 500.0f);
 	const sf::Vector2f& getActiveWindowSize() { return m_activeWindowSize; }
@@ -47,8 +49,10 @@ public:
 //	auto getAirResistanceText() { return m_gui.get("tAirResistance"); }
 	auto getWindSwitch() { return m_gui.get<tgui::Slider>("windSwitch"); }
 	auto getWindDirection() { return m_gui.get<tgui::Knob>("windDirection"); }
-	auto getEffectType() { return m_gui.get<tgui::ListBox>("effectType"); }
+	//auto getEffectType() { return m_gui.get<tgui::ListBox>("effectType"); }
+	void setEffectType(sf::String effect) { m_EffectText->setText(effect); }
 
 	auto getBorders() { return m_gui.get<tgui::ListBox>("borderList"); }
 	auto getObjectsType() { return m_gui.get<tgui::ListBox>("object list"); }
+	auto getEffectType() { return m_gui.get<tgui::EditBox>("effectText"); }
 };

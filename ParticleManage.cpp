@@ -286,6 +286,13 @@ void ParticleManage::applyFriction(float mi)
 	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
 }
 
+sf::String ParticleManage::getEffectText()
+{
+	if (m_effectType == ParticleEffect::Emiter) return "EMITER";
+	else if (m_effectType == ParticleEffect::Explode) return "EXPLODE";
+	else return "NOTHING";
+}
+
 void ParticleManage::update(float dt)
 {
 	forceUpdate();

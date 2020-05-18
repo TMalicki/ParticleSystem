@@ -72,6 +72,7 @@ public:
 	void applyAirResistance(float coefficent = 0.0001f);
 	void applyFriction(float mi = 0.01);
 
+	sf::String getEffectText();
 
 	float getRandomFloat(float, float);
 	void update(float dt);

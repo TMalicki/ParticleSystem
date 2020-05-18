@@ -76,7 +76,7 @@ int main()
                 int max = static_cast<int>((ParticleManage::ParticleEffect::NUMBER_OF_EFFECTS));
                 if (event.mouseWheelScroll.delta > 0)
                 {
-                    if (temp < max)
+                    if (temp < (max - 1))
                     {
                         particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((temp + 1)));
                     }
@@ -93,9 +93,10 @@ int main()
                     }
                     else
                     {
-                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((max)));
+                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((max - 1)));
                     }
                 }
+                windowSettings.setEffectType(particlesMan.getEffectText());
              }
             windowSettings.updateGUI(event);
         }

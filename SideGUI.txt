@@ -37,7 +37,7 @@ TextBox.tGravity {
     DefaultText = Gravity;
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1510, 60);
+    Position = (1530, 50);
     ReadOnly = true;
     Size = (98, 26.5972);
     Text = "  GRAVITY";
@@ -48,7 +48,7 @@ TextBox.tGravity {
 TextBox.tFriction {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1510, 160);
+    Position = (1530, 110);
     ReadOnly = true;
     Size = (98, 26.5972);
     Text = " FRICTION";
@@ -59,7 +59,7 @@ TextBox.tFriction {
 TextBox.tAirResistance {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1460, 250);
+    Position = (1480, 170);
     ReadOnly = true;
     Size = (148, 26.5972);
     Text = " AIR RESISTANCE";
@@ -73,7 +73,7 @@ Slider.gravity {
     Maximum = 1;
     Minimum = 0;
     Position = (1680, 44);
-    Size = (120, 64);
+    Size = (80, 42.6667);
     Step = 1;
     Value = 0;
 
@@ -81,10 +81,10 @@ Slider.gravity {
         bordercolor = #3C3C3C;
         bordercolorhover = black;
         borders = (1, 1, 1, 1);
-        texturethumb = "GUI/themes/switch_p2.png";
-        texturethumbhover = "GUI/themes/switch_p2.png";
-        texturetrack = "GUI/themes/switch_p1.png";
-        texturetrackhover = "GUI/themes/switch_p1.png";
+        texturethumb = "GUI/resources/switch_p2.png";
+        texturethumbhover = "GUI/resources/switch_p2.png";
+        texturetrack = "GUI/resources/switch_p1.png";
+        texturetrackhover = "GUI/resources/switch_p1.png";
         thumbcolor = #F5F5F5;
         thumbcolorhover = white;
         trackcolor = #F5F5F5;
@@ -98,8 +98,8 @@ Slider.friction {
     InvertedDirection = false;
     Maximum = 1;
     Minimum = 0;
-    Position = (1680, 140);
-    Size = (120, 64);
+    Position = (1680, 100);
+    Size = (80, 42.6667);
     Step = 1;
     Value = 0;
 
@@ -107,10 +107,10 @@ Slider.friction {
         bordercolor = #3C3C3C;
         bordercolorhover = black;
         borders = (1, 1, 1, 1);
-        texturethumb = "GUI/themes/switch_p2.png";
-        texturethumbhover = "GUI/themes/switch_p2.png";
-        texturetrack = "GUI/themes/switch_p1.png";
-        texturetrackhover = "GUI/themes/switch_p1.png";
+        texturethumb = "GUI/resources/switch_p2.png";
+        texturethumbhover = "GUI/resources/switch_p2.png";
+        texturetrack = "GUI/resources/switch_p1.png";
+        texturetrackhover = "GUI/resources/switch_p1.png";
         thumbcolor = #F5F5F5;
         thumbcolorhover = white;
         trackcolor = #F5F5F5;
@@ -123,8 +123,8 @@ Slider.airResistance {
     InvertedDirection = false;
     Maximum = 1;
     Minimum = 0;
-    Position = (1680, 230);
-    Size = (120, 64);
+    Position = (1680, 160);
+    Size = (80, 42.6667);
     Step = 1;
     Value = 0;
 
@@ -132,10 +132,10 @@ Slider.airResistance {
         bordercolor = #3C3C3C;
         bordercolorhover = black;
         borders = (1, 1, 1, 1);
-        texturethumb = "GUI/themes/switch_p2.png";
-        texturethumbhover = "GUI/themes/switch_p2.png";
-        texturetrack = "GUI/themes/switch_p1.png";
-        texturetrackhover = "GUI/themes/switch_p1.png";
+        texturethumb = "GUI/resources/switch_p2.png";
+        texturethumbhover = "GUI/resources/switch_p2.png";
+        texturetrack = "GUI/resources/switch_p1.png";
+        texturetrackhover = "GUI/resources/switch_p1.png";
         thumbcolor = #F5F5F5;
         thumbcolorhover = white;
         trackcolor = #F5F5F5;
@@ -147,7 +147,7 @@ ListBox.borderList {
     ItemHeight = 20;
     Items = ["Transition Border", "Erasing Border", "Rebound Border"];
     MaximumItems = 0;
-    Position = (1650, 330);
+    Position = (1640, 600);
     Size = (170, 82);
     TextSize = 18;
     UserData = "";
@@ -157,7 +157,7 @@ ListBox.borderList {
 TextBox.tList {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1480, 350);
+    Position = (1490, 620);
     ReadOnly = true;
     Size = (128, 26.5972);
     Text = "BORDER TYPE";
@@ -169,7 +169,7 @@ ListBox."object list" {
     ItemHeight = 20;
     Items = [Vertex, Circle];
     MaximumItems = 0;
-    Position = (1650, 440);
+    Position = (1640, 690);
     Size = (170, 82);
     TextSize = 18;
     renderer = &1;
@@ -178,7 +178,7 @@ ListBox."object list" {
 TextBox.tObject {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1480, 460);
+    Position = (1490, 710);
     ReadOnly = true;
     Size = (128, 26.5972);
     Text = "OBJECT TYPE";
@@ -191,7 +191,7 @@ Knob.windDirection {
     EndRotation = 270;
     Maximum = 360;
     Minimum = 0;
-    Position = (1580, 710);
+    Position = (1590, 340);
     Size = (140, 140);
     StartRotation = 270;
     Value = 0;
@@ -210,29 +210,12 @@ Knob.windDirection {
 TextBox.TextBox1 {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1570, 670);
+    Position = (1580, 300);
     ReadOnly = true;
     Size = (158, 26.5972);
     Text = " WIND DIRECTION";
     TextSize = 16;
-
-    Renderer {
-        backgroundcolor = rgb(210, 210, 210);
-        bordercolor = White;
-        borders = (2, 2, 2, 2);
-        caretcolor = rgb(145, 180, 190);
-        selectedtextbackgroundcolor = rgb(190, 225, 235);
-        selectedtextcolor = rgb(150, 150, 150);
-        textcolor = rgb(100, 100, 100);
-        texturebackground = None;
-
-        scrollbar {
-            texturearrowdown = "GUI/themes/BabyBlue.png" Part(20, 2, 16, 16);
-            texturearrowup = "GUI/themes/BabyBlue.png" Part(2, 2, 16, 16);
-            texturethumb = "GUI/themes/BabyBlue.png" Part(414, 2, 16, 32);
-            texturetrack = "GUI/themes/BabyBlue.png" Part(432, 2, 16, 32);
-        }
-    }
+    renderer = &2;
 }
 
 Slider.windSwitch {
@@ -240,8 +223,8 @@ Slider.windSwitch {
     InvertedDirection = false;
     Maximum = 1;
     Minimum = 0;
-    Position = (1680, 570);
-    Size = (120, 64);
+    Position = (1680, 220);
+    Size = (80, 42.6667);
     Step = 1;
     Value = 0;
 
@@ -249,10 +232,10 @@ Slider.windSwitch {
         bordercolor = #3C3C3C;
         bordercolorhover = black;
         borders = (1, 1, 1, 1);
-        texturethumb = "GUI/themes/switch_p2.png";
-        texturethumbhover = "GUI/themes/switch_p2.png";
-        texturetrack = "GUI/themes/switch_p1.png";
-        texturetrackhover = "GUI/themes/switch_p1.png";
+        texturethumb = "GUI/resources/switch_p2.png";
+        texturethumbhover = "GUI/resources/switch_p2.png";
+        texturetrack = "GUI/resources/switch_p1.png";
+        texturetrackhover = "GUI/resources/switch_p1.png";
         thumbcolor = #F5F5F5;
         thumbcolorhover = white;
         trackcolor = #F5F5F5;
@@ -263,10 +246,86 @@ Slider.windSwitch {
 TextBox.TextBox2 {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1550, 590);
+    Position = (1570, 230);
     ReadOnly = true;
     Size = (58, 26.5972);
     Text = WIND;
+    TextSize = 16;
+    renderer = &2;
+}
+
+TextBox.TextBox3 {
+    HorizontalScrollbarPolicy = Never;
+    MaximumCharacters = 0;
+    Position = (1530, 820);
+    ReadOnly = true;
+    Size = (88, 26.5972);
+    Text = " EFFECT";
+    TextSize = 16;
+    renderer = &2;
+}
+
+ComboBox.test {
+    ChangeItemOnScroll = true;
+    ExpandDirection = Down;
+    ItemsToDisplay = 0;
+    MaximumItems = 0;
+    Position = (1580, 910);
+    Size = (160, 22);
+    TextSize = 13;
+
+    Renderer {
+        backgroundcolor = rgb(210, 210, 210);
+        bordercolor = White;
+        borders = (2, 2, 2, 2);
+        textcolor = rgb(100, 100, 100);
+        texturearrow = "GUI/themes/BabyBlue.png" Part(177, 2, 20, 26);
+        texturearrowhover = None;
+        texturebackground = None;
+
+        listbox {
+            backgroundcolor = rgb(210, 210, 210);
+            bordercolor = White;
+            borders = (2, 2, 2, 2);
+            selectedbackgroundcolor = rgb(190, 225, 235);
+            selectedtextcolor = rgb(150, 150, 150);
+            textcolor = rgb(100, 100, 100);
+
+            scrollbar {
+                texturearrowdown = "GUI/themes/BabyBlue.png" Part(20, 2, 16, 16);
+                texturearrowup = "GUI/themes/BabyBlue.png" Part(2, 2, 16, 16);
+                texturethumb = "GUI/themes/BabyBlue.png" Part(414, 2, 16, 32);
+                texturetrack = "GUI/themes/BabyBlue.png" Part(432, 2, 16, 32);
+            }
+        }
+    }
+}
+
+CheckBox.lifeTime {
+    Position = (1650, 970);
+    Size = (18, 18);
+    TextSize = 13;
+
+    Renderer {
+        textcolor = rgb(100, 100, 100);
+        texturechecked = "GUI/themes/BabyBlue.png" Part(48, 40, 34, 36);
+        texturecheckeddisabled = None;
+        texturecheckedfocused = None;
+        texturecheckedhover = None;
+        textureunchecked = "GUI/themes/BabyBlue.png" Part(381, 2, 31, 31);
+        textureuncheckeddisabled = None;
+        textureuncheckedfocused = None;
+        textureuncheckedhover = None;
+    }
+}
+
+TextBox.TextBox4 {
+    HorizontalScrollbarPolicy = Never;
+    MaximumCharacters = 0;
+    Position = (1450, 970);
+    ReadOnly = true;
+    Size = (168, 26.5972);
+    Text = "ENABLE LIFE TIME";
     TextSize = 16;
 
     Renderer {
@@ -285,5 +344,23 @@ TextBox.TextBox2 {
             texturethumb = "GUI/themes/BabyBlue.png" Part(414, 2, 16, 32);
             texturetrack = "GUI/themes/BabyBlue.png" Part(432, 2, 16, 32);
         }
+    }
+}
+
+EditBox.effectText {
+    Position = (1640, 820);
+    Size = (160, 22);
+    TextSize = 13;
+
+    Renderer {
+        caretcolor = rgb(145, 180, 190);
+        padding = (14, 4, 14, 4);
+        selectedtextbackgroundcolor = rgb(190, 225, 235);
+        selectedtextcolor = rgb(150, 150, 150);
+        textcolor = rgb(100, 100, 100);
+        texture = "GUI/themes/BabyBlue.png" Part(103, 40, 72, 48) Middle(24, 0, 24, 48);
+        texturedisabled = None;
+        texturefocused = None;
+        texturehover = None;
     }
 }

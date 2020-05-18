@@ -52,12 +52,14 @@ void ParticlesVertex::setDirectionTowardsPoint(sf::Vector2f goalPosition) //?
 
 void ParticlesVertex::update(float dt) //?
 {
+	///// this should be added to emiterEffect class? or somewhere else
 	reduceLifeTime(dt);
 	auto cutOff = std::lower_bound(m_particleAttributes.begin(), m_particleAttributes.end(), 0.0f, [&](ParticleSettings attributes, const float b) { return attributes.getLifeTime() < b; });
 	
 	m_particleVertex.erase(m_particleVertex.begin(), m_particleVertex.begin() + std::distance(m_particleAttributes.begin(), cutOff));
 	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
 	// erase everything to cutOff, also color should be less visible with lower lifeTime value
+	////////
 
 	//forceUpdate();
 	for (size_t i = 0; i < m_particleVertex.size(); i++)

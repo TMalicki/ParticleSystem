@@ -9,7 +9,6 @@ class ParticlesVertex : public ParticlesInterface
 {
 private:							
 	std::vector<sf::Vertex>				m_particleVertex;
-
 public:
 	ParticlesVertex(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
 	//ParticlesVertex(const ParticlesVertex&) { std::cout << "ParticlesVertex kopia"; };
