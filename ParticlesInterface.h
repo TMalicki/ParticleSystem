@@ -31,6 +31,8 @@ public:
 	virtual void eraseParticles(std::vector<size_t>) = 0;
 	virtual void eraseParticles(std::vector<ParticleSettings>::iterator) = 0;
 	virtual void setColor(std::vector<sf::Color>) = 0;
+	virtual void reduceColorOpacity(int) = 0;
+	virtual std::vector<sf::Color> getColor() = 0;
 
 	virtual const sf::Vector2f getVelocity(size_t index) { return m_particleAttributes.at(index).getVelocity(); }
 	virtual const std::vector<sf::Vector2f> getVelocity();

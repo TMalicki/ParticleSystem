@@ -22,7 +22,9 @@ public:
 	virtual void eraseParticles(std::vector<ParticleSettings>::iterator);
 	virtual void fadingParticle(float dt);
 
+	virtual std::vector<sf::Color> getColor();
 	virtual void setColor(std::vector<sf::Color>);
+	virtual void reduceColorOpacity(int);
 
 	void setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity);
 	virtual const sf::Color& getParticleColor(size_t index) { return m_particleVertex.at(index).color; }

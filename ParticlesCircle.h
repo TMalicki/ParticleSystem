@@ -22,6 +22,8 @@ public:
 	virtual void fadingParticle(float dt);
 
 	virtual void setColor(std::vector<sf::Color>);
+	virtual std::vector<sf::Color> getColor();
+	virtual void reduceColorOpacity(int);
 
 	void setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity);
 	virtual const sf::Color& getParticleColor(size_t index) { return m_particleCircle.at(index).getFillColor(); }

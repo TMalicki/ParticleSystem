@@ -18,7 +18,6 @@ void windowSettings::loadGUI()
 
 	m_EffectText = getEffectType();
 	m_LifeTime = getLifeTime();
-	//m_EffectText->setDefaultText("BRAK");
 
 	m_Border = getBorders();
 	m_ObjectType = getObjectsType();
@@ -88,14 +87,37 @@ void windowSettings::colorParticlesByVelocity(ParticleManage& particles)
 			size_t size = particle->getParticlesAmount();
 
 			auto tempVelocities = particle->getVelocity();
-			std::vector<sf::Color> tempColor(tempVelocities.size());
+			auto tempColor = particle->getColor();
+		
+			for (size_t i = 0; i < size; i++)
+			{
+				auto modVelocity = sqrt(pow(tempVelocities.at(i).x, 2) + pow(tempVelocities.at(i).y, 2));
+				int calculatedRGB = 255 - static_cast<int>((modVelocity / maxVelocity) * 380.0f);	///380, not 255 for faster red color achieved
+				if (calculatedRGB >= 255) calculatedRGB = 255;
+
+				tempColor.at(i) = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);
+			}
+			particle->setColor(tempColor); // maybe this?
+		}
+	}
+	if (particles.getEmiterParticles().size() > 0)
+	{
+		auto maxVelocity = particles.getEmiterParticles()[0]->getMaxVelocity();
+
+		for (auto& particle : particles.getEmiterParticles())
+		{
+			size_t size = particle->getParticlesAmount();
+
+			auto tempVelocities = particle->getVelocity();
+			auto tempColor = particle->getColor();
 
 			for (size_t i = 0; i < size; i++)
 			{
 				auto modVelocity = sqrt(pow(tempVelocities.at(i).x, 2) + pow(tempVelocities.at(i).y, 2));
-				int calculatedRGB = 255 - static_cast<int>(modVelocity / maxVelocity * 255.0f);
+				int calculatedRGB = 255 - static_cast<int>((modVelocity / maxVelocity) * 380.0f);	///380, not 255 for faster red color achieved
+				if (calculatedRGB >= 255) calculatedRGB = 255;
 
-				tempColor.at(i) = sf::Color(255, calculatedRGB, calculatedRGB, 255);
+				tempColor.at(i) = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);
 			}
 			particle->setColor(tempColor); // maybe this?
 		}
@@ -137,6 +159,12 @@ void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleMana
 		{
 			temp[i]->setVelocity(windowSettings.reboundBorders(temp[i]->getPosition(), temp[i]->getVelocity()));
 		}
+
+		auto& temp1 = particles.getEmiterParticles();
+		for (size_t i = 0; i < temp1.size(); i++)
+		{
+			temp1[i]->setVelocity(windowSettings.reboundBorders(temp1[i]->getPosition(), temp1[i]->getVelocity()));
+		}
 	}
 	else if (m_Border->getSelectedItem() == "Erasing Border")
 	{
@@ -158,6 +186,25 @@ void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleMana
 			*temp.at(erase) = *temp.back();
 			temp.pop_back();
 		}
+
+		auto& temp1 = particles.getEmiterParticles();
+		std::vector<size_t> toEraseGroup1{};
+
+		for (size_t i = 0; i < temp1.size(); i++)
+		{
+			temp1[i]->eraseParticles(windowSettings.erasingBorders(temp1[i]->getPosition()));
+			if (temp1[i]->getParticlesAmount() == 0)
+			{
+				toEraseGroup1.push_back(i);
+			}
+		}
+
+		std::sort(toEraseGroup1.begin(), toEraseGroup1.end(), std::greater<size_t>());
+		for (auto erase : toEraseGroup1)
+		{
+			*temp1.at(erase) = *temp1.back();
+			temp1.pop_back();
+		}
 	}
 	else if (m_Border->getSelectedItem() == "Transition Border") 
 	{
@@ -165,6 +212,12 @@ void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleMana
 		for (size_t i = 0; i < temp.size(); i++)
 		{
 			temp[i]->setPosition(windowSettings.transitionBorders(temp[i]->getPosition()));
+		}
+
+		auto& temp1 = particles.getEmiterParticles();
+		for (size_t i = 0; i < temp1.size(); i++)
+		{
+			temp1[i]->setPosition(windowSettings.transitionBorders(temp1[i]->getPosition()));
 		}
 	}
 }

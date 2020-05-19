@@ -19,7 +19,10 @@ void ParticleManage::createParticles(std::vector<std::unique_ptr<ParticlesInterf
 
 void ParticleManage::createEmiter(sf::Vector2i mousePosition)
 {
-	emiterEffect.createEmiter(mousePosition);
+	if (m_activeArea.x > mousePosition.x)
+	{
+		emiterEffect.createEmiter(mousePosition);
+	}
 }
 
 void ParticleManage::explode(sf::Vector2i mousePosition, sf::Vector2f randomRange, int amount)
@@ -60,25 +63,39 @@ void ParticleManage::emitter(sf::Vector2i mousePosition, sf::Vector2f randomRang
 
 void ParticleManage::updateFading(float dt)
 {
-	//if (m_fading == true)
-	//{
-		for (auto& particle : m_explodedParticles)
+	static float sum{};
+	sum += dt;
+
+	for (auto& particle : m_explodedParticles)
+	{
+		particle->reduceLifeTime(dt);
+		if (m_fading == true)
 		{
-			particle->reduceLifeTime(dt);
-			if (m_fading == true)
+			if (sum >= (4900.0f / 255.0f))
 			{
-				particle->toErase();
+				particle->reduceColorOpacity(1);
 			}
+			particle->toErase();
 		}
-		for (auto& particle : m_emiterParticles)
+	}
+	for (auto& particle : m_emiterParticles)
+	{
+		particle->reduceLifeTime(dt);
+		if (m_fading == true)
 		{
-			particle->reduceLifeTime(dt);
-			if (m_fading == true)
+			/////////
+			if (sum >= (5000.0f / 255.0f))
 			{
-				particle->toErase();
+				particle->reduceColorOpacity(1);
 			}
+			/////////
+			particle->toErase();
 		}
-	//}
+	}
+	if (sum >= (5000.0f / 255.0f))
+	{
+		sum = 0.0f;
+	}
 }
 
 void ParticleManage::applyFading(bool logic)

@@ -57,6 +57,35 @@ void ParticlesCircle::setColor(std::vector<sf::Color> colorVector)
 	std::for_each(m_particleCircle.begin(), m_particleCircle.end(), [&](sf::CircleShape& particle) {particle.setFillColor(colorVector.at(index)); index++; });
 }
 
+std::vector<sf::Color> ParticlesCircle::getColor()
+{
+	std::vector<sf::Color> tempColors(m_particleCircle.size());
+	size_t index{};
+	for (auto& particle : m_particleCircle)
+	{
+		tempColors[index] = particle.getFillColor();
+		index++;
+	}
+	return tempColors;
+}
+
+void ParticlesCircle::reduceColorOpacity(int value)
+{
+	auto tempColorVector = getColor();
+	size_t index{};
+
+	for (auto& particle : m_particleCircle)
+	{
+		//auto tempColor = particle.getFillColor();
+		if (tempColorVector[index].a >= 0) tempColorVector[index].a -= value;
+		else tempColorVector[index].a = 0;
+		//particle.setFillColor(tempColor);
+		//std::cout << static_cast<int>(tempColor.a) << "\n";
+		index++;
+	}
+	setColor(tempColorVector);
+}
+
 void ParticlesCircle::setDirectionTowardsPoint(sf::Vector2f goalPosition)
 {
 	for (size_t i = 0; i < m_particleCircle.size(); i++)
@@ -73,17 +102,6 @@ void ParticlesCircle::setDirectionTowardsPoint(sf::Vector2f goalPosition)
 
 void ParticlesCircle::update(float dt) // in parameter - dt
 {
-	///// this should be added to emiterEffect class?
-	fadingParticle(dt);
-	/*
-	reduceLifeTime(dt);
-	auto cutOff = std::lower_bound(m_particleAttributes.begin(), m_particleAttributes.end(), 0.0f, [&](ParticleSettings attributes, const float b) { return attributes.getLifeTime() < b; });
-
-	m_particleCircle.erase(m_particleCircle.begin(), m_particleCircle.begin() + std::distance(m_particleAttributes.begin(), cutOff));
-	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
-	/////
-	*/
-	//forceUpdate();
 	for (size_t i = 0; i < m_particleCircle.size(); i++)
 	{
 		// is it needed to update both: position of each pixel and object of pixels like sf::Lines?
@@ -108,11 +126,6 @@ void ParticlesCircle::update(float dt) // in parameter - dt
 		setParticleAttributes(i, tempPosition, tempVelocity);
 		m_particleAttributes[i].setAcceleration(sf::Vector2f{ 0.0f, 0.0f });
 	}
-	//}
-	//else
-	//{
-		//eraseParticle
-	//}
 }
 
 void ParticlesCircle::setParticleAttributes(size_t index, sf::Vector2f position, sf::Vector2f velocity)

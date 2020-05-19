@@ -45,10 +45,31 @@ void ParticlesVertex::fadingParticle(float dt)
 	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
 }
 
+std::vector<sf::Color> ParticlesVertex::getColor()
+{
+	std::vector<sf::Color> tempColors(m_particleVertex.size());
+	size_t index{};
+	for (auto& particle : m_particleVertex)
+	{
+		tempColors[index] = particle.color;
+		index++;
+	}
+	return tempColors;
+}
+
 void ParticlesVertex::setColor(std::vector<sf::Color> colorVector) // use reference?
 {
 	size_t index{};
 	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particle) {particle.color = colorVector.at(index); index++; });
+}
+
+void ParticlesVertex::reduceColorOpacity(int value)
+{
+	for (auto& particle : m_particleVertex)
+	{
+		if (particle.color.a >= 0) particle.color.a -= value;
+		else particle.color.a = 0;
+	}
 }
 
 void ParticlesVertex::setDirectionTowardsPoint(sf::Vector2f goalPosition) //?
@@ -67,12 +88,6 @@ void ParticlesVertex::setDirectionTowardsPoint(sf::Vector2f goalPosition) //?
 
 void ParticlesVertex::update(float dt) //?
 {
-	///// this should be added to emiterEffect class? or somewhere else
-	//if()
-	//fadingParticle(dt);
-	// erase everything to cutOff, also color should be less visible with lower lifeTime value
-	////////
-
 	//forceUpdate();
 	for (size_t i = 0; i < m_particleVertex.size(); i++)
 	{
