@@ -1,10 +1,15 @@
 #include "windowSettings.h"
 
-windowSettings::windowSettings(sf::RenderWindow& window, float border) : m_gui{window}
+windowSettings::windowSettings(sf::RenderWindow& window, float border) : m_gui{ window }, m_type{ ParticleType::Vertex }
 {
 	auto windowSize = sf::Vector2f{ static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y) };
 	m_activeWindowSize = sf::Vector2f{ windowSize.x - border, windowSize.y };
 	m_GUIWindowSize = sf::Vector2f{ border, windowSize.y };
+	m_AirResistanceOn = false;
+	m_FrictionOn = false;
+	m_GravityOn = false;
+	m_WindOn = false;
+	m_LifeTimeOn = false;
 }
 
 void windowSettings::loadGUI()
@@ -14,7 +19,7 @@ void windowSettings::loadGUI()
 	m_FrictionSwitch = getFrictionButton();
 	m_AirResistanceSwitch = getAirResistanceButton();
 	m_WindSwitch = getWindSwitch();
-	m_WindDirection = getWindDirection();
+	m_WindDirection = getWindDirectionKnob();
 
 	m_EffectText = getEffectType();
 	m_LifeTime = getLifeTime();
@@ -75,151 +80,42 @@ std::vector<sf::Vector2f> windowSettings::reboundBorders(const std::vector<sf::V
 	return tempVelocities;
 }
 
-// change for better encapsulation
-void windowSettings::colorParticlesByVelocity(ParticleManage& particles)
+windowSettings::BorderType windowSettings::getBorderType()
 {
-	if (particles.getExplodedParticles().size() > 0)
-	{
-		auto maxVelocity = particles.getExplodedParticles()[0]->getMaxVelocity();
-
-		for (auto& particle : particles.getExplodedParticles())
-		{
-			size_t size = particle->getParticlesAmount();
-
-			auto tempVelocities = particle->getVelocity();
-			auto tempColor = particle->getColor();
-		
-			for (size_t i = 0; i < size; i++)
-			{
-				auto modVelocity = sqrt(pow(tempVelocities.at(i).x, 2) + pow(tempVelocities.at(i).y, 2));
-				int calculatedRGB = 255 - static_cast<int>((modVelocity / maxVelocity) * 380.0f);	///380, not 255 for faster red color achieved
-				if (calculatedRGB >= 255) calculatedRGB = 255;
-
-				tempColor.at(i) = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);
-			}
-			particle->setColor(tempColor); // maybe this?
-		}
-	}
-	if (particles.getEmiterParticles().size() > 0)
-	{
-		auto maxVelocity = particles.getEmiterParticles()[0]->getMaxVelocity();
-
-		for (auto& particle : particles.getEmiterParticles())
-		{
-			size_t size = particle->getParticlesAmount();
-
-			auto tempVelocities = particle->getVelocity();
-			auto tempColor = particle->getColor();
-
-			for (size_t i = 0; i < size; i++)
-			{
-				auto modVelocity = sqrt(pow(tempVelocities.at(i).x, 2) + pow(tempVelocities.at(i).y, 2));
-				int calculatedRGB = 255 - static_cast<int>((modVelocity / maxVelocity) * 380.0f);	///380, not 255 for faster red color achieved
-				if (calculatedRGB >= 255) calculatedRGB = 255;
-
-				tempColor.at(i) = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);
-			}
-			particle->setColor(tempColor); // maybe this?
-		}
-	}
-}
-
-// change for better encapsulation
-void windowSettings::updateLogicGUI(windowSettings& windowSettings, ParticleManage& particles)
-{
-	if (m_GravitySwitch->getValue() == 0.0f) m_GravitySwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Gravity); });
-	else m_GravitySwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Gravity); });
-
-	if (m_FrictionSwitch->getValue() == 0.0f) m_FrictionSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::Friction); });
-	else m_FrictionSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::Friction); });
-
-	if (m_AirResistanceSwitch->getValue() == 0.0f) m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::AirResistance); });
-	else m_AirResistanceSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::AirResistance); });
-
-	if (m_WindSwitch->getValue() == 0.0f) m_WindSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(true, ParticleSettings::Forces::External); });
-	else m_WindSwitch->connect("ValueChanged", [&]() { particles.TurnOnForce(false, ParticleSettings::Forces::External); });
-
-	if (m_ObjectType->getSelectedItem() == "Vertex") { particles.setParticleType(ParticleManage::ParticleType::Vertex); } // particleVertex
-	else if (m_ObjectType->getSelectedItem() == "Circle") { particles.setParticleType(ParticleManage::ParticleType::CircleShape); };  // circleShape
-
-	m_LifeTime->connect("Checked", [&]() { particles.applyFading(true); });
-	m_LifeTime->connect("unchecked", [&]() { particles.applyFading(false); });
-
-	if (m_WindDirection->connect("ValueChanged", [&]()
-	{
-		float temp = static_cast<float>(m_WindDirection->getValue());
-		particles.setWindDirection(sf::Vector2f{ -sin(temp * 3.14f / 180.0f), cos(temp * 3.14f / 180.0f) });
-	}
-	)) {}
-	///////
 	if (m_Border->getSelectedItem() == "Rebound Border")
 	{
-		auto& temp = particles.getExplodedParticles();
-		for (size_t i = 0; i < temp.size(); i++)
-		{
-			temp[i]->setVelocity(windowSettings.reboundBorders(temp[i]->getPosition(), temp[i]->getVelocity()));
-		}
-
-		auto& temp1 = particles.getEmiterParticles();
-		for (size_t i = 0; i < temp1.size(); i++)
-		{
-			temp1[i]->setVelocity(windowSettings.reboundBorders(temp1[i]->getPosition(), temp1[i]->getVelocity()));
-		}
+		return BorderType::ReboundBorder;
 	}
 	else if (m_Border->getSelectedItem() == "Erasing Border")
 	{
-		auto& temp = particles.getExplodedParticles();
-		std::vector<size_t> toEraseGroup{};
-
-		for (size_t i = 0; i < temp.size(); i++)
-		{
-			temp[i]->eraseParticles(windowSettings.erasingBorders(temp[i]->getPosition()));
-			if (temp[i]->getParticlesAmount() == 0)
-			{
-				toEraseGroup.push_back(i);
-			}
-		}
-
-		std::sort(toEraseGroup.begin(), toEraseGroup.end(), std::greater<size_t>());
-		for (auto erase : toEraseGroup)
-		{
-			*temp.at(erase) = *temp.back();
-			temp.pop_back();
-		}
-
-		auto& temp1 = particles.getEmiterParticles();
-		std::vector<size_t> toEraseGroup1{};
-
-		for (size_t i = 0; i < temp1.size(); i++)
-		{
-			temp1[i]->eraseParticles(windowSettings.erasingBorders(temp1[i]->getPosition()));
-			if (temp1[i]->getParticlesAmount() == 0)
-			{
-				toEraseGroup1.push_back(i);
-			}
-		}
-
-		std::sort(toEraseGroup1.begin(), toEraseGroup1.end(), std::greater<size_t>());
-		for (auto erase : toEraseGroup1)
-		{
-			*temp1.at(erase) = *temp1.back();
-			temp1.pop_back();
-		}
+		return BorderType::ErasingBorder;
 	}
-	else if (m_Border->getSelectedItem() == "Transition Border") 
+	else if (m_Border->getSelectedItem() == "Transition Border")
 	{
-		auto& temp = particles.getExplodedParticles();
-		for (size_t i = 0; i < temp.size(); i++)
-		{
-			temp[i]->setPosition(windowSettings.transitionBorders(temp[i]->getPosition()));
-		}
-
-		auto& temp1 = particles.getEmiterParticles();
-		for (size_t i = 0; i < temp1.size(); i++)
-		{
-			temp1[i]->setPosition(windowSettings.transitionBorders(temp1[i]->getPosition()));
-		}
+		return BorderType::TransitionBorder;
 	}
 }
+
+void windowSettings::updateLogicGUI()
+{
+	if (m_GravitySwitch->getValue() == 0.0f) m_GravitySwitch->connect("ValueChanged", [&]() { m_GravityOn = true; });
+	else m_GravitySwitch->connect("ValueChanged", [&]() { m_GravityOn = false; });
+
+	if (m_FrictionSwitch->getValue() == 0.0f) m_FrictionSwitch->connect("ValueChanged", [&]() { m_FrictionOn = true; });
+	else m_FrictionSwitch->connect("ValueChanged", [&]() { m_FrictionOn = false; });
+
+	if (m_AirResistanceSwitch->getValue() == 0.0f) m_AirResistanceSwitch->connect("ValueChanged", [&]() { m_AirResistanceOn = true; });
+	else m_AirResistanceSwitch->connect("ValueChanged", [&]() { m_AirResistanceOn = false; });
+
+	if (m_WindSwitch->getValue() == 0.0f) m_WindSwitch->connect("ValueChanged", [&]() { m_WindOn = true; });
+	else m_WindSwitch->connect("ValueChanged", [&]() { m_WindOn = false; });
+
+	if (m_ObjectType->getSelectedItem() == "Vertex") { m_type = ParticleType::Vertex; } 
+	else if (m_ObjectType->getSelectedItem() == "Circle") { m_type = ParticleType::CircleShape; };  
+
+	m_LifeTime->connect("Checked", [&]() { m_LifeTimeOn = true; });
+	m_LifeTime->connect("unchecked", [&]() { m_LifeTimeOn = false; });
+}
+
 
 

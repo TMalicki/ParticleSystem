@@ -103,9 +103,97 @@ int main()
         }
        
         particlesMan.update(dt);
-        windowSettings.updateLogicGUI(windowSettings, particlesMan);
+        windowSettings.updateLogicGUI();
 
-        windowSettings.colorParticlesByVelocity(particlesMan);
+        ///////////////////////////////////////////
+        /// TO Z WINDOW SETTINGS/////
+        //////////////////////////////////////////
+        if(windowSettings.getGravityLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::Gravity);
+        if (windowSettings.getFrictionLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::Friction);
+        if (windowSettings.getAirResistanceLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::AirResistance);
+        if (windowSettings.getWindLogic() == true)
+        {
+            float temp = windowSettings.getWindDirection();
+            particlesMan.setWindDirection(sf::Vector2f{ -sin(temp * 3.14f / 180.0f), cos(temp * 3.14f / 180.0f) });
+            particlesMan.TurnOnForce(true, ParticleSettings::Forces::External);
+        }
+        particlesMan.setParticleType(static_cast<ParticleManage::ParticleType>(windowSettings.getParticleType()));
+        particlesMan.applyFading(windowSettings.getLifeTimeLogic());
+
+        if (windowSettings.getBorderType() == windowSettings::BorderType::ErasingBorder)
+        {
+            auto& temp = particlesMan.getExplodedParticles();
+            std::vector<size_t> toEraseGroup{};
+
+            for (size_t i = 0; i < temp.size(); i++)
+            {
+                temp[i]->eraseParticles(windowSettings.erasingBorders(temp[i]->getPosition()));
+                if (temp[i]->getParticlesAmount() == 0)
+                {
+                    toEraseGroup.push_back(i);
+                }
+            }
+
+            std::sort(toEraseGroup.begin(), toEraseGroup.end(), std::greater<size_t>());
+            for (auto erase : toEraseGroup)
+            {
+                *temp.at(erase) = *temp.back();
+                temp.pop_back();
+            }
+
+            auto& temp1 = particlesMan.getEmiterParticles();
+            std::vector<size_t> toEraseGroup1{};
+
+            for (size_t i = 0; i < temp1.size(); i++)
+            {
+                temp1[i]->eraseParticles(windowSettings.erasingBorders(temp1[i]->getPosition()));
+                if (temp1[i]->getParticlesAmount() == 0)
+                {
+                    toEraseGroup1.push_back(i);
+                }
+            }
+
+            std::sort(toEraseGroup1.begin(), toEraseGroup1.end(), std::greater<size_t>());
+            for (auto erase : toEraseGroup1)
+            {
+                *temp1.at(erase) = *temp1.back();
+                temp1.pop_back();
+            }
+        }
+        else if (windowSettings.getBorderType() == windowSettings::BorderType::ReboundBorder)
+        {
+            auto& temp = particlesMan.getExplodedParticles();
+            for (size_t i = 0; i < temp.size(); i++)
+            {
+                temp[i]->setVelocity(windowSettings.reboundBorders(temp[i]->getPosition(), temp[i]->getVelocity()));
+            }
+
+            auto& temp1 = particlesMan.getEmiterParticles();
+            for (size_t i = 0; i < temp1.size(); i++)
+            {
+                temp1[i]->setVelocity(windowSettings.reboundBorders(temp1[i]->getPosition(), temp1[i]->getVelocity()));
+            }
+        }
+        else if (windowSettings.getBorderType() == windowSettings::BorderType::TransitionBorder)
+        {
+            auto& temp = particlesMan.getExplodedParticles();
+            for (size_t i = 0; i < temp.size(); i++)
+            {
+                temp[i]->setPosition(windowSettings.transitionBorders(temp[i]->getPosition()));
+            }
+
+            auto& temp1 = particlesMan.getEmiterParticles();
+            for (size_t i = 0; i < temp1.size(); i++)
+            {
+                temp1[i]->setPosition(windowSettings.transitionBorders(temp1[i]->getPosition()));
+            }
+        }
+        ///////////////////////////////////////////////
+        //////////////////////////////////
+        ////////////////////////////////////////////
+
+        particlesMan.colorParticlesByVelocity(particlesMan.getExplodedParticles());
+        particlesMan.colorParticlesByVelocity(particlesMan.getEmiterParticles());
 
         window.clear();
 
