@@ -82,18 +82,20 @@ std::vector<sf::Vector2f> windowSettings::reboundBorders(const std::vector<sf::V
 
 windowSettings::BorderType windowSettings::getBorderType()
 {
+	BorderType borderType{};
 	if (m_Border->getSelectedItem() == "Rebound Border")
 	{
-		return BorderType::ReboundBorder;
+		borderType =  BorderType::ReboundBorder;
 	}
 	else if (m_Border->getSelectedItem() == "Erasing Border")
 	{
-		return BorderType::ErasingBorder;
+		borderType = BorderType::ErasingBorder;
 	}
 	else if (m_Border->getSelectedItem() == "Transition Border")
 	{
-		return BorderType::TransitionBorder;
+		borderType = BorderType::TransitionBorder;
 	}
+	return borderType;
 }
 
 void windowSettings::updateLogicGUI()
