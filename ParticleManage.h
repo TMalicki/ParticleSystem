@@ -15,41 +15,48 @@ private:
 	std::default_random_engine									m_generator;
 	sf::Vector2f												m_activeArea;
 
-
+	// particles group //
 	std::vector<std::unique_ptr<ParticlesInterface>>			m_explodedParticles;
 	std::vector<std::unique_ptr<ParticlesInterface>>			m_emiterParticles;
 	std::vector<sf::CircleShape>								m_force;	
 
+	// forces //
 	bool														m_FrictionOn;
 	bool														m_GravityOn;
 	bool														m_AirResistanceOn;
 	bool														m_WindOn;
 	sf::Vector2f												m_WindDirection;
 	float														m_forceWaveForce;
+
+	// with GUI connected
 	ParticleType												m_type;
 	ParticleEffect												m_effectType;
 
-	bool														m_fading;
-	//bool														m_EmiterOn;
-	//std::vector<sf::CircleShape>								m_EmiterObject;
-	//std::vector<size_t>											m_EmiterCounter;
-	//std::vector<float>											m_EmiterTimer;
+	// effects
+	bool														m_fadingOn;
 	EmiterEffect												emiterEffect;
+
 public:
 	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex } 
-	, m_effectType{ ParticleEffect::Explode }, emiterEffect{} {};
+	, m_effectType{ ParticleEffect::Explode }, emiterEffect{}, m_fadingOn{ false }{};
 	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
-	void setActiveArea(sf::Vector2f area) { m_activeArea = area; }
-	void setParticleType(ParticleType type) { m_type = type; }
+	void setActiveArea(sf::Vector2f area) { m_activeArea = area; } 
+	void setParticleType(ParticleType type) { m_type = type; }	// that is not needed when ParticleManage class will have windowSetting class
 
-	void createEmiter(sf::Vector2i);
+	void createEmitingObject(sf::Vector2i);
 
-	void explode(sf::Vector2i, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
-	void emitter(sf::Vector2i, sf::Vector2f andomRange = sf::Vector2f(0.0f, 0.0f), int amount = 1000);
+	void applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, int amount = 1000);
+
+
+
+
+
 
 	void applyFading(bool logic);
 	void updateFading(float dt);
+
+	void colorParticlesByVelocity(std::vector<std::unique_ptr<ParticlesInterface>>& particles);
 
 	void setEffectType(ParticleEffect effect) { m_effectType = effect; }
 	const ParticleEffect& getParticleEffect() { return m_effectType; }

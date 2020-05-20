@@ -57,18 +57,14 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Explode)
+                    if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Explode) // it should be take from windowSetting class
                     {
-                        particlesMan.explode(mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
+                        particlesMan.applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
                     }
                     else if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
                     {
-                        particlesMan.createEmiter(mousePosition);
+                        particlesMan.createEmitingObject(mousePosition);    // maybe make it somehow like with explode method?
                     }
-                }
-                else if (event.mouseButton.button == sf::Mouse::Right)
-                {
-
                 }
             }
             else if (event.type == sf::Event::MouseWheelScrolled)
@@ -104,6 +100,9 @@ int main()
        
         particlesMan.update(dt);
         windowSettings.updateLogicGUI();
+
+
+
 
         ///////////////////////////////////////////
         /// TO Z WINDOW SETTINGS/////

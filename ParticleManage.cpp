@@ -5,19 +5,19 @@ using std::vector;
 
 void ParticleManage::createParticles(std::vector<std::unique_ptr<ParticlesInterface>>& particles, sf::Vector2i mousePosition, int amount)
 {
+	auto mousePositionFloat = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 	// here reserve should be added to optimize that section
 	if (m_type == ParticleType::Vertex)
 	{
-		particles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
+		particles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(mousePositionFloat.x, mousePositionFloat.y))));
 	}
 	else if (m_type == ParticleType::CircleShape)
 	{
-		particles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)))));
+		particles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(mousePositionFloat.x, mousePositionFloat.y))));
 	}
-	//std::sort(m_explodedParticles.begin(),m_explodedParticles.end(),)
 }
 
-void ParticleManage::createEmiter(sf::Vector2i mousePosition)
+void ParticleManage::createEmitingObject(sf::Vector2i mousePosition)
 {
 	if (m_activeArea.x > mousePosition.x)
 	{
@@ -25,39 +25,32 @@ void ParticleManage::createEmiter(sf::Vector2i mousePosition)
 	}
 }
 
-void ParticleManage::explode(sf::Vector2i mousePosition, sf::Vector2f randomRange, int amount)
+void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, int amount)
 {
 	if (m_activeArea.x > mousePosition.x)
 	{
-		createParticles(m_explodedParticles, mousePosition, amount);
-
+		sf::Vector2f angleRange{};
+		if (effect == ParticleEffect::Explode)
+		{
+			createParticles(m_explodedParticles, mousePosition, amount);
+			angleRange = sf::Vector2f(0.0f, 2.0f * 3.14f);
+			createForceWave(mousePosition);
+		}
+		else if (effect == ParticleEffect::Emiter)
+		{
+			createParticles(m_emiterParticles, mousePosition, amount);
+			angleRange = sf::Vector2f(230.0f * 0.0174f, 310.0f * 0.0174f); // (pi / 180 degree) == 0,0174
+		}
 		vector<sf::Vector2f> directionVector(amount);
 
-		for (size_t index = 0; index < amount; index++)
+		std::for_each(directionVector.begin(), directionVector.end(), [&](sf::Vector2f& direction)
 		{
-			float i = getRandomFloat(0.0f,2.0f*3.14f);
-			directionVector[index] = sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i))); // this should be in as argument
-		}
-		setParticleExpandAttributes(m_explodedParticles, mousePosition, directionVector, randomRange);
+			float randomDirection = getRandomFloat(angleRange.x, angleRange.y);
+			direction = sf::Vector2f(static_cast<float>(cos(randomDirection)), static_cast<float>(sin(randomDirection)));
+		});
 
-		createForceWave(mousePosition);
-	}
-}
-
-void ParticleManage::emitter(sf::Vector2i mousePosition, sf::Vector2f randomRange, int amount)
-{
-	if (m_activeArea.x > mousePosition.x)
-	{
-		createParticles(m_emiterParticles, mousePosition, amount);
-
-		vector<sf::Vector2f> directionVector(amount);
-
-		for (size_t index = 0; index < amount; index++)
-		{
-			float i = getRandomFloat(230.0f * 3.14f / 180.0f, 310.0f * 3.14f / 180.0f);
-			directionVector[index] = sf::Vector2f(static_cast<float>(cos(i)), static_cast<float>(sin(i))); // this should be in as argument
-		}
-		setParticleExpandAttributes(m_emiterParticles, mousePosition, directionVector, randomRange);
+		if (effect == ParticleEffect::Explode) setParticleExpandAttributes(m_explodedParticles, mousePosition, directionVector, forceRange);
+		else if (effect == ParticleEffect::Emiter) setParticleExpandAttributes(m_emiterParticles, mousePosition, directionVector, forceRange);
 	}
 }
 
@@ -69,7 +62,7 @@ void ParticleManage::updateFading(float dt)
 	for (auto& particle : m_explodedParticles)
 	{
 		particle->reduceLifeTime(dt);
-		if (m_fading == true)
+		if (m_fadingOn == true)
 		{
 			if (sum >= (4900.0f / 255.0f))
 			{
@@ -81,7 +74,7 @@ void ParticleManage::updateFading(float dt)
 	for (auto& particle : m_emiterParticles)
 	{
 		particle->reduceLifeTime(dt);
-		if (m_fading == true)
+		if (m_fadingOn == true)
 		{
 			/////////
 			if (sum >= (5000.0f / 255.0f))
@@ -98,9 +91,35 @@ void ParticleManage::updateFading(float dt)
 	}
 }
 
+void ParticleManage::colorParticlesByVelocity(std::vector<std::unique_ptr<ParticlesInterface>>& particles)
+{
+	if (particles.size() > 0)
+	{
+		auto maxVelocity = particles[0]->getMaxVelocity();
+
+		for (auto& particle : particles)
+		{
+			size_t size = particle->getParticlesAmount();
+
+			auto tempVelocities = particle->getVelocity();
+			auto tempColor = particle->getColor();
+
+			for (size_t i = 0; i < size; i++)
+			{
+				auto modVelocity = sqrt(pow(tempVelocities.at(i).x, 2) + pow(tempVelocities.at(i).y, 2));
+				int calculatedRGB = 255 - static_cast<int>((modVelocity / maxVelocity) * 380.0f);	///380, not 255 for faster red color achieved
+				if (calculatedRGB >= 255) calculatedRGB = 255;
+
+				tempColor.at(i) = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);
+			}
+			particle->setColor(tempColor); // maybe this?
+		}
+	}
+}
+
 void ParticleManage::applyFading(bool logic)
 {
-	m_fading = logic;
+	m_fadingOn = logic;
 }
 
 void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<ParticlesInterface>>& particleGroup, sf::Vector2i mousePosition, vector<sf::Vector2f> direction, sf::Vector2f randomRange)
@@ -108,14 +127,7 @@ void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particle
 	auto& actualParticleGroup = particleGroup.back();
 	auto& actualParticleGroupAttributes = actualParticleGroup->getParticleAttributes();
 
-	////////////////////////////////////////////////	////////////////////////////////////////////////	////////////////////////////////////////////////
-	//ParticlesInterface* ptr = new ParticlesVertex(100);
-	//auto* ptr2 = dynamic_cast<ParticlesVertex*>(ptr);
-	//ptr2->getParticleVertex();
-	////////////////////////////////////////////////	////////////////////////////////////////////////	
-
 	// random forces, and random masses
-	//vector<sf::Vector2f> randomDirections(actualParticleGroupAttributes.size());
 	vector<sf::Vector2f> randomForces(actualParticleGroupAttributes.size());
 	vector<float> randomMasses(actualParticleGroupAttributes.size());
 
@@ -131,7 +143,6 @@ void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<Particle
 		
 		randomMasses.at(i) = getRandomFloat(1.5f, 3.0f);
 	}
-
 	actualParticleGroup->setMass(randomMasses);
 	actualParticleGroup->setDirection(direction);
 	actualParticleGroup->applyForce(randomForces);
@@ -367,7 +378,8 @@ void ParticleManage::update(float dt)
 		auto emiterPositions = emiterEffect.getEmitersPositions();
 		for (auto& emiterPos : emiterPositions)
 		{
-			emitter(sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, sf::Vector2f(-3.0, 3.0), 1);
+			applyEffect(ParticleManage::ParticleEffect::Emiter, sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, sf::Vector2f(-3.0, 3.0), 1);
+			//emitter(sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, sf::Vector2f(-3.0, 3.0), 1);
 		}
 		emiterEffect.setEmiterLogic(false);
 	}
