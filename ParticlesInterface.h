@@ -23,6 +23,7 @@ public:
 	virtual void eraseParticles(std::vector<size_t>) = 0;
 	virtual void eraseParticles(std::vector<ParticleSettings>::iterator) = 0;
 
+	static float getMaxLifeTime() { return ParticleSettings::getMaxLifeTime(); }
 
 	virtual void setDirectionTowardsPoint(sf::Vector2f) = 0;
 	virtual void reduceColorOpacity(int) = 0;

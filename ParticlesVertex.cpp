@@ -67,7 +67,7 @@ void ParticlesVertex::reduceColorOpacity(int value)
 {
 	for (auto& particle : m_particleVertex)
 	{
-		if (particle.color.a >= 0) particle.color.a -= value;
+		if (particle.color.a > 0) particle.color.a -= value;
 		else particle.color.a = 0;
 	}
 }

@@ -54,38 +54,24 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 	}
 }
 
-void ParticleManage::updateFading(float dt)
+void ParticleManage::updateFading(std::vector<std::unique_ptr<ParticlesInterface>>& particlesGroup, float dt)
 {
 	static float sum{};
+	static float maxLifeTime = ParticlesInterface::getMaxLifeTime();
+
 	sum += dt;
 
-	for (auto& particle : m_explodedParticles)
+	for (auto& particle : particlesGroup)
 	{
 		particle->reduceLifeTime(dt);
-		if (m_fadingOn == true)
+		
+		if (sum >= (maxLifeTime / 255.0f))
 		{
-			if (sum >= (4900.0f / 255.0f))
-			{
-				particle->reduceColorOpacity(1);
-			}
-			particle->toErase();
+			particle->reduceColorOpacity(1);
 		}
+		particle->toErase();
 	}
-	for (auto& particle : m_emiterParticles)
-	{
-		particle->reduceLifeTime(dt);
-		if (m_fadingOn == true)
-		{
-			/////////
-			if (sum >= (5000.0f / 255.0f))
-			{
-				particle->reduceColorOpacity(1);
-			}
-			/////////
-			particle->toErase();
-		}
-	}
-	if (sum >= (5000.0f / 255.0f))
+	if (sum >= (maxLifeTime / 255.0f))
 	{
 		sum = 0.0f;
 	}
@@ -99,18 +85,15 @@ void ParticleManage::colorParticlesByVelocity(std::vector<std::unique_ptr<Partic
 
 		for (auto& particle : particles)
 		{
-			size_t size = particle->getParticlesAmount();
-
 			auto tempVelocities = particle->getVelocity();
 			auto tempColor = particle->getColor();
 
-			for (size_t i = 0; i < size; i++)
+			for (size_t i = 0; i < particle->getParticlesAmount(); i++)
 			{
-				auto modVelocity = sqrt(pow(tempVelocities.at(i).x, 2) + pow(tempVelocities.at(i).y, 2));
-				int calculatedRGB = 255 - static_cast<int>((modVelocity / maxVelocity) * 380.0f);	///380, not 255 for faster red color achieved
+				volatile int calculatedRGB = 255 - static_cast<int>((sqrt(pow(tempVelocities[i].x, 2) + pow(tempVelocities[i].y, 2)) / maxVelocity) * 380.0f);	///380, not 255 for faster red color achieved
 				if (calculatedRGB >= 255) calculatedRGB = 255;
 
-				tempColor.at(i) = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);
+				tempColor[i] = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);
 			}
 			particle->setColor(tempColor); // maybe this?
 		}
@@ -292,7 +275,7 @@ void ParticleManage::TurnOnForce(bool logic, ParticleSettings::Forces force)
 	{
 		m_FrictionOn = logic;
 	}
-	else if (force == ParticleSettings::Forces::External)
+	else if (force == ParticleSettings::Forces::Wind)
 	{
 		m_WindOn = logic;
 	}
@@ -350,7 +333,11 @@ sf::String ParticleManage::getEffectText()
 
 void ParticleManage::update(float dt)
 {
-	updateFading(dt);
+	if (m_fadingOn == true)
+	{
+		updateFading(m_explodedParticles, dt);
+		updateFading(m_emiterParticles, dt);
+	}
 	forceUpdate();
 	// for moving
 	for (auto& particleGroup : m_explodedParticles)

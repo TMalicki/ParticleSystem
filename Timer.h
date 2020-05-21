@@ -17,21 +17,3 @@ auto getTime(std::chrono::high_resolution_clock::time_point& start)
 
 	return  timePassed.count();
 }
-
-const auto& timePlot()
-{
-	return s_time;
-}
-
-/*
-class Timer
-{
-private:
-	//std::vector<float> m_time;
-public:
-	Timer() {};
-	auto updateTime(std::chrono::high_resolution_clock::time_point&);
-	inline auto startTime() { return std::chrono::high_resolution_clock::now(); }
-	//const auto& timePlot(float dt);
-};
-*/

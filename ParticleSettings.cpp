@@ -1,5 +1,7 @@
 #include "ParticleSettings.h"
 
+float ParticleSettings::m_maxLifeTimeMs = 5000.0f;
+
 const sf::Vector2f ParticleSettings::getDirectionFromVelocity()
 {
 	auto newDirectionMagnitude = sqrt(pow(m_velocity.x, 2) + pow(m_velocity.y, 2));

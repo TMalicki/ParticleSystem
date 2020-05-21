@@ -77,7 +77,7 @@ void ParticlesCircle::reduceColorOpacity(int value)
 	for (auto& particle : m_particleCircle)
 	{
 		//auto tempColor = particle.getFillColor();
-		if (tempColorVector[index].a >= 0) tempColorVector[index].a -= value;
+		if (tempColorVector[index].a > 0) tempColorVector[index].a -= value;
 		else tempColorVector[index].a = 0;
 		//particle.setFillColor(tempColor);
 		//std::cout << static_cast<int>(tempColor.a) << "\n";

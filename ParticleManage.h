@@ -54,7 +54,7 @@ public:
 
 
 	void applyFading(bool logic);
-	void updateFading(float dt);
+	void updateFading(std::vector<std::unique_ptr<ParticlesInterface>>&, float dt);
 
 	void colorParticlesByVelocity(std::vector<std::unique_ptr<ParticlesInterface>>& particles);
 
