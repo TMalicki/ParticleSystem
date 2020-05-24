@@ -3,17 +3,17 @@
 
 using std::vector;
 
-void ParticleManage::createParticles(std::vector<std::unique_ptr<ParticlesInterface>>& particles, sf::Vector2i mousePosition, int amount)
+void ParticleManage::createParticles(std::vector<std::shared_ptr<ParticlesInterface>>& particles, sf::Vector2i mousePosition, int amount)
 {
 	auto mousePositionFloat = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 	// here reserve should be added to optimize that section
 	if (m_type == ParticleType::Vertex)
 	{
-		particles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(mousePositionFloat.x, mousePositionFloat.y))));
+		particles.push_back(std::shared_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(mousePositionFloat.x, mousePositionFloat.y))));
 	}
 	else if (m_type == ParticleType::CircleShape)
 	{
-		particles.push_back(std::unique_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(mousePositionFloat.x, mousePositionFloat.y))));
+		particles.push_back(std::shared_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(mousePositionFloat.x, mousePositionFloat.y))));
 	}
 }
 
@@ -54,7 +54,7 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 	}
 }
 
-void ParticleManage::updateFading(std::vector<std::unique_ptr<ParticlesInterface>>& particlesGroup, float dt)
+void ParticleManage::updateFading(std::vector<std::shared_ptr<ParticlesInterface>>& particlesGroup, float dt)
 {
 	static float sum{};
 	static float maxLifeTime = ParticlesInterface::getMaxLifeTime();
@@ -77,12 +77,11 @@ void ParticleManage::updateFading(std::vector<std::unique_ptr<ParticlesInterface
 	}
 }
 
-void ParticleManage::colorParticlesByVelocity(std::vector<std::unique_ptr<ParticlesInterface>>& particles)
+void ParticleManage::colorParticlesByVelocity(std::vector<std::shared_ptr<ParticlesInterface>>& particles)
 {
 	if (particles.size() > 0)
 	{
-		auto maxVelocity = particles[0]->getMaxVelocity();
-
+		auto maxVelocity = ParticlesInterface::getMaxVelocity();
 		for (auto& particle : particles)
 		{
 			auto tempVelocities = particle->getVelocity();
@@ -92,10 +91,9 @@ void ParticleManage::colorParticlesByVelocity(std::vector<std::unique_ptr<Partic
 			{
 				volatile int calculatedRGB = 255 - static_cast<int>((sqrt(pow(tempVelocities[i].x, 2) + pow(tempVelocities[i].y, 2)) / maxVelocity) * 380.0f);	///380, not 255 for faster red color achieved
 				if (calculatedRGB >= 255) calculatedRGB = 255;
-
-				tempColor[i] = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);
+				tempColor[i] = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);// here is problem, why?
 			}
-			particle->setColor(tempColor); // maybe this?
+			particle->setColor(tempColor); 
 		}
 	}
 }
@@ -105,7 +103,7 @@ void ParticleManage::applyFading(bool logic)
 	m_fadingOn = logic;
 }
 
-void ParticleManage::setParticleExpandAttributes(vector<std::unique_ptr<ParticlesInterface>>& particleGroup, sf::Vector2i mousePosition, vector<sf::Vector2f> direction, sf::Vector2f randomRange)
+void ParticleManage::setParticleExpandAttributes(vector<std::shared_ptr<ParticlesInterface>>& particleGroup, sf::Vector2i mousePosition, vector<sf::Vector2f> direction, sf::Vector2f randomRange)
 {
 	auto& actualParticleGroup = particleGroup.back();
 	auto& actualParticleGroupAttributes = actualParticleGroup->getParticleAttributes();
@@ -184,40 +182,38 @@ const auto ParticleManage::isForceWaveCollided()
 {
 	bool collision = false;
 	vector<std::tuple<size_t, size_t, size_t>> indexes{};
-	
+//	std::cout << "1\n";
 	for (size_t k = 0; k < m_force.size(); k++)
 	{
 		auto actualForcePosition = m_force[k].getPosition();
 		auto actualForceRadius = m_force[k].getRadius();
-
+	//	std::cout << "2\n";
 		for (size_t i = 0; i < m_explodedParticles.size(); i++)
 		{
 			 if(!((i == m_explodedParticles.size() - 1) && (k == m_force.size() - 1)))
 			{
-				//auto actualParticleGroup = m_explodedParticles[i]->getParticleVertex();
 				auto size = m_explodedParticles[i]->getParticlesAmount();
 				auto positionsVector = m_explodedParticles.at(i)->getPosition(); 
 
 				for (size_t j = 0; j < size; j++)
 				{
-					auto positionFromForceWave = positionsVector.at(j) - actualForcePosition;
+					auto positionFromForceWave = positionsVector.at(j) - actualForcePosition;	// here is problem
 					auto distanceFromForceWave = sqrt(pow(positionFromForceWave.x, 2) + pow(positionFromForceWave.y, 2));
 
 					if ((distanceFromForceWave - actualForceRadius > -40.0f) && (distanceFromForceWave - actualForceRadius) <= 20.0f)
 					{
-						indexes.push_back({ i,j, k });
+						indexes.push_back({ i, j, k });
 					}
 				}
 			}
 		}
+//		std::cout << "3\n";
 	}
 	if(indexes.size()>0) collision = true;
 
 	return std::make_pair(collision,indexes);
 }
 
-
-// collision shoud not be available with sf::point primitive type (because of lack hitboxes)
 void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t>>& pushedParticlesIndex, bool collision)
 {
 	if (collision == true)
@@ -302,26 +298,26 @@ void ParticleManage::forceUpdate()
 
 void ParticleManage::applyWindForce(sf::Vector2f force)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
-	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
+	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
+	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
 }
 
 void ParticleManage::applyGravityForce(sf::Vector2f force)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
-	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
+	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
+	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
 }
 
 void ParticleManage::applyAirResistance(float coefficent)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
-	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
+	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
+	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
 }
 
 void ParticleManage::applyFriction(float mi)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
-	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::unique_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
+	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
+	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
 }
 
 sf::String ParticleManage::getEffectText()

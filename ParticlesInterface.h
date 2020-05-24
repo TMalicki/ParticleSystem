@@ -9,10 +9,12 @@ class ParticlesInterface
 protected:
 	std::vector<ParticleSettings>	m_particleAttributes;	
 private:
-	float							m_maxVelocity;
+	static float					m_maxVelocity;
 public:
 	ParticlesInterface(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
 	//ParticlesInterface(const ParticlesInterface&) { std::cout << "ParticlesInterface kopia"; };
+
+	virtual bool isEqual() = 0;
 
 	virtual std::vector<sf::Color> getColor() = 0;
 	virtual void setColor(std::vector<sf::Color>) = 0;
@@ -35,11 +37,13 @@ public:
 	virtual const std::vector<sf::Vector2f> getVelocity();
 	virtual void setVelocity(std::vector<sf::Vector2f>);
 
-	size_t getParticlesAmount() { return m_particleAttributes.size(); }
+	size_t getParticlesAmount() { 
+		return m_particleAttributes.size(); 
+	}
 	const std::vector<ParticleSettings>& getParticleAttributes() { return m_particleAttributes; }
 
 	void setMaxVelocity(float max) { m_maxVelocity = max; }
-	float getMaxVelocity() { return m_maxVelocity; }
+	static float getMaxVelocity() { return m_maxVelocity; }
 		
 	void setDirection(sf::Vector2f);
 	void setDirection(size_t, sf::Vector2f);

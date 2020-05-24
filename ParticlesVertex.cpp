@@ -25,7 +25,7 @@ void ParticlesVertex::setPosition(std::vector<sf::Vector2f> positions)
 void ParticlesVertex::eraseParticles(std::vector<size_t> index)
 {
 	std::sort(index.begin(), index.end(), std::greater<size_t>());
-	
+
 	std::for_each(index.begin(), index.end(), [&](size_t& actualIndex) {m_particleAttributes[actualIndex] = m_particleAttributes.back(); m_particleAttributes.pop_back(); });
 	std::for_each(index.begin(), index.end(), [&](size_t& actualIndex) {m_particleVertex[actualIndex] = m_particleVertex.back(); m_particleVertex.pop_back(); });
 }

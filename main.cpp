@@ -11,6 +11,11 @@
 // emiter sometimes is erasing while using erasingBorders when it should not happen
 // also - emiter should be sigle particle at the time, it should have life spawn and it should have rateSpawn method
 // void ParticleManage::applyFading() ----- do template of that?
+
+
+
+/// in release mode with erasingBorders with few explosion, and particles going outside window error occured
+/// in debug mode with many particles in situation like above also error occured
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
@@ -28,7 +33,6 @@ int main()
     while (window.isOpen())
     {
         auto dt = getTime(start);
-
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
@@ -97,25 +101,27 @@ int main()
              }
             windowSettings.updateGUI(event);
         }
-       
         particlesMan.update(dt);
         windowSettings.updateLogicGUI();
-
-
-
 
         ///////////////////////////////////////////
         /// TO Z WINDOW SETTINGS/////
         //////////////////////////////////////////
+
         if(windowSettings.getGravityLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::Gravity);
+        else { particlesMan.TurnOnForce(false, ParticleSettings::Forces::Gravity); }
         if (windowSettings.getFrictionLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::Friction);
+        else { particlesMan.TurnOnForce(false, ParticleSettings::Forces::Friction); }
         if (windowSettings.getAirResistanceLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::AirResistance);
+        else { particlesMan.TurnOnForce(false, ParticleSettings::Forces::AirResistance); }
         if (windowSettings.getWindLogic() == true)
         {
             float temp = windowSettings.getWindDirection();
             particlesMan.setWindDirection(sf::Vector2f{ -sin(temp * 3.14f / 180.0f), cos(temp * 3.14f / 180.0f) });
-            particlesMan.TurnOnForce(true, ParticleSettings::Forces::External);
+            particlesMan.TurnOnForce(true, ParticleSettings::Forces::Wind);
         }
+        else { particlesMan.TurnOnForce(false, ParticleSettings::Forces::Wind); }
+
         particlesMan.setParticleType(static_cast<ParticleManage::ParticleType>(windowSettings.getParticleType()));
         particlesMan.applyFading(windowSettings.getLifeTimeLogic());
 
@@ -127,6 +133,7 @@ int main()
             for (size_t i = 0; i < temp.size(); i++)
             {
                 temp[i]->eraseParticles(windowSettings.erasingBorders(temp[i]->getPosition()));
+       
                 if (temp[i]->getParticlesAmount() == 0)
                 {
                     toEraseGroup.push_back(i);
@@ -134,9 +141,10 @@ int main()
             }
 
             std::sort(toEraseGroup.begin(), toEraseGroup.end(), std::greater<size_t>());
+
             for (auto erase : toEraseGroup)
             {
-                *temp.at(erase) = *temp.back();
+                temp.at(erase) = temp.back();
                 temp.pop_back();
             }
 
@@ -153,6 +161,7 @@ int main()
             }
 
             std::sort(toEraseGroup1.begin(), toEraseGroup1.end(), std::greater<size_t>());
+
             for (auto erase : toEraseGroup1)
             {
                 *temp1.at(erase) = *temp1.back();
@@ -187,18 +196,19 @@ int main()
                 temp1[i]->setPosition(windowSettings.transitionBorders(temp1[i]->getPosition()));
             }
         }
+
         ///////////////////////////////////////////////
         //////////////////////////////////
         ////////////////////////////////////////////
 
-        particlesMan.colorParticlesByVelocity(particlesMan.getExplodedParticles());
-        particlesMan.colorParticlesByVelocity(particlesMan.getEmiterParticles());
+      //  particlesMan.colorParticlesByVelocity(particlesMan.getExplodedParticles());
+      //  particlesMan.colorParticlesByVelocity(particlesMan.getEmiterParticles());
 
         window.clear();
 
         particlesMan.draw(window);  
-        windowSettings.drawGUI();
 
+        windowSettings.drawGUI();
         window.display();
     }
     return 0;

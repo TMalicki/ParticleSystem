@@ -12,6 +12,9 @@ private:
 public:
 	ParticlesCircle(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
 
+	virtual bool isEqual() { if (m_particleCircle.size() == m_particleAttributes.size()) { return true; } else { return false; }; }
+
+
 	virtual const sf::Vector2f getPosition(size_t index) { return m_particleCircle.at(index).getPosition(); }
 	virtual const std::vector<sf::Vector2f> getPosition();
 	virtual void setPosition(size_t index, sf::Vector2f position) { m_particleCircle.at(index).setPosition(position); };
