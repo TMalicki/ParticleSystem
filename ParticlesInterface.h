@@ -14,8 +14,6 @@ public:
 	ParticlesInterface(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
 	//ParticlesInterface(const ParticlesInterface&) { std::cout << "ParticlesInterface kopia"; };
 
-	virtual bool isEqual() = 0;
-
 	virtual std::vector<sf::Color> getColor() = 0;
 	virtual void setColor(std::vector<sf::Color>) = 0;
 

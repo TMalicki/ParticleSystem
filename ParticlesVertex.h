@@ -13,9 +13,6 @@ public:
 	ParticlesVertex(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
 	//ParticlesVertex(const ParticlesVertex&) { std::cout << "ParticlesVertex kopia"; };
 
-	virtual bool isEqual() { if (m_particleVertex.size() == m_particleAttributes.size()) { return true; } else { return false; }; }
-
-
 	virtual const sf::Vector2f getPosition(size_t index) { return m_particleVertex.at(index).position; }
 	virtual const std::vector<sf::Vector2f> getPosition();
 	virtual void setPosition(size_t index, sf::Vector2f position) { m_particleVertex.at(index) = position; };

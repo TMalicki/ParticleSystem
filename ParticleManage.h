@@ -51,8 +51,6 @@ public:
 
 
 
-
-
 	void applyFading(bool logic);
 	void updateFading(std::vector<std::shared_ptr<ParticlesInterface>>&, float dt);
 

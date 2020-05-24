@@ -177,17 +177,17 @@ void ParticleManage::forceWaveExpand(float velocity, sf::Vector2f windowSize)
 	}
 }
 
-/// here is something wrong
+
 const auto ParticleManage::isForceWaveCollided()
 {
 	bool collision = false;
 	vector<std::tuple<size_t, size_t, size_t>> indexes{};
-//	std::cout << "1\n";
+
 	for (size_t k = 0; k < m_force.size(); k++)
 	{
 		auto actualForcePosition = m_force[k].getPosition();
 		auto actualForceRadius = m_force[k].getRadius();
-	//	std::cout << "2\n";
+
 		for (size_t i = 0; i < m_explodedParticles.size(); i++)
 		{
 			 if(!((i == m_explodedParticles.size() - 1) && (k == m_force.size() - 1)))
@@ -207,7 +207,6 @@ const auto ParticleManage::isForceWaveCollided()
 				}
 			}
 		}
-//		std::cout << "3\n";
 	}
 	if(indexes.size()>0) collision = true;
 

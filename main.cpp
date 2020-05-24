@@ -63,7 +63,7 @@ int main()
                 {
                     if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Explode) // it should be take from windowSetting class
                     {
-                        particlesMan.applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
+                        particlesMan.applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 10);
                     }
                     else if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
                     {
@@ -107,7 +107,6 @@ int main()
         ///////////////////////////////////////////
         /// TO Z WINDOW SETTINGS/////
         //////////////////////////////////////////
-
         if(windowSettings.getGravityLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::Gravity);
         else { particlesMan.TurnOnForce(false, ParticleSettings::Forces::Gravity); }
         if (windowSettings.getFrictionLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::Friction);
@@ -139,7 +138,6 @@ int main()
                     toEraseGroup.push_back(i);
                 }
             }
-
             std::sort(toEraseGroup.begin(), toEraseGroup.end(), std::greater<size_t>());
 
             for (auto erase : toEraseGroup)
@@ -159,14 +157,19 @@ int main()
                     toEraseGroup1.push_back(i);
                 }
             }
-
+            std::cout << "1\n";
             std::sort(toEraseGroup1.begin(), toEraseGroup1.end(), std::greater<size_t>());
-
+            std::cout << "2\n";
             for (auto erase : toEraseGroup1)
             {
-                *temp1.at(erase) = *temp1.back();
+                if (temp1.size() == 0) { 
+                    std::cout << " s\n"; 
+                }
+                temp1.at(erase) = temp1.back();
                 temp1.pop_back();
+              //  std::cout << "3\n";
             }
+            std::cout << "3\n";
         }
         else if (windowSettings.getBorderType() == windowSettings::BorderType::ReboundBorder)
         {
@@ -201,8 +204,8 @@ int main()
         //////////////////////////////////
         ////////////////////////////////////////////
 
-      //  particlesMan.colorParticlesByVelocity(particlesMan.getExplodedParticles());
-      //  particlesMan.colorParticlesByVelocity(particlesMan.getEmiterParticles());
+        particlesMan.colorParticlesByVelocity(particlesMan.getExplodedParticles());
+        particlesMan.colorParticlesByVelocity(particlesMan.getEmiterParticles());
 
         window.clear();
 
