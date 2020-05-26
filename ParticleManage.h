@@ -48,8 +48,8 @@ public:
 
 	void applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, int amount = 1000);
 
-
-
+	std::vector<size_t> eraseParticles(std::vector<std::shared_ptr<ParticlesInterface>>&, std::vector<std::vector<size_t>> elementsID);
+	void eraseParticlesGroup(std::vector<std::shared_ptr<ParticlesInterface>>&, std::vector<size_t> toEraseGroup);
 
 	void applyFading(bool logic);
 	void updateFading(std::vector<std::shared_ptr<ParticlesInterface>>&, float dt);

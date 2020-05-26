@@ -54,6 +54,34 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 	}
 }
 
+std::vector<size_t> ParticleManage::eraseParticles(std::vector<std::shared_ptr<ParticlesInterface>>& particles, std::vector<std::vector<size_t>> elementsID)	// const std::vector<sf::Vector2f> jako argument jeszcze
+{
+	//auto& temp = getExplodedParticles();
+	std::vector<size_t> toEraseGroup{};
+
+	for (size_t i = 0; i < particles.size(); i++)
+	{
+		particles[i]->eraseParticles(elementsID[i]);	//windowSettings.erasingBorders(particles[i]->getPosition())
+
+		if (particles[i]->getParticlesAmount() == 0)
+		{
+			toEraseGroup.push_back(i);
+		}
+	}
+	return toEraseGroup;
+}
+
+void ParticleManage::eraseParticlesGroup(std::vector<std::shared_ptr<ParticlesInterface>>& particles, std::vector < size_t> toEraseGroup)
+{
+	std::sort(toEraseGroup.begin(), toEraseGroup.end(), std::greater<size_t>());
+
+	for (auto erase : toEraseGroup)
+	{
+		particles.at(erase) = particles.back();
+		particles.pop_back();
+	}
+}
+
 void ParticleManage::updateFading(std::vector<std::shared_ptr<ParticlesInterface>>& particlesGroup, float dt)
 {
 	static float sum{};

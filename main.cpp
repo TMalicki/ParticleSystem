@@ -12,10 +12,6 @@
 // also - emiter should be sigle particle at the time, it should have life spawn and it should have rateSpawn method
 // void ParticleManage::applyFading() ----- do template of that?
 
-
-
-/// in release mode with erasingBorders with few explosion, and particles going outside window error occured
-/// in debug mode with many particles in situation like above also error occured
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
@@ -63,7 +59,7 @@ int main()
                 {
                     if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Explode) // it should be take from windowSetting class
                     {
-                        particlesMan.applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 10);
+                        particlesMan.applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
                     }
                     else if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
                     {
@@ -125,51 +121,28 @@ int main()
         particlesMan.applyFading(windowSettings.getLifeTimeLogic());
 
         if (windowSettings.getBorderType() == windowSettings::BorderType::ErasingBorder)
-        {
+        { 
             auto& temp = particlesMan.getExplodedParticles();
-            std::vector<size_t> toEraseGroup{};
+            std::vector<size_t> particleGroupToErase;
+            std::vector<std::vector<size_t>> particlesID;
 
             for (size_t i = 0; i < temp.size(); i++)
             {
-                temp[i]->eraseParticles(windowSettings.erasingBorders(temp[i]->getPosition()));
-       
-                if (temp[i]->getParticlesAmount() == 0)
-                {
-                    toEraseGroup.push_back(i);
-                }
+                particlesID.push_back(windowSettings.erasingBorders(temp.at(i)->getPosition()));
             }
-            std::sort(toEraseGroup.begin(), toEraseGroup.end(), std::greater<size_t>());
-
-            for (auto erase : toEraseGroup)
-            {
-                temp.at(erase) = temp.back();
-                temp.pop_back();
-            }
-
+            particleGroupToErase = particlesMan.eraseParticles(temp, particlesID); // zamiast temp dać ParticleManage::ParticleEffect::Explode           
+            particlesMan.eraseParticlesGroup(temp, particleGroupToErase);
+            
             auto& temp1 = particlesMan.getEmiterParticles();
-            std::vector<size_t> toEraseGroup1{};
+            std::vector<size_t> particleGroupToErase1;
+            std::vector<std::vector<size_t>> particlesID1;
 
             for (size_t i = 0; i < temp1.size(); i++)
             {
-                temp1[i]->eraseParticles(windowSettings.erasingBorders(temp1[i]->getPosition()));
-                if (temp1[i]->getParticlesAmount() == 0)
-                {
-                    toEraseGroup1.push_back(i);
-                }
+                particlesID1.push_back(windowSettings.erasingBorders(temp1.at(i)->getPosition()));
             }
-            std::cout << "1\n";
-            std::sort(toEraseGroup1.begin(), toEraseGroup1.end(), std::greater<size_t>());
-            std::cout << "2\n";
-            for (auto erase : toEraseGroup1)
-            {
-                if (temp1.size() == 0) { 
-                    std::cout << " s\n"; 
-                }
-                temp1.at(erase) = temp1.back();
-                temp1.pop_back();
-              //  std::cout << "3\n";
-            }
-            std::cout << "3\n";
+            particleGroupToErase1 = particlesMan.eraseParticles(temp1, particlesID1);
+            particlesMan.eraseParticlesGroup(temp1, particleGroupToErase1);
         }
         else if (windowSettings.getBorderType() == windowSettings::BorderType::ReboundBorder)
         {
