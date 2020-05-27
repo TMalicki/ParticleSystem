@@ -1,28 +1,21 @@
-﻿#ifndef PARTICLESYSTEM_H
-#define PARTICLESYSTEM_H
-
+#pragma once
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include "Particle.h"
+#include <TGUI/TGUI.hpp>
+#include "windowSettings.h"
 
-using std::vector;
+#include "ParticleManage.h"
+//#include "Timer.h"
 
 class ParticleSystem
 {
 private:
-	//Particle particle;
-	sf::VertexArray particles;
+	sf::Vector2f windowSize;
+	float settingWindowWidth;
+
+	sf::RenderWindow window;
+	std::unique_ptr<windowSettings> windowSetting;
 public:
-	ParticleSystem(int amount);
-	ParticleSystem(const ParticleSystem& copyParticles);
-	ParticleSystem& operator=(const ParticleSystem& assignParticles);
-
-	~ParticleSystem() { std::cout << "Usunieto ParticleSystem\n"; };
-
-	sf::VertexArray& getParticles() { return particles; }
-	void move(sf::Vector2i);
-	void explode(sf::Vector2i);
+	ParticleSystem(sf::Vector2f windowSize = sf::Vector2f{ 1920.0f, 1080.0f });
+	void Run();
 };
 
-
-#endif
