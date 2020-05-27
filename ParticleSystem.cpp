@@ -14,20 +14,16 @@ ParticleSystem::ParticleSystem(sf::Vector2f windowS) : windowSize(windowS), sett
 {
     window.create(sf::VideoMode(static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)), "ParticleSystem");
     windowSetting = std::make_unique<windowSettings>(window);
+    m_particlesManage = std::make_unique<ParticleManage>();
+
+    windowSetting->loadGUI();
+    m_particlesManage->setActiveArea(windowSetting->getActiveWindowSize());
 }
 
 void ParticleSystem::Run()
 {
     auto start = std::chrono::high_resolution_clock::now();
     
-
-    //windowSettings windowSettings(window);
-    windowSetting->loadGUI();
-
-
-    ParticleManage particlesMan;
-    particlesMan.setActiveArea(windowSetting->getActiveWindowSize());
-
     while (window.isOpen())
     {
         auto dt = getTime(start);
@@ -35,12 +31,12 @@ void ParticleSystem::Run()
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
-            for (auto& particle : particlesMan.getExplodedParticles())
+            for (auto& particle : m_particlesManage->getExplodedParticles())
             {
                 particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
                 particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
             }
-            for (auto& particle : particlesMan.getEmiterParticles())
+            for (auto& particle : m_particlesManage->getEmiterParticles())
             {
                 particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
                 particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
@@ -59,134 +55,187 @@ void ParticleSystem::Run()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Explode) // it should be take from windowSetting class
+                    if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode) // it should be take from windowSetting class
                     {
-                        particlesMan.applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
+                        m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
                     }
-                    else if (particlesMan.getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
+                    else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
                     {
-                        particlesMan.createEmitingObject(mousePosition);    // maybe make it somehow like with explode method?
+                        m_particlesManage->createEmitingObject(mousePosition);    // maybe make it somehow like with explode method?
                     }
                 }
             }
             else if (event.type == sf::Event::MouseWheelScrolled)
             {
-                int temp = static_cast<int>(particlesMan.getParticleEffect());
+                int temp = static_cast<int>(m_particlesManage->getParticleEffect());
                 int max = static_cast<int>((ParticleManage::ParticleEffect::NUMBER_OF_EFFECTS));
                 if (event.mouseWheelScroll.delta > 0)
                 {
                     if (temp < (max - 1))
                     {
-                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((temp + 1)));
+                        m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((temp + 1)));
                     }
                     else
                     {
-                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((0)));
+                        m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((0)));
                     }
                 }
                 else if (event.mouseWheelScroll.delta < 0)
                 {
                     if (temp > 0)
                     {
-                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((temp - 1)));
+                        m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((temp - 1)));
                     }
                     else
                     {
-                        particlesMan.setEffectType(static_cast<ParticleManage::ParticleEffect>((max - 1)));
+                        m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((max - 1)));
                     }
                 }
-                windowSetting->setEffectType(particlesMan.getEffectText());
+                windowSetting->setEffectType(m_particlesManage->getEffectText());
             }
             windowSetting->updateGUI(event);
         }
-        particlesMan.update(dt);
+        m_particlesManage->update(dt);
         windowSetting->updateLogicGUI();
 
         ///////////////////////////////////////////
         /// TO Z WINDOW SETTINGS/////
         //////////////////////////////////////////
-        if (windowSetting->getGravityLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::Gravity);
-        else { particlesMan.TurnOnForce(false, ParticleSettings::Forces::Gravity); }
-        if (windowSetting->getFrictionLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::Friction);
-        else { particlesMan.TurnOnForce(false, ParticleSettings::Forces::Friction); }
-        if (windowSetting->getAirResistanceLogic() == true) particlesMan.TurnOnForce(true, ParticleSettings::Forces::AirResistance);
-        else { particlesMan.TurnOnForce(false, ParticleSettings::Forces::AirResistance); }
-        if (windowSetting->getWindLogic() == true)
-        {
-            float temp = windowSetting->getWindDirection();
-            particlesMan.setWindDirection(sf::Vector2f{ -sin(temp * 3.14f / 180.0f), cos(temp * 3.14f / 180.0f) });
-            particlesMan.TurnOnForce(true, ParticleSettings::Forces::Wind);
-        }
-        else { particlesMan.TurnOnForce(false, ParticleSettings::Forces::Wind); }
+        applyForces();
 
-        particlesMan.setParticleType(static_cast<ParticleManage::ParticleType>(windowSetting->getParticleType()));
-        particlesMan.applyFading(windowSetting->getLifeTimeLogic());
+        m_particlesManage->setParticleType(static_cast<ParticleManage::ParticleType>(windowSetting->getParticleType()));
+        m_particlesManage->applyFading(windowSetting->getLifeTimeLogic());
 
-        if (windowSetting->getBorderType() == windowSettings::BorderType::ErasingBorder)
-        {
-            auto& temp = particlesMan.getExplodedParticles();
-            std::vector<size_t> particleGroupToErase;
-            std::vector<std::vector<size_t>> particlesID;
-
-            for (size_t i = 0; i < temp.size(); i++)
-            {
-                particlesID.push_back(windowSetting->erasingBorders(temp.at(i)->getPosition()));
-            }
-            particleGroupToErase = particlesMan.eraseParticles(temp, particlesID); // zamiast temp dać ParticleManage::ParticleEffect::Explode           
-            particlesMan.eraseParticlesGroup(temp, particleGroupToErase);
-
-            auto& temp1 = particlesMan.getEmiterParticles();
-            std::vector<size_t> particleGroupToErase1;
-            std::vector<std::vector<size_t>> particlesID1;
-
-            for (size_t i = 0; i < temp1.size(); i++)
-            {
-                particlesID1.push_back(windowSetting->erasingBorders(temp1.at(i)->getPosition()));
-            }
-            particleGroupToErase1 = particlesMan.eraseParticles(temp1, particlesID1);
-            particlesMan.eraseParticlesGroup(temp1, particleGroupToErase1);
-        }
-        else if (windowSetting->getBorderType() == windowSettings::BorderType::ReboundBorder)
-        {
-            auto& temp = particlesMan.getExplodedParticles();
-            for (size_t i = 0; i < temp.size(); i++)
-            {
-                temp[i]->setVelocity(windowSetting->reboundBorders(temp[i]->getPosition(), temp[i]->getVelocity()));
-            }
-
-            auto& temp1 = particlesMan.getEmiterParticles();
-            for (size_t i = 0; i < temp1.size(); i++)
-            {
-                temp1[i]->setVelocity(windowSetting->reboundBorders(temp1[i]->getPosition(), temp1[i]->getVelocity()));
-            }
-        }
-        else if (windowSetting->getBorderType() == windowSettings::BorderType::TransitionBorder)
-        {
-            auto& temp = particlesMan.getExplodedParticles();
-            for (size_t i = 0; i < temp.size(); i++)
-            {
-                temp[i]->setPosition(windowSetting->transitionBorders(temp[i]->getPosition()));
-            }
-
-            auto& temp1 = particlesMan.getEmiterParticles();
-            for (size_t i = 0; i < temp1.size(); i++)
-            {
-                temp1[i]->setPosition(windowSetting->transitionBorders(temp1[i]->getPosition()));
-            }
-        }
+        applyBorders();
 
         ///////////////////////////////////////////////
         //////////////////////////////////
         ////////////////////////////////////////////
 
-        particlesMan.colorParticlesByVelocity(particlesMan.getExplodedParticles());
-        particlesMan.colorParticlesByVelocity(particlesMan.getEmiterParticles());
+        m_particlesManage->colorParticlesByVelocity(m_particlesManage->getExplodedParticles());
+        m_particlesManage->colorParticlesByVelocity(m_particlesManage->getEmiterParticles());
 
         window.clear();
 
-        particlesMan.draw(window);
+        m_particlesManage->draw(window);
 
         windowSetting->drawGUI();
         window.display();
     }
 }
+
+void ParticleSystem::applyForces()
+{
+    if (windowSetting->getGravityLogic() == true) m_particlesManage->TurnOnForce(true, ParticleSettings::Forces::Gravity);
+    else { m_particlesManage->TurnOnForce(false, ParticleSettings::Forces::Gravity); }
+    if (windowSetting->getFrictionLogic() == true) m_particlesManage->TurnOnForce(true, ParticleSettings::Forces::Friction);
+    else { m_particlesManage->TurnOnForce(false, ParticleSettings::Forces::Friction); }
+    if (windowSetting->getAirResistanceLogic() == true) m_particlesManage->TurnOnForce(true, ParticleSettings::Forces::AirResistance);
+    else { m_particlesManage->TurnOnForce(false, ParticleSettings::Forces::AirResistance); }
+    if (windowSetting->getWindLogic() == true)
+    {
+        float temp = windowSetting->getWindDirection();
+        m_particlesManage->setWindDirection(sf::Vector2f{ -sin(temp * 3.14f / 180.0f), cos(temp * 3.14f / 180.0f) });
+        m_particlesManage->TurnOnForce(true, ParticleSettings::Forces::Wind);
+    }
+    else { m_particlesManage->TurnOnForce(false, ParticleSettings::Forces::Wind); }
+}
+
+void ParticleSystem::erasingBorder(ParticleManage::ParticleEffect effect)
+{
+    std::unique_ptr<std::vector<std::shared_ptr<ParticlesInterface>>> temp;
+    if (effect == ParticleManage::ParticleEffect::Explode)
+    {
+        temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getExplodedParticles());
+    }
+    else if (effect == ParticleManage::ParticleEffect::Emiter)
+    {
+        temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getEmiterParticles());
+    }
+    //auto& temp = m_particlesManage->getExplodedParticles();
+    std::vector<size_t> particleGroupToErase;
+    std::vector<std::vector<size_t>> particlesID;
+
+    for (size_t i = 0; i < temp->size(); i++)
+    {
+        particlesID.push_back(windowSetting->erasingBorders(temp->at(i)->getPosition()));
+    }
+    particleGroupToErase = m_particlesManage->eraseParticles(*temp, particlesID); // zamiast temp dać ParticleManage::ParticleEffect::Explode           
+    m_particlesManage->eraseParticlesGroup(*temp, particleGroupToErase);
+}
+
+void ParticleSystem::reboundBorder(ParticleManage::ParticleEffect effect)
+{
+    std::unique_ptr<std::vector<std::shared_ptr<ParticlesInterface>>> temp;
+
+    if (effect == ParticleManage::ParticleEffect::Explode)
+    {
+        temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getExplodedParticles());
+    }
+    else if (effect == ParticleManage::ParticleEffect::Emiter)
+    {
+        temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getEmiterParticles());
+    }
+
+    for (size_t i = 0; i < temp->size(); i++)
+    {
+        (*temp)[i]->setVelocity(windowSetting->reboundBorders((*temp)[i]->getPosition(), (*temp)[i]->getVelocity()));
+    }    
+}
+
+void ParticleSystem::transitionBorder(ParticleManage::ParticleEffect effect)
+{
+    std::unique_ptr<std::vector<std::shared_ptr<ParticlesInterface>>> temp;
+
+    if (effect == ParticleManage::ParticleEffect::Explode)
+    {
+        temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getExplodedParticles());
+    }
+    else if (effect == ParticleManage::ParticleEffect::Emiter)
+    {
+        temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getEmiterParticles());
+    }
+
+    for (size_t i = 0; i < temp->size(); i++)
+    {
+        (*temp)[i]->setPosition(windowSetting->transitionBorders((*temp)[i]->getPosition()));
+    }
+}
+
+void ParticleSystem::applyBorders()
+{
+    if (windowSetting->getBorderType() == windowSettings::BorderType::ErasingBorder)
+    {
+        if (m_particlesManage->getExplodedParticles().size() > 0)
+        {
+            erasingBorder(ParticleManage::ParticleEffect::Explode);
+        }
+        else if (m_particlesManage->getEmiterParticles().size() > 0)
+        {
+            erasingBorder(ParticleManage::ParticleEffect::Emiter);
+        }
+    }
+    else if (windowSetting->getBorderType() == windowSettings::BorderType::ReboundBorder)
+    {
+        if (m_particlesManage->getExplodedParticles().size() > 0)
+        {
+            reboundBorder(ParticleManage::ParticleEffect::Explode);
+        }
+        else if (m_particlesManage->getEmiterParticles().size() > 0)
+        {
+            reboundBorder(ParticleManage::ParticleEffect::Emiter);
+        }
+    }
+    else if (windowSetting->getBorderType() == windowSettings::BorderType::TransitionBorder)
+    {
+        if (m_particlesManage->getExplodedParticles().size() > 0)
+        {
+            transitionBorder(ParticleManage::ParticleEffect::Explode);
+        }
+        else if (m_particlesManage->getEmiterParticles().size() > 0)
+        {
+            transitionBorder(ParticleManage::ParticleEffect::Emiter);
+        }
+    }
+}
+
