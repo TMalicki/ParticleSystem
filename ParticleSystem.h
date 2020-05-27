@@ -26,5 +26,8 @@ public:
 	void reboundBorder(ParticleManage::ParticleEffect);
 	void transitionBorder(ParticleManage::ParticleEffect);
 	void applyBorders();
+
+	void pullParticles(sf::Vector2i);
+	void chooseEffect(float);
 };
 

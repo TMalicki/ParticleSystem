@@ -31,16 +31,7 @@ void ParticleSystem::Run()
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
-            for (auto& particle : m_particlesManage->getExplodedParticles())
-            {
-                particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
-                particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
-            }
-            for (auto& particle : m_particlesManage->getEmiterParticles())
-            {
-                particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
-                particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
-            }
+            pullParticles(mousePosition);
         }
         else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
@@ -67,31 +58,7 @@ void ParticleSystem::Run()
             }
             else if (event.type == sf::Event::MouseWheelScrolled)
             {
-                int temp = static_cast<int>(m_particlesManage->getParticleEffect());
-                int max = static_cast<int>((ParticleManage::ParticleEffect::NUMBER_OF_EFFECTS));
-                if (event.mouseWheelScroll.delta > 0)
-                {
-                    if (temp < (max - 1))
-                    {
-                        m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((temp + 1)));
-                    }
-                    else
-                    {
-                        m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((0)));
-                    }
-                }
-                else if (event.mouseWheelScroll.delta < 0)
-                {
-                    if (temp > 0)
-                    {
-                        m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((temp - 1)));
-                    }
-                    else
-                    {
-                        m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((max - 1)));
-                    }
-                }
-                windowSetting->setEffectType(m_particlesManage->getEffectText());
+                chooseEffect(event.mouseWheelScroll.delta);
             }
             windowSetting->updateGUI(event);
         }
@@ -237,5 +204,48 @@ void ParticleSystem::applyBorders()
             transitionBorder(ParticleManage::ParticleEffect::Emiter);
         }
     }
+}
+
+void ParticleSystem::pullParticles(sf::Vector2i mousePosition)
+{
+    for (auto& particle : m_particlesManage->getExplodedParticles())
+    {
+        particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
+        particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
+    }
+    for (auto& particle : m_particlesManage->getEmiterParticles())
+    {
+        particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
+        particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
+    }
+}
+
+void ParticleSystem::chooseEffect(float mouseDelta)
+{
+    int temp = static_cast<int>(m_particlesManage->getParticleEffect());
+    int max = static_cast<int>((ParticleManage::ParticleEffect::NUMBER_OF_EFFECTS));
+    if (mouseDelta > 0)
+    {
+        if (temp < (max - 1))
+        {
+            m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((temp + 1)));
+        }
+        else
+        {
+            m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((0)));
+        }
+    }
+    else if (mouseDelta < 0)
+    {
+        if (temp > 0)
+        {
+            m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((temp - 1)));
+        }
+        else
+        {
+            m_particlesManage->setEffectType(static_cast<ParticleManage::ParticleEffect>((max - 1)));
+        }
+    }
+    windowSetting->setEffectType(m_particlesManage->getEffectText());
 }
 
