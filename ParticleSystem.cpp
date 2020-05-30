@@ -239,7 +239,8 @@ void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
             }
             else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
             {
-                m_particlesManage->createEmitingObject(mousePosition);    // maybe make it somehow like with explode method?
+                m_particlesManage->createEmitingObject(mousePosition, 20.0f, 1000);    // maybe make it somehow like with explode method?
+               // m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Emiter, mousePosition, sf::Vector2f(0.0, 30.0), 1000);
             }
         }
     }

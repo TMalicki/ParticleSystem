@@ -44,7 +44,7 @@ public:
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; } 
 	void setParticleType(ParticleType type) { m_type = type; }	// that is not needed when ParticleManage class will have windowSetting class
 
-	void createEmitingObject(sf::Vector2i);
+	void createEmitingObject(sf::Vector2i, float, int);
 
 	void applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, int amount = 1000);
 

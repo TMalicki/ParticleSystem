@@ -1,6 +1,6 @@
 #include "EmiterEffect.h"
 
-void EmiterEffect::createEmiter(sf::Vector2i mousePosition)
+void EmiterEffect::createEmiter(sf::Vector2i mousePosition, float spawnFrequency, int amount)
 {
 	//m_EmiterOn = true;
 	m_EmiterObject.push_back(sf::CircleShape(4.0f, 20));
@@ -9,6 +9,9 @@ void EmiterEffect::createEmiter(sf::Vector2i mousePosition)
 	m_EmiterObject.back().setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 	m_EmiterCounter.push_back(size_t(0));
 	m_EmiterTimer.push_back(0.0f);
+
+	m_emiterSpawnTime = spawnFrequency;
+	m_emiterAmount = amount;
 }
 
 void EmiterEffect::updateEmiter(float dt)
@@ -16,13 +19,13 @@ void EmiterEffect::updateEmiter(float dt)
 	for (size_t i = 0; i < m_EmiterObject.size(); i++)
 	{
 		//auto mousePosition = m_EmiterObject[i].getPosition();
-		if (m_EmiterTimer[i] >= 200.0f)
+		if (m_EmiterTimer[i] >= m_emiterSpawnTime)
 		{
 			m_EmiterOn = true;
 			m_EmiterCounter[i] += 1;
 			m_EmiterTimer[i] = 0.0f;
 		}
-		if (m_EmiterCounter[i] >= 10)
+		if (m_EmiterCounter[i] >= m_emiterAmount)
 		{
 			m_EmiterCounter[i] = 0;
 			m_EmiterOn = false;

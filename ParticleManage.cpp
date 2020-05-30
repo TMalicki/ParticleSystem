@@ -46,11 +46,11 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 	}
 }
 
-void ParticleManage::createEmitingObject(sf::Vector2i mousePosition)
+void ParticleManage::createEmitingObject(sf::Vector2i mousePosition, float spawnFrequency, int amount)
 {
 	if (m_activeArea.x > mousePosition.x)
 	{
-		emiterEffect.createEmiter(mousePosition);
+		emiterEffect.createEmiter(mousePosition, spawnFrequency, amount);
 	}
 }
 
@@ -381,6 +381,12 @@ void ParticleManage::update(float dt)
 		}
 	}
 	*/
+
+
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////
+	
 	emiterEffect.updateEmiter(dt);
 	if (emiterEffect.getEmiterLogic() == true)
 	{
@@ -392,6 +398,11 @@ void ParticleManage::update(float dt)
 		}
 		emiterEffect.setEmiterLogic(false);
 	}
+	
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////
+
 
 	for (auto& particleGroup : m_emiterParticles)
 	{
