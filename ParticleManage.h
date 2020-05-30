@@ -46,7 +46,7 @@ public:
 
 	void createEmitingObject(sf::Vector2i, float, int);
 
-	void applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, int amount = 1000);
+	void applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount = 1000);
 
 	std::vector<size_t> eraseParticles(std::vector<std::shared_ptr<ParticlesInterface>>&, std::vector<std::vector<size_t>> elementsID);
 	void eraseParticlesGroup(std::vector<std::shared_ptr<ParticlesInterface>>&, std::vector<size_t> toEraseGroup);

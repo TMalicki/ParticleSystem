@@ -17,21 +17,20 @@ void ParticleManage::createParticles(std::vector<std::shared_ptr<ParticlesInterf
 	}
 }
 
-void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, int amount)
+void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount) 
 {
 	if (m_activeArea.x > mousePosition.x)
 	{
-		sf::Vector2f angleRange{};
 		if (effect == ParticleEffect::Explode)
 		{
 			createParticles(m_explodedParticles, mousePosition, amount);
-			angleRange = sf::Vector2f(0.0f, 2.0f * 3.14f);
+			//angleRange = sf::Vector2f(0.0f, 2.0f * 3.14f);
 			createForceWave(mousePosition);
 		}
 		else if (effect == ParticleEffect::Emiter)
 		{
 			createParticles(m_emiterParticles, mousePosition, amount);
-			angleRange = sf::Vector2f(230.0f * 0.0174f, 310.0f * 0.0174f); // (pi / 180 degree) == 0,0174
+			//angleRange = sf::Vector2f(250.0f * 0.0174f, 290.0f * 0.0174f); // (pi / 180 degree) == 0,0174
 		}
 		vector<sf::Vector2f> directionVector(amount);
 
@@ -393,8 +392,8 @@ void ParticleManage::update(float dt)
 		auto emiterPositions = emiterEffect.getEmitersPositions();
 		for (auto& emiterPos : emiterPositions)
 		{
-			applyEffect(ParticleManage::ParticleEffect::Emiter, sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, sf::Vector2f(0.0, 30.0), 1);
-			//emitter(sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, sf::Vector2f(-3.0, 3.0), 1);
+			applyEffect(ParticleManage::ParticleEffect::Emiter, sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, 
+																sf::Vector2f(0.0, 8.0), sf::Vector2f(250.0f * 0.0174f, 290.0f * 0.0174f), 1);
 		}
 		emiterEffect.setEmiterLogic(false);
 	}

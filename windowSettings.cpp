@@ -24,7 +24,10 @@ void windowSettings::loadGUI()
 	m_EffectText = getEffectType();
 	m_LifeTime = getLifeTime();
 
-	m_Border = getBorders();
+	m_borderType = getBorder();
+	m_angleRange = getAngleRange();
+	m_forceRange = getForceRange();
+
 	m_ObjectType = getObjectsType();
 }
 
@@ -83,15 +86,15 @@ std::vector<sf::Vector2f> windowSettings::reboundBorders(const std::vector<sf::V
 windowSettings::BorderType windowSettings::getBorderType()
 {
 	BorderType borderType{};
-	if (m_Border->getSelectedItem() == "Rebound Border")
+	if (m_borderType->getSelectedItem() == "Rebound Border")
 	{
 		borderType =  BorderType::ReboundBorder;
 	}
-	else if (m_Border->getSelectedItem() == "Erasing Border")
+	else if (m_borderType->getSelectedItem() == "Erasing Border")
 	{
 		borderType = BorderType::ErasingBorder;
 	}
-	else if (m_Border->getSelectedItem() == "Transition Border")
+	else if (m_borderType->getSelectedItem() == "Transition Border")
 	{
 		borderType = BorderType::TransitionBorder;
 	}

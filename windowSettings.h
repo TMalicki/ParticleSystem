@@ -26,11 +26,14 @@ private:
 	tgui::CheckBox::Ptr m_LifeTime;
 	bool			    m_LifeTimeOn;
 
-	tgui::ListBox::Ptr m_Border;
-	tgui::ListBox::Ptr m_ObjectType;
+	tgui::ComboBox::Ptr m_ObjectType;
+	tgui::ComboBox::Ptr m_borderType;
 
 	tgui::ListBox::Ptr m_effectType;
 	tgui::EditBox::Ptr m_EffectText;
+
+	tgui::RangeSlider::Ptr m_angleRange;
+	tgui::RangeSlider::Ptr m_forceRange;
 
 	ParticleType	   m_type;
 public:
@@ -70,8 +73,11 @@ public:
 	auto getEffectType() { return m_gui.get<tgui::EditBox>("effectText"); }
 	void setEffectType(sf::String effect) { m_EffectText->setText(effect); }
 
-	auto getBorders() { return m_gui.get<tgui::ListBox>("borderList"); }
-	auto getObjectsType() { return m_gui.get<tgui::ListBox>("object list"); }
+	auto getBorder() { return m_gui.get<tgui::ComboBox>("borderType"); }
+	auto getAngleRange() { return m_gui.get<tgui::RangeSlider>("angleRange"); }
+	auto getForceRange() { return m_gui.get<tgui::RangeSlider>("forceRange"); }
+
+	auto getObjectsType() { return m_gui.get<tgui::ComboBox>("objectType"); }
 
 	ParticleType getParticleType() { return m_type; }
 	BorderType getBorderType();

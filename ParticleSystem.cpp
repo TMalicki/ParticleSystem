@@ -153,7 +153,7 @@ void ParticleSystem::applyBorders()
         {
             erasingBorder(ParticleManage::ParticleEffect::Explode);
         }
-        else if (m_particlesManage->getEmiterParticles().size() > 0)
+        if (m_particlesManage->getEmiterParticles().size() > 0)
         {
             erasingBorder(ParticleManage::ParticleEffect::Emiter);
         }
@@ -164,7 +164,7 @@ void ParticleSystem::applyBorders()
         {
             reboundBorder(ParticleManage::ParticleEffect::Explode);
         }
-        else if (m_particlesManage->getEmiterParticles().size() > 0)
+        if (m_particlesManage->getEmiterParticles().size() > 0)
         {
             reboundBorder(ParticleManage::ParticleEffect::Emiter);
         }
@@ -175,7 +175,7 @@ void ParticleSystem::applyBorders()
         {
             transitionBorder(ParticleManage::ParticleEffect::Explode);
         }
-        else if (m_particlesManage->getEmiterParticles().size() > 0)
+        if (m_particlesManage->getEmiterParticles().size() > 0)
         {
             transitionBorder(ParticleManage::ParticleEffect::Emiter);
         }
@@ -235,11 +235,11 @@ void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
         {
             if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode)
             {
-                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 5000);
+                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), sf::Vector2f(0.0f, 2.0f*3.14f), 5000);
             }
             else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
             {
-                m_particlesManage->createEmitingObject(mousePosition, 20.0f, 1000);    // maybe make it somehow like with explode method?
+                m_particlesManage->createEmitingObject(mousePosition, 20.0f, 100);    // maybe make it somehow like with explode method?
                // m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Emiter, mousePosition, sf::Vector2f(0.0, 30.0), 1000);
             }
         }

@@ -4,7 +4,7 @@ void EmiterEffect::createEmiter(sf::Vector2i mousePosition, float spawnFrequency
 {
 	//m_EmiterOn = true;
 	m_EmiterObject.push_back(sf::CircleShape(4.0f, 20));
-	m_EmiterObject.back().setOutlineColor(sf::Color::White);
+	m_EmiterObject.back().setOutlineColor(sf::Color::Red);
 	m_EmiterObject.back().setOrigin(4.0f, 4.0f);
 	m_EmiterObject.back().setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 	m_EmiterCounter.push_back(size_t(0));

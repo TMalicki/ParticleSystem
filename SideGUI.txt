@@ -2,7 +2,8 @@ Renderer.1 {
     backgroundcolor = rgb(210, 210, 210);
     bordercolor = White;
     borders = (2, 2, 2, 2);
-    selectedbackgroundcolor = rgb(190, 225, 235);
+    caretcolor = rgb(145, 180, 190);
+    selectedtextbackgroundcolor = rgb(190, 225, 235);
     selectedtextcolor = rgb(150, 150, 150);
     textcolor = rgb(100, 100, 100);
     texturebackground = None;
@@ -143,42 +144,10 @@ Slider.airResistance {
     }
 }
 
-ListBox.borderList {
-    ItemHeight = 20;
-    Items = ["Transition Border", "Erasing Border", "Rebound Border"];
-    MaximumItems = 0;
-    Position = (1640, 600);
-    Size = (170, 82);
-    TextSize = 18;
-    UserData = "";
-    renderer = &1;
-}
-
-TextBox.tList {
-    HorizontalScrollbarPolicy = Never;
-    MaximumCharacters = 0;
-    Position = (1490, 620);
-    ReadOnly = true;
-    Size = (128, 26.5972);
-    Text = "BORDER TYPE";
-    TextSize = 16;
-    renderer = &2;
-}
-
-ListBox."object list" {
-    ItemHeight = 20;
-    Items = [Vertex, Circle];
-    MaximumItems = 0;
-    Position = (1640, 690);
-    Size = (170, 82);
-    TextSize = 18;
-    renderer = &1;
-}
-
 TextBox.tObject {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1490, 710);
+    Position = (1490, 610);
     ReadOnly = true;
     Size = (128, 26.5972);
     Text = "OBJECT TYPE";
@@ -257,7 +226,7 @@ TextBox.TextBox2 {
 TextBox.TextBox3 {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1530, 820);
+    Position = (1530, 720);
     ReadOnly = true;
     Size = (88, 26.5972);
     Text = " EFFECT";
@@ -265,12 +234,13 @@ TextBox.TextBox3 {
     renderer = &2;
 }
 
-ComboBox.test {
+ComboBox.borderType {
     ChangeItemOnScroll = true;
     ExpandDirection = Down;
+    Items = ["Transition Border", "Erasing Border", "Rebound Border"];
     ItemsToDisplay = 0;
     MaximumItems = 0;
-    Position = (1580, 910);
+    Position = (1650, 660);
     Size = (160, 22);
     TextSize = 13;
 
@@ -302,8 +272,8 @@ ComboBox.test {
 }
 
 CheckBox.lifeTime {
-    Position = (1650, 970);
-    Size = (18, 18);
+    Position = (1680, 530);
+    Size = (28, 28);
     TextSize = 13;
 
     Renderer {
@@ -322,10 +292,132 @@ CheckBox.lifeTime {
 TextBox.TextBox4 {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1450, 970);
+    Position = (1450, 530);
     ReadOnly = true;
     Size = (168, 26.5972);
     Text = "ENABLE LIFE TIME";
+    TextSize = 16;
+    renderer = &2;
+}
+
+EditBox.effectText {
+    Position = (1650, 720);
+    Size = (160, 22);
+    TextSize = 13;
+
+    Renderer {
+        caretcolor = rgb(145, 180, 190);
+        padding = (14, 4, 14, 4);
+        selectedtextbackgroundcolor = rgb(190, 225, 235);
+        selectedtextcolor = rgb(150, 150, 150);
+        textcolor = rgb(100, 100, 100);
+        texture = "GUI/themes/BabyBlue.png" Part(103, 40, 72, 48) Middle(24, 0, 24, 48);
+        texturedisabled = None;
+        texturefocused = None;
+        texturehover = None;
+    }
+}
+
+RangeSlider.angleRange {
+    Maximum = 360;
+    Minimum = 0;
+    Position = (1640, 790);
+    SelectionEnd = 360;
+    SelectionStart = 0;
+    Size = (200, 16);
+    Step = 1;
+
+    Renderer {
+        texturethumb = None;
+        texturethumbhover = None;
+        texturetrack = None;
+        texturetrackhover = None;
+    }
+}
+
+RangeSlider.forceRange {
+    Maximum = 360;
+    Minimum = 0;
+    Position = (1640, 850);
+    SelectionEnd = 360;
+    SelectionStart = 0;
+    Size = (200, 16);
+    Step = 1;
+
+    Renderer {
+        texturethumb = None;
+        texturethumbhover = None;
+        texturetrack = None;
+        texturetrackhover = None;
+    }
+}
+
+TextBox.TextBox5 {
+    HorizontalScrollbarPolicy = Never;
+    MaximumCharacters = 0;
+    Position = (1490, 780);
+    ReadOnly = true;
+    Size = (128, 26.5972);
+    Text = "ANGLE RANGE";
+    TextSize = 16;
+    renderer = &1;
+}
+
+TextBox.TextBox6 {
+    HorizontalScrollbarPolicy = Never;
+    MaximumCharacters = 0;
+    Position = (1490, 840);
+    ReadOnly = true;
+    Size = (128, 26.5972);
+    Text = "FORCE RANGE";
+    TextSize = 16;
+    renderer = &1;
+}
+
+ComboBox.objectType {
+    ChangeItemOnScroll = true;
+    ExpandDirection = Down;
+    Items = [Vertex, Circle];
+    ItemsToDisplay = 0;
+    MaximumItems = 0;
+    Position = (1650, 610);
+    Size = (160, 22);
+    TextSize = 13;
+
+    Renderer {
+        backgroundcolor = rgb(210, 210, 210);
+        bordercolor = White;
+        borders = (2, 2, 2, 2);
+        textcolor = rgb(100, 100, 100);
+        texturearrow = "GUI/themes/BabyBlue.png" Part(177, 2, 20, 26);
+        texturearrowhover = None;
+        texturebackground = None;
+
+        listbox {
+            backgroundcolor = rgb(210, 210, 210);
+            bordercolor = White;
+            borders = (2, 2, 2, 2);
+            selectedbackgroundcolor = rgb(190, 225, 235);
+            selectedtextcolor = rgb(150, 150, 150);
+            textcolor = rgb(100, 100, 100);
+
+            scrollbar {
+                texturearrowdown = "GUI/themes/BabyBlue.png" Part(20, 2, 16, 16);
+                texturearrowup = "GUI/themes/BabyBlue.png" Part(2, 2, 16, 16);
+                texturethumb = "GUI/themes/BabyBlue.png" Part(414, 2, 16, 32);
+                texturetrack = "GUI/themes/BabyBlue.png" Part(432, 2, 16, 32);
+            }
+        }
+    }
+}
+
+TextBox.TextBox7 {
+    HorizontalScrollbarPolicy = Never;
+    MaximumCharacters = 0;
+    Position = (1490, 660);
+    ReadOnly = true;
+    Size = (128, 26.5972);
+    Text = "BORDER TYPE";
     TextSize = 16;
 
     Renderer {
@@ -344,23 +436,5 @@ TextBox.TextBox4 {
             texturethumb = "GUI/themes/BabyBlue.png" Part(414, 2, 16, 32);
             texturetrack = "GUI/themes/BabyBlue.png" Part(432, 2, 16, 32);
         }
-    }
-}
-
-EditBox.effectText {
-    Position = (1640, 820);
-    Size = (160, 22);
-    TextSize = 13;
-
-    Renderer {
-        caretcolor = rgb(145, 180, 190);
-        padding = (14, 4, 14, 4);
-        selectedtextbackgroundcolor = rgb(190, 225, 235);
-        selectedtextcolor = rgb(150, 150, 150);
-        textcolor = rgb(100, 100, 100);
-        texture = "GUI/themes/BabyBlue.png" Part(103, 40, 72, 48) Middle(24, 0, 24, 48);
-        texturedisabled = None;
-        texturefocused = None;
-        texturehover = None;
     }
 }

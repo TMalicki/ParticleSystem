@@ -13,7 +13,7 @@ private:
 	float														m_emiterSpawnTime;
 	int															m_emiterAmount;
 public:
-	EmiterEffect() : m_EmiterObject(), m_EmiterOn(false), m_EmiterCounter(), m_EmiterTimer() {};
+	EmiterEffect() : m_EmiterObject(), m_EmiterOn(false), m_EmiterCounter(), m_EmiterTimer(), m_emiterSpawnTime{}, m_emiterAmount{} {};
 
 	void createEmiter(sf::Vector2i, float, int);
 	void updateEmiter(float);
