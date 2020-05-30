@@ -29,45 +29,24 @@ void ParticleSystem::Run()
         auto dt = getTime(start);
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 
+        // steering ////////////////////////////////////////////////
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
             pullParticles(mousePosition);
         }
-        else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
-        }
+        ///////////////////////////////////////////////////////////
 
+        // updates ////////////////////////////////////////////////
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
-                window.close();
-            if (event.type == sf::Event::MouseButtonPressed)
-            {
-                if (event.mouseButton.button == sf::Mouse::Left)
-                {
-                    if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode) // it should be take from windowSetting class
-                    {
-                        m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 1000);
-                    }
-                    else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
-                    {
-                        m_particlesManage->createEmitingObject(mousePosition);    // maybe make it somehow like with explode method?
-                    }
-                }
-            }
-            else if (event.type == sf::Event::MouseWheelScrolled)
-            {
-                chooseEffect(event.mouseWheelScroll.delta);
-            }
+            updateEvent(event, mousePosition);
             windowSetting->updateGUI(event);
         }
         m_particlesManage->update(dt);
         windowSetting->updateLogicGUI();
+        ///////////////////////////////////////////////////////////
 
-        ///////////////////////////////////////////
-        /// TO Z WINDOW SETTINGS/////
-        //////////////////////////////////////////
         applyForces();
 
         m_particlesManage->setParticleType(static_cast<ParticleManage::ParticleType>(windowSetting->getParticleType()));
@@ -75,19 +54,16 @@ void ParticleSystem::Run()
 
         applyBorders();
 
-        ///////////////////////////////////////////////
-        //////////////////////////////////
-        ////////////////////////////////////////////
-
         m_particlesManage->colorParticlesByVelocity(m_particlesManage->getExplodedParticles());
         m_particlesManage->colorParticlesByVelocity(m_particlesManage->getEmiterParticles());
 
+
+        // drawings //////////////////////////////////////////////
         window.clear();
-
         m_particlesManage->draw(window);
-
         windowSetting->drawGUI();
         window.display();
+        //////////////////////////////////////////////////////////
     }
 }
 
@@ -247,5 +223,29 @@ void ParticleSystem::chooseEffect(float mouseDelta)
         }
     }
     windowSetting->setEffectType(m_particlesManage->getEffectText());
+}
+
+void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
+{
+    if (event.type == sf::Event::Closed)
+        window.close();
+    if (event.type == sf::Event::MouseButtonPressed)
+    {
+        if (event.mouseButton.button == sf::Mouse::Left)
+        {
+            if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode)
+            {
+                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), 5000);
+            }
+            else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
+            {
+                m_particlesManage->createEmitingObject(mousePosition);    // maybe make it somehow like with explode method?
+            }
+        }
+    }
+    else if (event.type == sf::Event::MouseWheelScrolled)
+    {
+        chooseEffect(event.mouseWheelScroll.delta);
+    }
 }
 

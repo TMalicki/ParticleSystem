@@ -29,5 +29,7 @@ public:
 
 	void pullParticles(sf::Vector2i);
 	void chooseEffect(float);
+
+	void updateEvent(sf::Event&, sf::Vector2i);
 };
 

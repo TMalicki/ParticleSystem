@@ -6,7 +6,7 @@ using std::vector;
 void ParticleManage::createParticles(std::vector<std::shared_ptr<ParticlesInterface>>& particles, sf::Vector2i mousePosition, int amount)
 {
 	auto mousePositionFloat = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
-	// here reserve should be added to optimize that section
+
 	if (m_type == ParticleType::Vertex)
 	{
 		particles.push_back(std::shared_ptr<ParticlesInterface>(new ParticlesVertex(amount, sf::Vector2f(mousePositionFloat.x, mousePositionFloat.y))));
@@ -14,14 +14,6 @@ void ParticleManage::createParticles(std::vector<std::shared_ptr<ParticlesInterf
 	else if (m_type == ParticleType::CircleShape)
 	{
 		particles.push_back(std::shared_ptr<ParticlesInterface>(new ParticlesCircle(amount, sf::Vector2f(mousePositionFloat.x, mousePositionFloat.y))));
-	}
-}
-
-void ParticleManage::createEmitingObject(sf::Vector2i mousePosition)
-{
-	if (m_activeArea.x > mousePosition.x)
-	{
-		emiterEffect.createEmiter(mousePosition);
 	}
 }
 
@@ -54,14 +46,21 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 	}
 }
 
-std::vector<size_t> ParticleManage::eraseParticles(std::vector<std::shared_ptr<ParticlesInterface>>& particles, std::vector<std::vector<size_t>> elementsID)	// const std::vector<sf::Vector2f> jako argument jeszcze
+void ParticleManage::createEmitingObject(sf::Vector2i mousePosition)
 {
-	//auto& temp = getExplodedParticles();
+	if (m_activeArea.x > mousePosition.x)
+	{
+		emiterEffect.createEmiter(mousePosition);
+	}
+}
+
+std::vector<size_t> ParticleManage::eraseParticles(std::vector<std::shared_ptr<ParticlesInterface>>& particles, std::vector<std::vector<size_t>> elementsID)	
+{
 	std::vector<size_t> toEraseGroup{};
 
 	for (size_t i = 0; i < particles.size(); i++)
 	{
-		particles[i]->eraseParticles(elementsID[i]);	//windowSettings.erasingBorders(particles[i]->getPosition())
+		particles[i]->eraseParticles(elementsID[i]);	
 
 		if (particles[i]->getParticlesAmount() == 0)
 		{
@@ -71,7 +70,7 @@ std::vector<size_t> ParticleManage::eraseParticles(std::vector<std::shared_ptr<P
 	return toEraseGroup;
 }
 
-void ParticleManage::eraseParticlesGroup(std::vector<std::shared_ptr<ParticlesInterface>>& particles, std::vector < size_t> toEraseGroup)
+void ParticleManage::eraseParticlesGroup(std::vector<std::shared_ptr<ParticlesInterface>>& particles, std::vector<size_t> toEraseGroup)
 {
 	std::sort(toEraseGroup.begin(), toEraseGroup.end(), std::greater<size_t>());
 
@@ -119,7 +118,7 @@ void ParticleManage::colorParticlesByVelocity(std::vector<std::shared_ptr<Partic
 			{
 				volatile int calculatedRGB = 255 - static_cast<int>((sqrt(pow(tempVelocities[i].x, 2) + pow(tempVelocities[i].y, 2)) / maxVelocity) * 380.0f);	///380, not 255 for faster red color achieved
 				if (calculatedRGB >= 255) calculatedRGB = 255;
-				tempColor[i] = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);// here is problem, why?
+				tempColor[i] = sf::Color(255, calculatedRGB, calculatedRGB, tempColor[i].a);
 			}
 			particle->setColor(tempColor); 
 		}
@@ -172,7 +171,7 @@ void ParticleManage::createForceWave(sf::Vector2i mousePosition, float radius)
 void ParticleManage::forceWaveExpand(float velocity, sf::Vector2f windowSize)
 {
 	vector<size_t> toDestroy{};
-	// to powinna byc przekatna a nie bok prostokąta
+
 	for (size_t i = 0; i < m_force.size(); i++)
 	{
 		m_force[i].setRadius(m_force[i].getRadius() + velocity);
@@ -388,7 +387,7 @@ void ParticleManage::update(float dt)
 		auto emiterPositions = emiterEffect.getEmitersPositions();
 		for (auto& emiterPos : emiterPositions)
 		{
-			applyEffect(ParticleManage::ParticleEffect::Emiter, sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, sf::Vector2f(-3.0, 3.0), 1);
+			applyEffect(ParticleManage::ParticleEffect::Emiter, sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, sf::Vector2f(0.0, 30.0), 1);
 			//emitter(sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, sf::Vector2f(-3.0, 3.0), 1);
 		}
 		emiterEffect.setEmiterLogic(false);
