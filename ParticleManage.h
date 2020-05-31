@@ -19,6 +19,7 @@ private:
 	std::vector<std::shared_ptr<ParticlesInterface>>			m_explodedParticles;
 	std::vector<std::shared_ptr<ParticlesInterface>>			m_emiterParticles;
 	std::vector<sf::CircleShape>								m_force;	
+	sf::Vector2f												m_forceRange;
 
 	// forces //
 	bool														m_FrictionOn;
@@ -38,7 +39,7 @@ private:
 
 public:
 	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex } 
-		, m_effectType{ ParticleEffect::Explode }, emiterEffect{}, m_fadingOn{ false }{}
+		, m_effectType{ ParticleEffect::Explode }, emiterEffect{}, m_fadingOn{ false }, m_forceRange{}{}
 	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; } 
@@ -66,6 +67,8 @@ public:
 	std::vector<std::shared_ptr<ParticlesInterface>>& getEmiterParticles() { return m_emiterParticles; }
 
 	void setWindDirection(sf::Vector2f direction) { m_WindDirection = direction; }
+	void setForceRange(sf::Vector2f);
+	sf::Vector2f getForceRange() { return m_forceRange; }
 
 	void particlePush(const std::vector<std::tuple<size_t, size_t, size_t>>&, bool collision = false);
 	void createForceWave(sf::Vector2i, float radius = 1.0f);

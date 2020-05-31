@@ -33,7 +33,9 @@ private:
 	tgui::EditBox::Ptr m_EffectText;
 
 	tgui::RangeSlider::Ptr m_angleRange;
+	sf::Vector2f		   m_angleVectorRange;
 	tgui::RangeSlider::Ptr m_forceRange;
+	sf::Vector2f		   m_forceVectorRange;
 
 	ParticleType	   m_type;
 public:
@@ -76,6 +78,7 @@ public:
 	auto getBorder() { return m_gui.get<tgui::ComboBox>("borderType"); }
 	auto getAngleRange() { return m_gui.get<tgui::RangeSlider>("angleRange"); }
 	auto getForceRange() { return m_gui.get<tgui::RangeSlider>("forceRange"); }
+	sf::Vector2f getForceVectorRance() { return m_forceVectorRange; }
 
 	auto getObjectsType() { return m_gui.get<tgui::ComboBox>("objectType"); }
 

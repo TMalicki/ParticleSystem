@@ -239,6 +239,11 @@ const auto ParticleManage::isForceWaveCollided()
 	return std::make_pair(collision,indexes);
 }
 
+void ParticleManage::setForceRange(sf::Vector2f forceRange)
+{
+	m_forceRange = forceRange;
+}
+
 void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t>>& pushedParticlesIndex, bool collision)
 {
 	if (collision == true)
@@ -393,7 +398,7 @@ void ParticleManage::update(float dt)
 		for (auto& emiterPos : emiterPositions)
 		{
 			applyEffect(ParticleManage::ParticleEffect::Emiter, sf::Vector2i{ static_cast<int>(emiterPos.x),static_cast<int>(emiterPos.y) }, 
-																sf::Vector2f(0.0, 8.0), sf::Vector2f(250.0f * 0.0174f, 290.0f * 0.0174f), 1);
+																sf::Vector2f(m_forceRange.x, m_forceRange.y), sf::Vector2f(250.0f * 0.0174f, 290.0f * 0.0174f), 1);
 		}
 		emiterEffect.setEmiterLogic(false);
 	}

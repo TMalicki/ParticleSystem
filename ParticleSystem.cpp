@@ -43,6 +43,7 @@ void ParticleSystem::Run()
             updateEvent(event, mousePosition);
             windowSetting->updateGUI(event);
         }
+        m_particlesManage->setForceRange(windowSetting->getForceVectorRance());
         m_particlesManage->update(dt);
         windowSetting->updateLogicGUI();
         ///////////////////////////////////////////////////////////
@@ -235,7 +236,7 @@ void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
         {
             if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode)
             {
-                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, sf::Vector2f(-3.0, 3.0), sf::Vector2f(0.0f, 2.0f*3.14f), 5000);
+                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, m_particlesManage->getForceRange(), sf::Vector2f(0.0f, 2.0f*3.14f), 5000);
             }
             else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
             {
