@@ -39,7 +39,7 @@ private:
 
 public:
 	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex } 
-		, m_effectType{ ParticleEffect::Explode }, emiterEffect{}, m_fadingOn{ false }, m_forceRange{}{}
+		, m_effectType{ ParticleEffect::Explode }, emiterEffect{}, m_fadingOn{ false }, m_forceRange{ sf::Vector2f{0.0f,3.0f} }{}
 	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; } 

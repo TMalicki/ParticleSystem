@@ -29,6 +29,8 @@ void windowSettings::loadGUI()
 	m_forceRange = getForceRange();
 
 	m_ObjectType = getObjectsType();
+
+	m_forceVectorRange = sf::Vector2f{ m_forceRange->getSelectionStart(), m_forceRange->getSelectionEnd() };
 }
 
 std::vector<sf::Vector2f> windowSettings::transitionBorders(const std::vector<sf::Vector2f>& positions)

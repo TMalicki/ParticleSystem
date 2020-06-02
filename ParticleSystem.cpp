@@ -236,7 +236,7 @@ void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
         {
             if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode)
             {
-                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, m_particlesManage->getForceRange(), sf::Vector2f(0.0f, 2.0f*3.14f), 5000);
+                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, m_particlesManage->getForceRange(), sf::Vector2f(0.0f, 2.0f*3.14f), 100);
             }
             else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
             {
