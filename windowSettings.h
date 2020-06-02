@@ -32,12 +32,13 @@ private:
 	tgui::ListBox::Ptr m_effectType;
 	tgui::EditBox::Ptr m_EffectText;
 
-	tgui::RangeSlider::Ptr m_angleRange;
-	sf::Vector2f		   m_angleVectorRange;
+	tgui::EditBox::Ptr	   m_amount;
+	bool				   m_amountChanged;
+
 	tgui::RangeSlider::Ptr m_forceRange;
 	sf::Vector2f		   m_forceVectorRange;
 
-	ParticleType	   m_type;
+	ParticleType		   m_type;
 public:
 	windowSettings(sf::RenderWindow& window, float border = 500.0f);
 	const sf::Vector2f& getActiveWindowSize() { return m_activeWindowSize; }
@@ -75,8 +76,12 @@ public:
 	auto getEffectType() { return m_gui.get<tgui::EditBox>("effectText"); }
 	void setEffectType(sf::String effect) { m_EffectText->setText(effect); }
 
+	auto getAmountText() { return m_gui.get<tgui::EditBox>("amountBox"); }
+	auto getAmountDefault() { return m_amount->getDefaultText().toAnsiString(); }
+	auto getAmount() { m_amountChanged = false; return m_amount->getText().toAnsiString();}
+	bool getAmountChanged() { return m_amountChanged; }
+
 	auto getBorder() { return m_gui.get<tgui::ComboBox>("borderType"); }
-	auto getAngleRange() { return m_gui.get<tgui::RangeSlider>("angleRange"); }
 	auto getForceRange() { return m_gui.get<tgui::RangeSlider>("forceRange"); }
 	sf::Vector2f getForceVectorRance() { return m_forceVectorRange; }
 

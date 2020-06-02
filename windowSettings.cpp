@@ -10,6 +10,7 @@ windowSettings::windowSettings(sf::RenderWindow& window, float border) : m_gui{ 
 	m_GravityOn = false;
 	m_WindOn = false;
 	m_LifeTimeOn = false;
+	m_amountChanged = false;
 }
 
 void windowSettings::loadGUI()
@@ -25,7 +26,9 @@ void windowSettings::loadGUI()
 	m_LifeTime = getLifeTime();
 
 	m_borderType = getBorder();
-	m_angleRange = getAngleRange();
+	
+	m_amount = getAmountText();
+
 	m_forceRange = getForceRange();
 
 	m_ObjectType = getObjectsType();
@@ -120,8 +123,8 @@ void windowSettings::updateLogicGUI()
 	if (m_ObjectType->getSelectedItem() == "Vertex") { m_type = ParticleType::Vertex; } 
 	else if (m_ObjectType->getSelectedItem() == "Circle") { m_type = ParticleType::CircleShape; };  
 
-	//m_angleRange->connect("ValueChanged", [&]() { m_angleVectorRange = sf::Vector2f{ m_angleRange->getSelectionStart(), m_angleRange->getSelectionEnd() }; });
 	m_forceRange->connect("RangeChanged", [&]() { m_forceVectorRange = sf::Vector2f{ m_forceRange->getSelectionStart(), m_forceRange->getSelectionEnd() }; });
+	m_amount->connect("TextChanged", [&]() { auto temp = m_amount->getText(); m_amountChanged = true; });
 
 	m_LifeTime->connect("Checked", [&]() { m_LifeTimeOn = true; });
 	m_LifeTime->connect("unchecked", [&]() { m_LifeTimeOn = false; });

@@ -18,6 +18,7 @@ ParticleSystem::ParticleSystem(sf::Vector2f windowS) : windowSize(windowS), sett
 
     windowSetting->loadGUI();
     m_particlesManage->setActiveArea(windowSetting->getActiveWindowSize());
+    particlesAmount = windowSetting->getAmountDefault();
 }
 
 void ParticleSystem::Run()
@@ -46,6 +47,10 @@ void ParticleSystem::Run()
         m_particlesManage->setForceRange(windowSetting->getForceVectorRance());
         m_particlesManage->update(dt);
         windowSetting->updateLogicGUI();
+        if (windowSetting->getAmountChanged()) 
+        {
+            particlesAmount = windowSetting->getAmount();
+        }
         ///////////////////////////////////////////////////////////
 
         applyForces();
@@ -236,11 +241,11 @@ void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
         {
             if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode)
             {
-                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, m_particlesManage->getForceRange(), sf::Vector2f(0.0f, 2.0f*3.14f), 100);
+                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, m_particlesManage->getForceRange(), sf::Vector2f(0.0f, 2.0f*3.14f), std::stoi(particlesAmount));
             }
             else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
             {
-                m_particlesManage->createEmitingObject(mousePosition, 20.0f, 100);    // maybe make it somehow like with explode method?
+                m_particlesManage->createEmitingObject(mousePosition, 20.0f, std::stoi(particlesAmount));    // maybe make it somehow like with explode method?
                // m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Emiter, mousePosition, sf::Vector2f(0.0, 30.0), 1000);
             }
         }

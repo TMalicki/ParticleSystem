@@ -11,6 +11,7 @@ class ParticleSystem
 private:
 	sf::Vector2f windowSize;
 	float settingWindowWidth;
+	std::string particlesAmount;
 
 	sf::RenderWindow window;
 	std::unique_ptr<windowSettings> windowSetting;

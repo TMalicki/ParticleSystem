@@ -1,19 +1,23 @@
 Renderer.1 {
-    backgroundcolor = rgb(210, 210, 210);
-    bordercolor = White;
-    borders = (2, 2, 2, 2);
-    caretcolor = rgb(145, 180, 190);
-    selectedtextbackgroundcolor = rgb(190, 225, 235);
-    selectedtextcolor = rgb(150, 150, 150);
-    textcolor = rgb(100, 100, 100);
-    texturebackground = None;
-
-    scrollbar {
-        texturearrowdown = "GUI/themes/BabyBlue.png" Part(20, 2, 16, 16);
-        texturearrowup = "GUI/themes/BabyBlue.png" Part(2, 2, 16, 16);
-        texturethumb = "GUI/themes/BabyBlue.png" Part(414, 2, 16, 32);
-        texturetrack = "GUI/themes/BabyBlue.png" Part(432, 2, 16, 32);
-    }
+    backgroundcolor = #F5F5F5;
+    backgroundcolordisabled = #E6E6E6;
+    backgroundcolorhover = white;
+    bordercolor = #3C3C3C;
+    bordercolordisabled = #7D7D7D;
+    bordercolorhover = black;
+    borders = (1, 1, 1, 1);
+    caretcolor = black;
+    caretwidth = 1;
+    defaulttextcolor = #A0A0A0;
+    padding = (0, 0, 0, 0);
+    selectedtextbackgroundcolor = #006EFF;
+    selectedtextcolor = white;
+    textcolor = #3C3C3C;
+    textcolordisabled = #7D7D7D;
+    texture = None;
+    texturedisabled = None;
+    texturefocused = None;
+    texturehover = None;
 }
 
 Renderer.2 {
@@ -42,6 +46,24 @@ Renderer.2 {
     }
 }
 
+Renderer.3 {
+    backgroundcolor = rgb(210, 210, 210);
+    bordercolor = White;
+    borders = (2, 2, 2, 2);
+    caretcolor = rgb(145, 180, 190);
+    selectedtextbackgroundcolor = rgb(190, 225, 235);
+    selectedtextcolor = rgb(150, 150, 150);
+    textcolor = rgb(100, 100, 100);
+    texturebackground = None;
+
+    scrollbar {
+        texturearrowdown = "GUI/themes/BabyBlue.png" Part(20, 2, 16, 16);
+        texturearrowup = "GUI/themes/BabyBlue.png" Part(2, 2, 16, 16);
+        texturethumb = "GUI/themes/BabyBlue.png" Part(414, 2, 16, 32);
+        texturetrack = "GUI/themes/BabyBlue.png" Part(432, 2, 16, 32);
+    }
+}
+
 TextBox.tGravity {
     DefaultText = Gravity;
     HorizontalScrollbarPolicy = Never;
@@ -51,7 +73,7 @@ TextBox.tGravity {
     Size = (98, 26.5972);
     Text = "  GRAVITY";
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 TextBox.tFriction {
@@ -62,7 +84,7 @@ TextBox.tFriction {
     Size = (98, 26.5972);
     Text = " FRICTION";
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 TextBox.tAirResistance {
@@ -73,7 +95,7 @@ TextBox.tAirResistance {
     Size = (148, 26.5972);
     Text = " AIR RESISTANCE";
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 Slider.gravity {
@@ -160,7 +182,7 @@ TextBox.tObject {
     Size = (128, 26.5972);
     Text = "OBJECT TYPE";
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 Knob.windDirection {
@@ -192,7 +214,7 @@ TextBox.TextBox1 {
     Size = (158, 26.5972);
     Text = " WIND DIRECTION";
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 Slider.windSwitch {
@@ -228,7 +250,7 @@ TextBox.TextBox2 {
     Size = (58, 26.5972);
     Text = WIND;
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 TextBox.TextBox3 {
@@ -239,7 +261,7 @@ TextBox.TextBox3 {
     Size = (128, 26.5972);
     Text = "      EFFECT";
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 ComboBox.borderType {
@@ -280,7 +302,7 @@ TextBox.TextBox4 {
     Size = (168, 26.5972);
     Text = "ENABLE LIFE TIME";
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 EditBox.effectText {
@@ -321,12 +343,12 @@ RangeSlider.forceRange {
 TextBox.TextBox5 {
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
-    Position = (1490, 810);
+    Position = (1490, 830);
     ReadOnly = true;
     Size = (128, 26.5972);
     Text = "     AMOUNT";
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 TextBox.TextBox6 {
@@ -337,7 +359,7 @@ TextBox.TextBox6 {
     Size = (128, 26.5972);
     Text = "FORCE RANGE";
     TextSize = 16;
-    renderer = &1;
+    renderer = &3;
 }
 
 ComboBox.objectType {
@@ -360,114 +382,27 @@ TextBox.TextBox7 {
     Size = (128, 26.5972);
     Text = "BORDER TYPE";
     TextSize = 16;
-    renderer = &1;
-}
-
-Slider.amount {
-    ChangeValueOnScroll = true;
-    InvertedDirection = false;
-    Maximum = 10;
-    Minimum = 0;
-    Position = (1650, 830);
-    Size = (200, 26);
-    Step = 1;
-    Value = 0;
-
-    Renderer {
-        bordercolor = #3C3C3C;
-        bordercolorhover = black;
-        borders = (1, 1, 1, 1);
-        texturethumb = None;
-        texturethumbhover = None;
-        texturetrack = None;
-        texturetrackhover = None;
-        thumbcolor = #F5F5F5;
-        thumbcolorhover = white;
-        trackcolor = #F5F5F5;
-        trackcolorhover = white;
-    }
+    renderer = &3;
 }
 
 EditBox.forceMinBox {
     Position = (1490, 930);
     Size = (60, 22);
     TextSize = 13;
-
-    Renderer {
-        backgroundcolor = #F5F5F5;
-        backgroundcolordisabled = #E6E6E6;
-        backgroundcolorhover = white;
-        bordercolor = #3C3C3C;
-        bordercolordisabled = #7D7D7D;
-        bordercolorhover = black;
-        borders = (1, 1, 1, 1);
-        caretcolor = black;
-        caretwidth = 1;
-        defaulttextcolor = #A0A0A0;
-        padding = (0, 0, 0, 0);
-        selectedtextbackgroundcolor = #006EFF;
-        selectedtextcolor = white;
-        textcolor = #3C3C3C;
-        textcolordisabled = #7D7D7D;
-        texture = None;
-        texturedisabled = None;
-        texturefocused = None;
-        texturehover = None;
-    }
+    renderer = &1;
 }
 
 EditBox.forceMaxBox {
     Position = (1560, 930);
     Size = (60, 22);
     TextSize = 13;
-
-    Renderer {
-        backgroundcolor = #F5F5F5;
-        backgroundcolordisabled = #E6E6E6;
-        backgroundcolorhover = white;
-        bordercolor = #3C3C3C;
-        bordercolordisabled = #7D7D7D;
-        bordercolorhover = black;
-        borders = (1, 1, 1, 1);
-        caretcolor = black;
-        caretwidth = 1;
-        defaulttextcolor = #A0A0A0;
-        padding = (0, 0, 0, 0);
-        selectedtextbackgroundcolor = #006EFF;
-        selectedtextcolor = white;
-        textcolor = #3C3C3C;
-        textcolordisabled = #7D7D7D;
-        texture = None;
-        texturedisabled = None;
-        texturefocused = None;
-        texturehover = None;
-    }
+    renderer = &1;
 }
 
 EditBox.amountBox {
-    Position = (1490, 840);
-    Size = (130, 22);
-    TextSize = 13;
-
-    Renderer {
-        backgroundcolor = #F5F5F5;
-        backgroundcolordisabled = #E6E6E6;
-        backgroundcolorhover = white;
-        bordercolor = #3C3C3C;
-        bordercolordisabled = #7D7D7D;
-        bordercolorhover = black;
-        borders = (1, 1, 1, 1);
-        caretcolor = black;
-        caretwidth = 1;
-        defaulttextcolor = #A0A0A0;
-        padding = (0, 0, 0, 0);
-        selectedtextbackgroundcolor = #006EFF;
-        selectedtextcolor = white;
-        textcolor = #3C3C3C;
-        textcolordisabled = #7D7D7D;
-        texture = None;
-        texturedisabled = None;
-        texturefocused = None;
-        texturehover = None;
-    }
+    DefaultText = 100;
+    Position = (1650, 830);
+    Size = (130, 32);
+    TextSize = 15;
+    renderer = &1;
 }
