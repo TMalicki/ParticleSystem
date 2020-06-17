@@ -6,6 +6,8 @@ add forces to them (like forces from friction, air resistance, or even external 
 to change displayed form of particle, amount of particles added to screen, or choose one of many pre-programmed
 effect that is currently affecting particles.
 
+![](content/ParticleSystem.gif)
+
 **Functionalities**:
 <ul>
 <li> turn on/off forces </li>
@@ -40,5 +42,4 @@ effect that is currently affecting particles.
 - left mouse button - apply chosen effect
 - right mouse button - apply external force in a direction of mouse cursor
 - scroll mouse button - change pre-programmed effect
-
-![](content/ParticleSystem.gif)
+- options on the right side of the window (with settings) can be changed with left mouse button 
