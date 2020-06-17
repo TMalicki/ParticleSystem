@@ -41,4 +41,4 @@ effect that is currently affecting particles.
 - right mouse button - apply external force in a direction of mouse cursor
 - scroll mouse button - change pre-programmed effect
 
-![](content/test.gif)
+![](content/ParticleSystem.gif)
