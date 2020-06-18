@@ -84,6 +84,7 @@ public:
 
 	void TurnOnForce(bool, ParticleSettings::Forces);
 	void updateForce();
+	void updatePosition(float dt);
 	void applyWindForce(sf::Vector2f force);
 	void applyGravityForce(sf::Vector2f force);
 	void applyAirResistance(float coefficent = 0.0001f);

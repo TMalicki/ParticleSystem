@@ -330,6 +330,12 @@ void ParticleManage::updateForce()
 	}
 }
 
+void ParticleManage::updatePosition(float dt)
+{
+	for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](auto& particles) {particles->update(dt * 2.0f); });
+	for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](auto& particles) {particles->update(dt * 2.0f); });
+}
+
 void ParticleManage::applyWindForce(sf::Vector2f force)
 {
 	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
@@ -363,14 +369,14 @@ sf::String ParticleManage::getEffectText()
 
 void ParticleManage::update(float dt)
 {
+	// inside those methods are effect containers like m_explodedParticles
+	// if new effect (and container for that effect) is added update also
+	// those methods
 	updateFading(dt);	
 	updateForce();
+	updatePosition(dt);
+	///////////////////////////////////////////////////////////////////////
 
-	// for moving
-	for (auto& particleGroup : m_explodedParticles)
-	{
-		particleGroup->update(dt* 2.0f);
-	}
 
 	emiterEffect.updateEmiter(dt);
 
@@ -391,12 +397,7 @@ void ParticleManage::update(float dt)
 		emiterEffect.setEmiterLogic(false);
 	}
 
-	for (auto& particleGroup : m_emiterParticles)
-	{
-		particleGroup->update(dt * 2.0f);
-	}
 	forceWaveExpand(getWaveForce() * dt, m_activeArea);
-
 	auto particlesPushed = isForceWaveCollided();
 	particlePush(particlesPushed.second, particlesPushed.first);
 }
@@ -404,18 +405,9 @@ void ParticleManage::update(float dt)
 void ParticleManage::draw(sf::RenderWindow& window)
 {
 	emiterEffect.draw(window);
-	for (const auto& particleGroup : m_explodedParticles)
-	{
-		particleGroup->draw(window);
-	}
-	for (const auto& particleGroup : m_emiterParticles)
-	{
-		particleGroup->draw(window);
-	}
-	for (const auto& force : m_force)
-	{
-		window.draw(force);
-	}
+	for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](const auto& particles) { particles->draw(window); });
+	for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](const auto& particles) { particles->draw(window); });
+	for_each(m_force.begin(), m_force.end(), [&](const auto& force) { window.draw(force); });
 }
 
 float ParticleManage::getRandomFloat(float min, float max)
