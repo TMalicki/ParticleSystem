@@ -27,7 +27,6 @@ public:
 
 	virtual void setDirectionTowardsPoint(sf::Vector2f) = 0;
 	virtual void reduceColorOpacity(int) = 0;
-	virtual void fadingParticle(float dt) = 0;
 
 	virtual void draw(sf::RenderWindow& window) = 0;
 	virtual void update(float) = 0;
@@ -55,7 +54,7 @@ public:
 	void applyFriction(float mi = 0.01);
 
 	void toErase();
-	void reduceLifeTime(float dt);
+	void reduceLifeTime(float dt, float, float);
 
 	void setMass(std::vector<float> masses);
 };

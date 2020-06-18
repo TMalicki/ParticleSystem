@@ -19,7 +19,6 @@ public:
 
 	virtual void eraseParticles(std::vector<size_t> index);
 	virtual void eraseParticles(std::vector<ParticleSettings>::iterator);
-	virtual void fadingParticle(float dt);
 
 	virtual void setColor(std::vector<sf::Color>);
 	virtual std::vector<sf::Color> getColor();

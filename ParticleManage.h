@@ -18,7 +18,7 @@ private:
 	// particles group //
 	std::vector<std::shared_ptr<ParticlesInterface>>			m_explodedParticles;
 	std::vector<std::shared_ptr<ParticlesInterface>>			m_emiterParticles;
-	std::vector<sf::CircleShape>								m_force;	
+	std::vector<sf::CircleShape>								m_force;
 	sf::Vector2f												m_forceRange;
 
 	// forces //
@@ -35,11 +35,14 @@ private:
 
 	// effects
 	bool														m_fadingOn;
+	bool														m_explodedParticlesOn;
+	bool														m_emiterParticlesOn;
 	EmiterEffect												emiterEffect;
 
 public:
-	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex } 
-		, m_effectType{ ParticleEffect::Explode }, emiterEffect{}, m_fadingOn{ false }, m_forceRange{ sf::Vector2f{0.0f,3.0f} }{}
+	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex }
+		, m_effectType{ ParticleEffect::Explode }, emiterEffect{}, m_fadingOn{ false }, m_forceRange{ sf::Vector2f{0.0f,3.0f} }, m_explodedParticlesOn{ false }
+		, m_emiterParticlesOn{ false }{}
 	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; } 
@@ -48,12 +51,13 @@ public:
 	void createEmitingObject(sf::Vector2i, float, int);
 
 	void applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount = 1000);
+	void TurnEffectOn(ParticleEffect effect);
 
 	std::vector<size_t> eraseParticles(std::vector<std::shared_ptr<ParticlesInterface>>&, std::vector<std::vector<size_t>> elementsID);
 	void eraseParticlesGroup(std::vector<std::shared_ptr<ParticlesInterface>>&, std::vector<size_t> toEraseGroup);
 
 	void applyFading(bool logic);
-	void updateFading(std::vector<std::shared_ptr<ParticlesInterface>>&, float dt);
+	void updateFading(float dt);
 
 	void colorParticlesByVelocity(std::vector<std::shared_ptr<ParticlesInterface>>& particles);
 
@@ -79,7 +83,7 @@ public:
 	const float getWaveForce() { return m_forceWaveForce; }
 
 	void TurnOnForce(bool, ParticleSettings::Forces);
-	void forceUpdate();
+	void updateForce();
 	void applyWindForce(sf::Vector2f force);
 	void applyGravityForce(sf::Vector2f force);
 	void applyAirResistance(float coefficent = 0.0001f);

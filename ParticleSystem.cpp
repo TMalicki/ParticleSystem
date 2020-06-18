@@ -55,6 +55,7 @@ void ParticleSystem::Run()
 
         applyForces();
 
+
         m_particlesManage->setParticleType(static_cast<ParticleManage::ParticleType>(windowSetting->getParticleType()));
         m_particlesManage->applyFading(windowSetting->getLifeTimeLogic());
 
@@ -241,10 +242,12 @@ void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
         {
             if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode)
             {
+                //m_particlesManage->TurnEffectOn(ParticleManage::ParticleEffect::Explode);
                 m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, m_particlesManage->getForceRange(), sf::Vector2f(0.0f, 2.0f*3.14f), std::stoi(particlesAmount));
             }
             else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
             {
+                m_particlesManage->TurnEffectOn(ParticleManage::ParticleEffect::Emiter);
                 m_particlesManage->createEmitingObject(mousePosition, 20.0f, std::stoi(particlesAmount));    // maybe make it somehow like with explode method?
                // m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Emiter, mousePosition, sf::Vector2f(0.0, 30.0), 1000);
             }

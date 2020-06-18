@@ -36,15 +36,6 @@ void ParticlesVertex::eraseParticles(std::vector<ParticleSettings>::iterator cut
 	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
 }
 
-void ParticlesVertex::fadingParticle(float dt)
-{
-	reduceLifeTime(dt);
-	auto cutOff = std::lower_bound(m_particleAttributes.begin(), m_particleAttributes.end(), 0.0f, [&](ParticleSettings attributes, const float b) { return attributes.getLifeTime() < b; });
-
-	m_particleVertex.erase(m_particleVertex.begin(), m_particleVertex.begin() + std::distance(m_particleAttributes.begin(), cutOff));
-	m_particleAttributes.erase(m_particleAttributes.begin(), cutOff);
-}
-
 std::vector<sf::Color> ParticlesVertex::getColor()
 {
 	std::vector<sf::Color> tempColors(m_particleVertex.size());

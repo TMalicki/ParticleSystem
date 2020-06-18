@@ -85,10 +85,14 @@ void ParticlesInterface::toErase()
 	eraseParticles(cutOff);
 }
 
-void ParticlesInterface::reduceLifeTime(float dt)
+void ParticlesInterface::reduceLifeTime(float dt, float sum, float maxLifeTime)
 {
 	size_t index{};
 	std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particleSetting) {particleSetting.reduceLifeTime(dt); index++; });
-	// check the lowest value (first in the container) and delete as many a many have valuee less than 0 (or equal)
-	//if()
+
+	if (sum >= (maxLifeTime / 255.0f))
+	{
+		reduceColorOpacity(1);
+	}
+	toErase();
 }

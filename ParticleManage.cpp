@@ -19,6 +19,8 @@ void ParticleManage::createParticles(std::vector<std::shared_ptr<ParticlesInterf
 
 void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount) 
 {
+
+	// bool effect = true -> than in update do it as long as it should
 	if (m_activeArea.x > mousePosition.x)
 	{
 		if (effect == ParticleEffect::Explode)
@@ -43,6 +45,12 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 		if (effect == ParticleEffect::Explode) setParticleExpandAttributes(m_explodedParticles, mousePosition, directionVector, forceRange);
 		else if (effect == ParticleEffect::Emiter) setParticleExpandAttributes(m_emiterParticles, mousePosition, directionVector, forceRange);
 	}
+}
+
+void ParticleManage::TurnEffectOn(ParticleEffect effect)
+{
+	if (effect == ParticleEffect::Emiter) m_emiterParticlesOn = true;
+	else if (effect == ParticleEffect::Explode) m_explodedParticlesOn = true;
 }
 
 void ParticleManage::createEmitingObject(sf::Vector2i mousePosition, float spawnFrequency, int amount)
@@ -80,26 +88,22 @@ void ParticleManage::eraseParticlesGroup(std::vector<std::shared_ptr<ParticlesIn
 	}
 }
 
-void ParticleManage::updateFading(std::vector<std::shared_ptr<ParticlesInterface>>& particlesGroup, float dt)
+void ParticleManage::updateFading(float dt)
 {
-	static float sum{};
-	static float maxLifeTime = ParticlesInterface::getMaxLifeTime();
-
-	sum += dt;
-
-	for (auto& particle : particlesGroup)
+	if (m_fadingOn == true)
 	{
-		particle->reduceLifeTime(dt);
-		
+		static float sum{};
+		static float maxLifeTime = ParticlesInterface::getMaxLifeTime();
+
+		sum += dt;
+
+		std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](auto& particle) { particle->reduceLifeTime(dt, sum, maxLifeTime); });
+		std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](auto& particle) { particle->reduceLifeTime(dt, sum, maxLifeTime); });
+
 		if (sum >= (maxLifeTime / 255.0f))
 		{
-			particle->reduceColorOpacity(1);
+			sum = 0.0f;
 		}
-		particle->toErase();
-	}
-	if (sum >= (maxLifeTime / 255.0f))
-	{
-		sum = 0.0f;
 	}
 }
 
@@ -307,7 +311,7 @@ void ParticleManage::TurnOnForce(bool logic, ParticleSettings::Forces force)
 	}
 }
 
-void ParticleManage::forceUpdate()
+void ParticleManage::updateForce()
 {
 	if (m_GravityOn == true) applyGravityForce(sf::Vector2f{ 0.0f,0.02f });
 	if (m_AirResistanceOn == true) applyAirResistance();
@@ -359,39 +363,23 @@ sf::String ParticleManage::getEffectText()
 
 void ParticleManage::update(float dt)
 {
-	if (m_fadingOn == true)
-	{
-		updateFading(m_explodedParticles, dt);
-		updateFading(m_emiterParticles, dt);
-	}
-	forceUpdate();
+	updateFading(dt);	
+	updateForce();
+
 	// for moving
 	for (auto& particleGroup : m_explodedParticles)
 	{
 		particleGroup->update(dt* 2.0f);
 	}
 
-	/*// fire 
-	for (size_t i = 0; i < m_EmiterObject.size(); i++)
-	{
-		auto mousePosition = m_EmiterObject[i].getPosition();
+	emiterEffect.updateEmiter(dt);
 
-		emitter(sf::Vector2i{ static_cast<int>(mousePosition.x),static_cast<int>(mousePosition.y) }, sf::Vector2f(-3.0, 3.0), 1);
-		m_EmiterCounter[i] += 1;
-		if (m_EmiterCounter[i] >= 10)
-		{
-			m_EmiterCounter[i] = 0;
-			m_EmiterOn = false;
-		}
+	/*
+	if (m_explodedParticlesOn == true)
+	{
+		applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, getForceRange(), sf::Vector2f(0.0f, 2.0f * 3.14f), std::stoi(particlesAmount));
 	}
 	*/
-
-
-	////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////
-	
-	emiterEffect.updateEmiter(dt);
 	if (emiterEffect.getEmiterLogic() == true)
 	{
 		auto emiterPositions = emiterEffect.getEmitersPositions();
@@ -402,11 +390,6 @@ void ParticleManage::update(float dt)
 		}
 		emiterEffect.setEmiterLogic(false);
 	}
-	
-	////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////
-
 
 	for (auto& particleGroup : m_emiterParticles)
 	{
