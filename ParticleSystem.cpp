@@ -29,7 +29,7 @@ void ParticleSystem::Run()
     {
         auto dt = getTime(start);
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-
+        
         // steering ////////////////////////////////////////////////
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
@@ -45,7 +45,7 @@ void ParticleSystem::Run()
             windowSetting->updateGUI(event);
         }
         m_particlesManage->setForceRange(windowSetting->getForceVectorRance());
-        m_particlesManage->update(dt);
+        m_particlesManage->update(dt, mousePosition, std::stoi(particlesAmount));
         windowSetting->updateLogicGUI();
         if (windowSetting->getAmountChanged()) 
         {
@@ -242,14 +242,12 @@ void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
         {
             if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode)
             {
-                //m_particlesManage->TurnEffectOn(ParticleManage::ParticleEffect::Explode);
-                m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, m_particlesManage->getForceRange(), sf::Vector2f(0.0f, 2.0f*3.14f), std::stoi(particlesAmount));
+                m_particlesManage->TurnEffectOn(ParticleManage::ParticleEffect::Explode);
             }
             else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Emiter)
             {
-                m_particlesManage->TurnEffectOn(ParticleManage::ParticleEffect::Emiter);
-                m_particlesManage->createEmitingObject(mousePosition, 20.0f, std::stoi(particlesAmount));    // maybe make it somehow like with explode method?
-               // m_particlesManage->applyEffect(ParticleManage::ParticleEffect::Emiter, mousePosition, sf::Vector2f(0.0, 30.0), 1000);
+                m_particlesManage->createEmitingObject(mousePosition, 20.0f, std::stoi(particlesAmount));
+                //m_particlesManage->TurnEffectOn(ParticleManage::ParticleEffect::Emiter); 
             }
         }
     }

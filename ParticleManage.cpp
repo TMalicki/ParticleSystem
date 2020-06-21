@@ -367,7 +367,7 @@ sf::String ParticleManage::getEffectText()
 	else return "NOTHING";
 }
 
-void ParticleManage::update(float dt)
+void ParticleManage::update(float dt, sf::Vector2i mousePosition, int particleAmount)
 {
 	// inside those methods are effect containers like m_explodedParticles
 	// if new effect (and container for that effect) is added update also
@@ -377,17 +377,18 @@ void ParticleManage::update(float dt)
 	updatePosition(dt);
 	///////////////////////////////////////////////////////////////////////
 
-
+	
 	emiterEffect.updateEmiter(dt);
-
-	/*
+	
 	if (m_explodedParticlesOn == true)
 	{
-		applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, getForceRange(), sf::Vector2f(0.0f, 2.0f * 3.14f), std::stoi(particlesAmount));
+		applyEffect(ParticleManage::ParticleEffect::Explode, mousePosition, getForceRange(), sf::Vector2f(0.0f, 2.0f * 3.14f), particleAmount);
+		m_explodedParticlesOn = false;
 	}
-	*/
+	
 	if (emiterEffect.getEmiterLogic() == true)
 	{
+		//createEmitingObject(mousePosition, 20.0f, particleAmount);
 		auto emiterPositions = emiterEffect.getEmitersPositions();
 		for (auto& emiterPos : emiterPositions)
 		{
@@ -401,6 +402,8 @@ void ParticleManage::update(float dt)
 	auto particlesPushed = isForceWaveCollided();
 	particlePush(particlesPushed.second, particlesPushed.first);
 }
+
+
 
 void ParticleManage::draw(sf::RenderWindow& window)
 {

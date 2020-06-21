@@ -5,6 +5,7 @@
 #include "ParticlesVertex.h"
 #include "ParticlesCircle.h"
 #include "EmiterEffect.h"
+#include "windowSettings.h"
 
 class ParticleManage
 {
@@ -93,6 +94,6 @@ public:
 	sf::String getEffectText();
 
 	float getRandomFloat(float, float);
-	void update(float dt);
+	void update(float dt, sf::Vector2i, int);
 	void draw(sf::RenderWindow&);
 };
