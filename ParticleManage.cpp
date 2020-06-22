@@ -34,6 +34,14 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 			createParticles(m_emiterParticles, mousePosition, amount);
 			//angleRange = sf::Vector2f(250.0f * 0.0174f, 290.0f * 0.0174f); // (pi / 180 degree) == 0,0174
 		}
+		
+		else if(effect == ParticleEffect::Tunnel)
+		{
+			createParticles(m_tunnelParticles, mousePosition, amount);
+			// apply force / direction so it goes only outside of circle
+		}
+		
+
 		vector<sf::Vector2f> directionVector(amount);
 
 		std::for_each(directionVector.begin(), directionVector.end(), [&](sf::Vector2f& direction)
@@ -44,6 +52,16 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 
 		if (effect == ParticleEffect::Explode) setParticleExpandAttributes(m_explodedParticles, mousePosition, directionVector, forceRange);
 		else if (effect == ParticleEffect::Emiter) setParticleExpandAttributes(m_emiterParticles, mousePosition, directionVector, forceRange);
+		else if (effect == ParticleEffect::Tunnel)
+		{
+			static int tempDirection = 0;
+			directionVector[0] = sf::Vector2f{ cos(tempDirection * 3.14f / 180), sin(tempDirection * 3.14f / 180) };
+			//setParticleExpandAttributes(m_tunnelParticles, mousePosition, directionVector, forceRange);
+			setParticleExpandAttributes(m_tunnelParticles, mousePosition, directionVector, forceRange);
+			tempDirection++;
+
+			if (tempDirection > 360) tempDirection = 0;
+		}
 	}
 }
 
@@ -51,6 +69,7 @@ void ParticleManage::TurnEffectOn(ParticleEffect effect)
 {
 	if (effect == ParticleEffect::Emiter) m_emiterParticlesOn = true;
 	else if (effect == ParticleEffect::Explode) m_explodedParticlesOn = true;
+	else if (effect == ParticleEffect::Tunnel) m_tunnelParticlesOn = true;
 }
 
 void ParticleManage::createEmitingObject(sf::Vector2i mousePosition, float spawnFrequency, int amount)
@@ -334,6 +353,7 @@ void ParticleManage::updatePosition(float dt)
 {
 	for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](auto& particles) {particles->update(dt * 2.0f); });
 	for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](auto& particles) {particles->update(dt * 2.0f); });
+	for_each(m_tunnelParticles.begin(), m_tunnelParticles.end(), [&](auto& particles) {particles->update(dt * 2.0f); });
 }
 
 void ParticleManage::applyWindForce(sf::Vector2f force)
@@ -364,6 +384,7 @@ sf::String ParticleManage::getEffectText()
 {
 	if (m_effectType == ParticleEffect::Emiter) return "EMITER";
 	else if (m_effectType == ParticleEffect::Explode) return "EXPLODE";
+	else if (m_effectType == ParticleEffect::Tunnel) return "TUNNEL";
 	else return "NOTHING";
 }
 
@@ -397,6 +418,15 @@ void ParticleManage::update(float dt, sf::Vector2i mousePosition, int particleAm
 		}
 		emiterEffect.setEmiterLogic(false);
 	}
+	if (m_tunnelParticlesOn == true)
+	{
+		for (size_t angle = 0; angle < 360; angle++)
+		{
+			sf::Vector2i point = sf::Vector2i{ mousePosition.x + static_cast<int>(100 * cos(angle * 3.14f / 180.0f)), mousePosition.y + static_cast<int>(100* sin(angle * 3.14f / 180.0f)) };
+			applyEffect(ParticleManage::ParticleEffect::Tunnel, point, sf::Vector2f{ getForceRange().y, getForceRange().y }, sf::Vector2f(0.0f, 2.0f * 3.14f), 1);
+		}	
+	}
+
 
 	forceWaveExpand(getWaveForce() * dt, m_activeArea);
 	auto particlesPushed = isForceWaveCollided();
@@ -410,6 +440,7 @@ void ParticleManage::draw(sf::RenderWindow& window)
 	emiterEffect.draw(window);
 	for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](const auto& particles) { particles->draw(window); });
 	for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](const auto& particles) { particles->draw(window); });
+	for_each(m_tunnelParticles.begin(), m_tunnelParticles.end(), [&](const auto& particles) { particles->draw(window); });
 	for_each(m_force.begin(), m_force.end(), [&](const auto& force) { window.draw(force); });
 }
 

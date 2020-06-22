@@ -249,6 +249,15 @@ void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
                 m_particlesManage->createEmitingObject(mousePosition, 20.0f, std::stoi(particlesAmount));
                 //m_particlesManage->TurnEffectOn(ParticleManage::ParticleEffect::Emiter); 
             }
+            
+            else if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Tunnel)
+            {
+                if (m_particlesManage->getTunnelEffectLogic() == false)
+                    m_particlesManage->TurnEffectOn(ParticleManage::ParticleEffect::Tunnel);
+                else
+                    m_particlesManage->setTunnelEffectLogic(false);
+            }
+            
         }
     }
     else if (event.type == sf::Event::MouseWheelScrolled)

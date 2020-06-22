@@ -11,7 +11,7 @@ class ParticleManage
 {
 public:
 	enum class ParticleType { Vertex, CircleShape };
-	enum class ParticleEffect { Explode, Emiter, NUMBER_OF_EFFECTS };
+	enum class ParticleEffect { Explode, Emiter, Tunnel, NUMBER_OF_EFFECTS };
 private:
 	std::default_random_engine									m_generator;
 	sf::Vector2f												m_activeArea;
@@ -19,6 +19,7 @@ private:
 	// particles group //
 	std::vector<std::shared_ptr<ParticlesInterface>>			m_explodedParticles;
 	std::vector<std::shared_ptr<ParticlesInterface>>			m_emiterParticles;
+	std::vector<std::shared_ptr<ParticlesInterface>>			m_tunnelParticles;
 	std::vector<sf::CircleShape>								m_force;
 	sf::Vector2f												m_forceRange;
 
@@ -38,6 +39,7 @@ private:
 	bool														m_fadingOn;
 	bool														m_explodedParticlesOn;
 	bool														m_emiterParticlesOn;
+	bool														m_tunnelParticlesOn;
 	EmiterEffect												emiterEffect;
 
 public:
@@ -59,6 +61,8 @@ public:
 
 	void applyFading(bool logic);
 	void updateFading(float dt);
+	bool getTunnelEffectLogic() { return m_tunnelParticlesOn; }
+	void setTunnelEffectLogic(bool logic) { m_tunnelParticlesOn = logic; }
 
 	void colorParticlesByVelocity(std::vector<std::shared_ptr<ParticlesInterface>>& particles);
 

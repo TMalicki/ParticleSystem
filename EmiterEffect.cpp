@@ -2,7 +2,7 @@
 
 void EmiterEffect::createEmiter(sf::Vector2i mousePosition, float spawnFrequency, int amount)
 {
-	//m_EmiterOn = true;
+	m_EmiterOn = true;
 	m_EmiterObject.push_back(sf::CircleShape(4.0f, 20));
 	m_EmiterObject.back().setOutlineColor(sf::Color::Red);
 	m_EmiterObject.back().setOrigin(4.0f, 4.0f);
@@ -18,7 +18,6 @@ void EmiterEffect::updateEmiter(float dt)
 {
 	for (size_t i = 0; i < m_EmiterObject.size(); i++)
 	{
-		//auto mousePosition = m_EmiterObject[i].getPosition();
 		if (m_EmiterTimer[i] >= m_emiterSpawnTime)
 		{
 			m_EmiterOn = true;
@@ -34,7 +33,6 @@ void EmiterEffect::updateEmiter(float dt)
 		}
 		m_EmiterTimer[i] += dt;
 	}
-
 }
 
 const std::vector<sf::Vector2f> EmiterEffect::getEmitersPositions()
