@@ -25,13 +25,13 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 	{
 		if (effect == ParticleEffect::Explode)
 		{
-			createParticles(m_explodedParticles, mousePosition, amount);
+			createParticles(m_particleContainer[0], mousePosition, amount);
 			//angleRange = sf::Vector2f(0.0f, 2.0f * 3.14f);
 			createForceWave(mousePosition);
 		}
 		else if (effect == ParticleEffect::Emiter)
 		{
-			createParticles(m_emiterParticles, mousePosition, amount);
+			createParticles(m_particleContainer[1], mousePosition, amount);
 			//angleRange = sf::Vector2f(250.0f * 0.0174f, 290.0f * 0.0174f); // (pi / 180 degree) == 0,0174
 		}
 		
@@ -50,8 +50,8 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 			direction = sf::Vector2f(static_cast<float>(cos(randomDirection)), static_cast<float>(sin(randomDirection)));
 		});
 
-		if (effect == ParticleEffect::Explode) setParticleExpandAttributes(m_explodedParticles, mousePosition, directionVector, forceRange);
-		else if (effect == ParticleEffect::Emiter) setParticleExpandAttributes(m_emiterParticles, mousePosition, directionVector, forceRange);
+		if (effect == ParticleEffect::Explode) setParticleExpandAttributes(m_particleContainer[0], mousePosition, directionVector, forceRange);
+		else if (effect == ParticleEffect::Emiter) setParticleExpandAttributes(m_particleContainer[1], mousePosition, directionVector, forceRange);
 		else if (effect == ParticleEffect::Tunnel)
 		{
 			static int tempDirection = 0;
@@ -116,8 +116,8 @@ void ParticleManage::updateFading(float dt)
 
 		sum += dt;
 
-		std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](auto& particle) { particle->reduceLifeTime(dt, sum, maxLifeTime); });
-		std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](auto& particle) { particle->reduceLifeTime(dt, sum, maxLifeTime); });
+		std::for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](auto& particle) { particle->reduceLifeTime(dt, sum, maxLifeTime); });
+		std::for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](auto& particle) { particle->reduceLifeTime(dt, sum, maxLifeTime); });
 
 		if (sum >= (maxLifeTime / 255.0f))
 		{
@@ -128,6 +128,7 @@ void ParticleManage::updateFading(float dt)
 
 void ParticleManage::colorParticlesByVelocity(std::vector<std::shared_ptr<ParticlesInterface>>& particles)
 {
+	// for_each(particles.begin(), particles.end(), []{
 	if (particles.size() > 0)
 	{
 		auto maxVelocity = ParticlesInterface::getMaxVelocity();
@@ -237,12 +238,12 @@ const auto ParticleManage::isForceWaveCollided()
 		auto actualForcePosition = m_force[k].getPosition();
 		auto actualForceRadius = m_force[k].getRadius();
 
-		for (size_t i = 0; i < m_explodedParticles.size(); i++)
+		for (size_t i = 0; i < m_particleContainer[0].size(); i++)
 		{
-			 if(!((i == m_explodedParticles.size() - 1) && (k == m_force.size() - 1)))
+			 if(!((i == m_particleContainer[0].size() - 1) && (k == m_force.size() - 1)))
 			{
-				auto size = m_explodedParticles[i]->getParticlesAmount();
-				auto positionsVector = m_explodedParticles.at(i)->getPosition(); 
+				auto size = m_particleContainer[0][i]->getParticlesAmount();
+				auto positionsVector = m_particleContainer[0].at(i)->getPosition();
 
 				for (size_t j = 0; j < size; j++)
 				{
@@ -285,8 +286,8 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 			auto [particleGroup, particleInGroup, forceWave] = pushedParticleIndex;
 
 			//tempIndexes.push_back(particleGroup);
-			auto& actualParticleAttribute = m_explodedParticles.at(particleGroup)->getParticleAttributes().at(particleInGroup);
-			auto actualPosition = m_explodedParticles.at(particleGroup)->getPosition().at(particleInGroup);
+			auto& actualParticleAttribute = m_particleContainer[0].at(particleGroup)->getParticleAttributes().at(particleInGroup);
+			auto actualPosition = m_particleContainer[0].at(particleGroup)->getPosition().at(particleInGroup);
 			
 			auto newDirectionVector = sf::Vector2f{ (actualPosition.x - m_force[forceWave].getPosition().x), (actualPosition.y - m_force[forceWave].getPosition().y) };
 			auto newDirectionMagnitude = abs(newDirectionVector.x) + abs(newDirectionVector.y);
@@ -295,8 +296,8 @@ void ParticleManage::particlePush(const vector<std::tuple<size_t, size_t, size_t
 			//tempDirections.push_back(std::make_tuple(particleInGroup, newDirection));
 			//tempPositions.push_back(std::make_tuple(particleInGroup, sf::Vector2f{ m_forceWaveForce, m_forceWaveForce }));
 			
-			m_explodedParticles.at(particleGroup)->setDirection(particleInGroup, newDirection);
-			m_explodedParticles.at(particleGroup)->applyForce(particleInGroup, sf::Vector2f{ m_forceWaveForce ,m_forceWaveForce });
+			m_particleContainer[0].at(particleGroup)->setDirection(particleInGroup, newDirection);
+			m_particleContainer[0].at(particleGroup)->applyForce(particleInGroup, sf::Vector2f{ m_forceWaveForce ,m_forceWaveForce });
 		}
 		/*
 		for (auto index : tempIndexes)
@@ -337,11 +338,11 @@ void ParticleManage::updateForce()
 	if (m_FrictionOn == true) applyFriction();
 	if (m_WindOn == true)
 	{
-		for (auto& particlesGroup : m_explodedParticles)
+		for (auto& particlesGroup : m_particleContainer[0])
 		{
 			particlesGroup->setDirection(m_WindDirection);
 		}
-		for (auto& particlesGroup : m_emiterParticles)
+		for (auto& particlesGroup : m_particleContainer[1])
 		{
 			particlesGroup->setDirection(m_WindDirection);
 		}
@@ -351,33 +352,34 @@ void ParticleManage::updateForce()
 
 void ParticleManage::updatePosition(float dt)
 {
-	for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](auto& particles) {particles->update(dt * 2.0f); });
-	for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](auto& particles) {particles->update(dt * 2.0f); });
+	for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](auto& particles) 
+	{particles->update(dt * 2.0f); });
+	for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](auto& particles) {particles->update(dt * 2.0f); });
 	for_each(m_tunnelParticles.begin(), m_tunnelParticles.end(), [&](auto& particles) {particles->update(dt * 2.0f); });
 }
 
 void ParticleManage::applyWindForce(sf::Vector2f force)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
-	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
+	std::for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
+	std::for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyForce(force); });
 }
 
 void ParticleManage::applyGravityForce(sf::Vector2f force)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
-	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
+	std::for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
+	std::for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyGravityForce(force); });
 }
 
 void ParticleManage::applyAirResistance(float coefficent)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
-	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
+	std::for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
+	std::for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyAirResistance(coefficent); });
 }
 
 void ParticleManage::applyFriction(float mi)
 {
-	std::for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
-	std::for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
+	std::for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
+	std::for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](std::shared_ptr<ParticlesInterface>& particles) {particles->applyFriction(mi); });
 }
 
 sf::String ParticleManage::getEffectText()
@@ -422,7 +424,8 @@ void ParticleManage::update(float dt, sf::Vector2i mousePosition, int particleAm
 	{
 		for (size_t angle = 0; angle < 360; angle++)
 		{
-			sf::Vector2i point = sf::Vector2i{ mousePosition.x + static_cast<int>(100 * cos(angle * 3.14f / 180.0f)), mousePosition.y + static_cast<int>(100* sin(angle * 3.14f / 180.0f)) };
+			sf::Vector2i point = sf::Vector2i{ mousePosition.x + static_cast<int>(100 * cos(angle * 3.14f / 180.0f)), 
+											   mousePosition.y + static_cast<int>(100 * sin(angle * 3.14f / 180.0f)) };
 			applyEffect(ParticleManage::ParticleEffect::Tunnel, point, sf::Vector2f{ getForceRange().y, getForceRange().y }, sf::Vector2f(0.0f, 2.0f * 3.14f), 1);
 		}	
 	}
@@ -438,8 +441,8 @@ void ParticleManage::update(float dt, sf::Vector2i mousePosition, int particleAm
 void ParticleManage::draw(sf::RenderWindow& window)
 {
 	emiterEffect.draw(window);
-	for_each(m_explodedParticles.begin(), m_explodedParticles.end(), [&](const auto& particles) { particles->draw(window); });
-	for_each(m_emiterParticles.begin(), m_emiterParticles.end(), [&](const auto& particles) { particles->draw(window); });
+	for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](const auto& particles) { particles->draw(window); });
+	for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](const auto& particles) { particles->draw(window); });
 	for_each(m_tunnelParticles.begin(), m_tunnelParticles.end(), [&](const auto& particles) { particles->draw(window); });
 	for_each(m_force.begin(), m_force.end(), [&](const auto& force) { window.draw(force); });
 }

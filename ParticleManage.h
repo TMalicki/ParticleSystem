@@ -7,6 +7,7 @@
 #include "EmiterEffect.h"
 #include "windowSettings.h"
 
+
 class ParticleManage
 {
 public:
@@ -16,10 +17,14 @@ private:
 	std::default_random_engine									m_generator;
 	sf::Vector2f												m_activeArea;
 
+
 	// particles group //
+
+	std::vector<std::vector<std::shared_ptr<ParticlesInterface>>>	m_particleContainer;
 	std::vector<std::shared_ptr<ParticlesInterface>>			m_explodedParticles;
 	std::vector<std::shared_ptr<ParticlesInterface>>			m_emiterParticles;
 	std::vector<std::shared_ptr<ParticlesInterface>>			m_tunnelParticles;
+
 	std::vector<sf::CircleShape>								m_force;
 	sf::Vector2f												m_forceRange;
 
@@ -45,7 +50,12 @@ private:
 public:
 	ParticleManage() : m_forceWaveForce{ 0.0f }, m_FrictionOn{ false }, m_GravityOn{ false }, m_AirResistanceOn{ false }, m_WindOn{ false }, m_type{ ParticleType::Vertex }
 		, m_effectType{ ParticleEffect::Explode }, emiterEffect{}, m_fadingOn{ false }, m_forceRange{ sf::Vector2f{0.0f,3.0f} }, m_explodedParticlesOn{ false }
-		, m_emiterParticlesOn{ false }{}
+		, m_emiterParticlesOn{ false }
+	{
+		m_particleContainer.push_back(m_explodedParticles);
+		m_particleContainer.push_back(m_emiterParticles);
+		m_particleContainer.push_back(m_tunnelParticles);
+	}
 	//ParticleManage(const ParticleManage&) { std::cout << "ParticleManage kopia"; };
 
 	void setActiveArea(sf::Vector2f area) { m_activeArea = area; } 
@@ -72,8 +82,8 @@ public:
 	void createParticles(std::vector<std::shared_ptr<ParticlesInterface>>&, sf::Vector2i mousePosition = sf::Vector2i(0, 0), int amount = 1000);
 	void setParticleExpandAttributes(std::vector<std::shared_ptr<ParticlesInterface>>&, sf::Vector2i, std::vector<sf::Vector2f> direction, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f));
 	
-	std::vector<std::shared_ptr<ParticlesInterface>>& getExplodedParticles() { return m_explodedParticles; }
-	std::vector<std::shared_ptr<ParticlesInterface>>& getEmiterParticles() { return m_emiterParticles; }
+	std::vector<std::shared_ptr<ParticlesInterface>>& getExplodedParticles() { return m_particleContainer[0]; }
+	std::vector<std::shared_ptr<ParticlesInterface>>& getEmiterParticles() { return m_particleContainer[1]; }
 
 	void setWindDirection(sf::Vector2f direction) { m_WindDirection = direction; }
 	void setForceRange(sf::Vector2f);
