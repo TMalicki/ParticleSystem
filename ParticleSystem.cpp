@@ -201,6 +201,11 @@ void ParticleSystem::pullParticles(sf::Vector2i mousePosition)
         particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
         particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
     }
+    for (auto& particle : m_particlesManage->getTunnelParticles())
+    {
+        particle->setDirectionTowardsPoint(static_cast<sf::Vector2f>(mousePosition));
+        particle->applyForce(sf::Vector2f{ 0.1f , 0.1f });
+    }
 }
 
 void ParticleSystem::chooseEffect(float mouseDelta)

@@ -37,7 +37,7 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 		
 		else if(effect == ParticleEffect::Tunnel)
 		{
-			createParticles(m_tunnelParticles, mousePosition, amount);
+			createParticles(m_particleContainer[2], mousePosition, amount);
 			// apply force / direction so it goes only outside of circle
 		}
 		
@@ -56,8 +56,8 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 		{
 			static int tempDirection = 0;
 			directionVector[0] = sf::Vector2f{ cos(tempDirection * 3.14f / 180), sin(tempDirection * 3.14f / 180) };
-			//setParticleExpandAttributes(m_tunnelParticles, mousePosition, directionVector, forceRange);
-			setParticleExpandAttributes(m_tunnelParticles, mousePosition, directionVector, forceRange);
+			//setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
+			setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
 			tempDirection++;
 
 			if (tempDirection > 360) tempDirection = 0;
@@ -355,7 +355,7 @@ void ParticleManage::updatePosition(float dt)
 	for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](auto& particles) 
 	{particles->update(dt * 2.0f); });
 	for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](auto& particles) {particles->update(dt * 2.0f); });
-	for_each(m_tunnelParticles.begin(), m_tunnelParticles.end(), [&](auto& particles) {particles->update(dt * 2.0f); });
+	for_each(m_particleContainer[2].begin(), m_particleContainer[2].end(), [&](auto& particles) {particles->update(dt * 2.0f); });
 }
 
 void ParticleManage::applyWindForce(sf::Vector2f force)
@@ -443,7 +443,7 @@ void ParticleManage::draw(sf::RenderWindow& window)
 	emiterEffect.draw(window);
 	for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](const auto& particles) { particles->draw(window); });
 	for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](const auto& particles) { particles->draw(window); });
-	for_each(m_tunnelParticles.begin(), m_tunnelParticles.end(), [&](const auto& particles) { particles->draw(window); });
+	for_each(m_particleContainer[2].begin(), m_particleContainer[2].end(), [&](const auto& particles) { particles->draw(window); });
 	for_each(m_force.begin(), m_force.end(), [&](const auto& force) { window.draw(force); });
 }
 
