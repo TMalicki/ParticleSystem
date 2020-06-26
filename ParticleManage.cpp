@@ -118,6 +118,7 @@ void ParticleManage::updateFading(float dt)
 
 		std::for_each(m_particleContainer[0].begin(), m_particleContainer[0].end(), [&](auto& particle) { particle->reduceLifeTime(dt, sum, maxLifeTime); });
 		std::for_each(m_particleContainer[1].begin(), m_particleContainer[1].end(), [&](auto& particle) { particle->reduceLifeTime(dt, sum, maxLifeTime); });
+		std::for_each(m_particleContainer[2].begin(), m_particleContainer[2].end(), [&](auto& particle) { particle->reduceLifeTime(dt, sum, maxLifeTime); });
 
 		if (sum >= (maxLifeTime / 255.0f))
 		{

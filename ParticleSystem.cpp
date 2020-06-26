@@ -63,7 +63,7 @@ void ParticleSystem::Run()
 
         m_particlesManage->colorParticlesByVelocity(m_particlesManage->getExplodedParticles());
         m_particlesManage->colorParticlesByVelocity(m_particlesManage->getEmiterParticles());
-
+        m_particlesManage->colorParticlesByVelocity(m_particlesManage->getTunnelParticles());
 
         // drawings //////////////////////////////////////////////
         window.clear();
@@ -102,6 +102,11 @@ void ParticleSystem::erasingBorder(ParticleManage::ParticleEffect effect)
     {
         temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getEmiterParticles());
     }
+    else if (effect == ParticleManage::ParticleEffect::Tunnel)
+    {
+        temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getTunnelParticles());
+    }
+
     //auto& temp = m_particlesManage->getExplodedParticles();
     std::vector<size_t> particleGroupToErase;
     std::vector<std::vector<size_t>> particlesID;
@@ -126,6 +131,10 @@ void ParticleSystem::reboundBorder(ParticleManage::ParticleEffect effect)
     {
         temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getEmiterParticles());
     }
+    else if (effect == ParticleManage::ParticleEffect::Tunnel)
+    {
+        temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getTunnelParticles());
+    }
 
     for (size_t i = 0; i < temp->size(); i++)
     {
@@ -144,6 +153,10 @@ void ParticleSystem::transitionBorder(ParticleManage::ParticleEffect effect)
     else if (effect == ParticleManage::ParticleEffect::Emiter)
     {
         temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getEmiterParticles());
+    }
+    else if (effect == ParticleManage::ParticleEffect::Tunnel)
+    {
+        temp = std::make_unique<std::vector<std::shared_ptr<ParticlesInterface>>>(m_particlesManage->getTunnelParticles());
     }
 
     for (size_t i = 0; i < temp->size(); i++)
@@ -164,6 +177,10 @@ void ParticleSystem::applyBorders()
         {
             erasingBorder(ParticleManage::ParticleEffect::Emiter);
         }
+        if (m_particlesManage->getTunnelParticles().size() > 0)
+        {
+            erasingBorder(ParticleManage::ParticleEffect::Tunnel);
+        }
     }
     else if (windowSetting->getBorderType() == windowSettings::BorderType::ReboundBorder)
     {
@@ -175,6 +192,10 @@ void ParticleSystem::applyBorders()
         {
             reboundBorder(ParticleManage::ParticleEffect::Emiter);
         }
+        if (m_particlesManage->getTunnelParticles().size() > 0)
+        {
+            reboundBorder(ParticleManage::ParticleEffect::Tunnel);
+        }
     }
     else if (windowSetting->getBorderType() == windowSettings::BorderType::TransitionBorder)
     {
@@ -185,6 +206,10 @@ void ParticleSystem::applyBorders()
         if (m_particlesManage->getEmiterParticles().size() > 0)
         {
             transitionBorder(ParticleManage::ParticleEffect::Emiter);
+        }
+        if (m_particlesManage->getTunnelParticles().size() > 0)
+        {
+            transitionBorder(ParticleManage::ParticleEffect::Tunnel);
         }
     }
 }
