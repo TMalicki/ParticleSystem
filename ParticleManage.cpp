@@ -17,6 +17,27 @@ void ParticleManage::createParticles(std::vector<std::shared_ptr<ParticlesInterf
 	}
 }
 
+void ParticleManage::createParticles(std::vector<std::shared_ptr<ParticlesInterface>>& particles, std::vector<sf::Vector2i> mousePosition, int amount)
+{
+	std::vector<sf::Vector2f> mousePositionFloat{ mousePosition.size() };
+	int index{};
+
+	for (auto& floatPosition : mousePosition)
+	{
+		mousePositionFloat[index] = sf::Vector2f(static_cast<float>(floatPosition.x), static_cast<float>(floatPosition.y));
+		index++;
+	}
+
+	if (m_type == ParticleType::Vertex)
+	{
+		particles.push_back(std::shared_ptr<ParticlesInterface>(new ParticlesVertex(amount, mousePositionFloat)));
+	}
+	else if (m_type == ParticleType::CircleShape)
+	{
+		particles.push_back(std::shared_ptr<ParticlesInterface>(new ParticlesCircle(amount, mousePositionFloat)));
+	}
+}
+
 void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount) 
 {
 
@@ -53,6 +74,40 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 		if (effect == ParticleEffect::Explode) setParticleExpandAttributes(m_particleContainer[0], mousePosition, directionVector, forceRange);
 		else if (effect == ParticleEffect::Emiter) setParticleExpandAttributes(m_particleContainer[1], mousePosition, directionVector, forceRange);
 		else if (effect == ParticleEffect::Tunnel)
+		{
+			static int tempDirection = 0;
+			directionVector[0] = sf::Vector2f{ cos(tempDirection * 3.14f / 180), sin(tempDirection * 3.14f / 180) };
+			//setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
+			setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
+			tempDirection++;
+
+			if (tempDirection > 360) tempDirection = 0;
+		}
+	}
+}
+
+void ParticleManage::applyEffect(ParticleEffect effect, std::vector<sf::Vector2i> mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount)
+{
+	
+	// bool effect = true -> than in update do it as long as it should
+	//if (m_activeArea.x > std::min_element(mousePosition.begin()->x, mousePosition.end()->x))
+	if(m_activeArea.x > mousePosition[0].x)
+	{
+		if (effect == ParticleEffect::Tunnel)
+		{
+			createParticles(m_particleContainer[2], mousePosition, amount);
+			// apply force / direction so it goes only outside of circle
+		}
+
+		vector<sf::Vector2f> directionVector(amount);
+
+		std::for_each(directionVector.begin(), directionVector.end(), [&](sf::Vector2f& direction)
+		{
+			float randomDirection = getRandomFloat(angleRange.x, angleRange.y);
+			direction = sf::Vector2f(static_cast<float>(cos(randomDirection)), static_cast<float>(sin(randomDirection)));
+		});
+
+		if (effect == ParticleEffect::Tunnel)
 		{
 			static int tempDirection = 0;
 			directionVector[0] = sf::Vector2f{ cos(tempDirection * 3.14f / 180), sin(tempDirection * 3.14f / 180) };
@@ -171,8 +226,34 @@ void ParticleManage::setParticleExpandAttributes(vector<std::shared_ptr<Particle
 		auto tempForce = sf::Vector2f(random_x, random_y);
 		randomForces.at(i) = tempForce;
 
-		sf::Vector2f mousePos = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
+		//sf::Vector2f mousePos = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 		
+		randomMasses.at(i) = getRandomFloat(1.5f, 3.0f);
+	}
+	actualParticleGroup->setMass(randomMasses);
+	actualParticleGroup->setDirection(direction);
+	actualParticleGroup->applyForce(randomForces);
+}
+
+void ParticleManage::setParticleExpandAttributes(std::vector<std::shared_ptr<ParticlesInterface>>& particleGroup, std::vector<sf::Vector2i> mousePosition, std::vector<sf::Vector2f> direction, sf::Vector2f randomRange)
+{
+	auto& actualParticleGroup = particleGroup.back();
+	auto& actualParticleGroupAttributes = actualParticleGroup->getParticleAttributes();
+
+	// random forces, and random masses
+	vector<sf::Vector2f> randomForces(actualParticleGroupAttributes.size());
+	vector<float> randomMasses(actualParticleGroupAttributes.size());
+
+	for (size_t i = 0; i < actualParticleGroupAttributes.size(); i++)
+	{
+		float random_x = getRandomFloat(randomRange.x, randomRange.y);
+		float random_y = getRandomFloat(randomRange.x, randomRange.y);
+
+		auto tempForce = sf::Vector2f(random_x, random_y);
+		randomForces.at(i) = tempForce;
+
+		//sf::Vector2f mousePos = sf::Vector2f(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
+
 		randomMasses.at(i) = getRandomFloat(1.5f, 3.0f);
 	}
 	actualParticleGroup->setMass(randomMasses);
@@ -423,12 +504,14 @@ void ParticleManage::update(float dt, sf::Vector2i mousePosition, int particleAm
 	}
 	if (m_tunnelParticlesOn == true)
 	{
+		std::vector<sf::Vector2i> point{ 360 };
 		for (size_t angle = 0; angle < 360; angle++)
 		{
-			sf::Vector2i point = sf::Vector2i{ mousePosition.x + static_cast<int>(100 * cos(angle * 3.14f / 180.0f)), 
+			point[angle] = sf::Vector2i{ mousePosition.x + static_cast<int>(100 * cos(angle * 3.14f / 180.0f)),
 											   mousePosition.y + static_cast<int>(100 * sin(angle * 3.14f / 180.0f)) };
-			applyEffect(ParticleManage::ParticleEffect::Tunnel, point, sf::Vector2f{ getForceRange().y, getForceRange().y }, sf::Vector2f(0.0f, 2.0f * 3.14f), 1);
-		}	
+		}
+			applyEffect(ParticleManage::ParticleEffect::Tunnel, point, sf::Vector2f{ getForceRange().y, getForceRange().y }, sf::Vector2f(0.0f, 2.0f * 3.14f), 360);
+		
 	}
 
 

@@ -1,4 +1,4 @@
-#include "ParticlesVertex.h"
+#include "ParticlesInterface.h"
 #include <algorithm>
 
 float ParticlesInterface::m_maxVelocity = 100.0f;
@@ -7,6 +7,12 @@ ParticlesInterface::ParticlesInterface(long int amount, sf::Vector2f position) :
 	m_particleAttributes(amount)//, m_lifeTimeMs(1000.0f)
 {
 	//std::for_each(m_particleAttributes.begin(), m_particleAttributes.end(), [&](ParticleSettings& particle) {particle.setPosition(position); });
+}
+
+ParticlesInterface::ParticlesInterface(long int amount, std::vector<sf::Vector2f> position) :
+	m_particleAttributes(amount)
+{
+
 }
 
 void ParticlesInterface::setDirection(sf::Vector2f direction)

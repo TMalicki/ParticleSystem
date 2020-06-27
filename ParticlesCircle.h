@@ -11,6 +11,7 @@ private:
 	std::vector<sf::CircleShape>			m_particleCircle;
 public:
 	ParticlesCircle(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
+	ParticlesCircle(long int amount = 100, std::vector<sf::Vector2f> position = {});
 
 	virtual const sf::Vector2f getPosition(size_t index) { return m_particleCircle.at(index).getPosition(); }
 	virtual const std::vector<sf::Vector2f> getPosition();

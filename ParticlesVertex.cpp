@@ -6,6 +6,12 @@ ParticlesVertex::ParticlesVertex(long int amount, sf::Vector2f position) : m_par
 	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particle) {particle.position = position; });
 }
 
+ParticlesVertex::ParticlesVertex(long int amount, std::vector<sf::Vector2f> position) : m_particleVertex(amount), ParticlesInterface(amount, position)
+{
+	int index{};
+	std::for_each(m_particleVertex.begin(), m_particleVertex.end(), [&](sf::Vertex& particle) {particle.position = position[index]; index++; });
+}
+
 // here should be something like downloadPosition(vector<sf::Vector2f&> because here i have refence of local variable so copy is needed. I do not want that
 const std::vector<sf::Vector2f> ParticlesVertex::getPosition()
 {

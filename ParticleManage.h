@@ -57,6 +57,7 @@ public:
 	void createEmitingObject(sf::Vector2i, float, int);
 
 	void applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount = 1000);
+	void applyEffect(ParticleEffect effect, std::vector<sf::Vector2i> mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount = 1000);
 	void TurnEffectOn(ParticleEffect effect);
 
 	std::vector<size_t> eraseParticles(std::vector<std::shared_ptr<ParticlesInterface>>&, std::vector<std::vector<size_t>> elementsID);
@@ -73,8 +74,11 @@ public:
 	const ParticleEffect& getParticleEffect() { return m_effectType; }
 
 	void createParticles(std::vector<std::shared_ptr<ParticlesInterface>>&, sf::Vector2i mousePosition = sf::Vector2i(0, 0), int amount = 1000);
+	void createParticles(std::vector<std::shared_ptr<ParticlesInterface>>&, std::vector<sf::Vector2i> mousePosition = {}, int amount = 1000);
+
 	void setParticleExpandAttributes(std::vector<std::shared_ptr<ParticlesInterface>>&, sf::Vector2i, std::vector<sf::Vector2f> direction, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f));
-	
+	void setParticleExpandAttributes(std::vector<std::shared_ptr<ParticlesInterface>>&, std::vector<sf::Vector2i>, std::vector<sf::Vector2f> direction, sf::Vector2f randomRange = sf::Vector2f(0.0f, 0.0f));
+
 	std::vector<std::shared_ptr<ParticlesInterface>>& getExplodedParticles() { return m_particleContainer[0]; }
 	std::vector<std::shared_ptr<ParticlesInterface>>& getEmiterParticles() { return m_particleContainer[1]; }
 	std::vector<std::shared_ptr<ParticlesInterface>>& getTunnelParticles() { return m_particleContainer[2]; }

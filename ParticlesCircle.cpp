@@ -13,6 +13,20 @@ ParticlesCircle::ParticlesCircle(long int amount, sf::Vector2f position) : m_par
 		});
 }
 
+ParticlesCircle::ParticlesCircle(long int amount, std::vector<sf::Vector2f> position) : m_particleCircle(amount), ParticlesInterface(amount, position)
+{
+	int index{};
+	std::for_each(m_particleCircle.begin(), m_particleCircle.end(),
+		[&](sf::CircleShape& particle)
+	{
+		auto x = 5.0f;
+		particle.setRadius(x);
+		particle.setOrigin(x, x);
+		particle.setPosition(position[index]);
+		index++;
+	});
+}
+
 const std::vector<sf::Vector2f> ParticlesCircle::getPosition()
 {
 	std::vector<sf::Vector2f> tempPosition(m_particleCircle.size());

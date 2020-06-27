@@ -12,6 +12,7 @@ private:
 	static float					m_maxVelocity;
 public:
 	ParticlesInterface(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
+	ParticlesInterface(long int amount = 100, std::vector<sf::Vector2f> position = {});
 	//ParticlesInterface(const ParticlesInterface&) { std::cout << "ParticlesInterface kopia"; };
 
 	virtual std::vector<sf::Color> getColor() = 0;

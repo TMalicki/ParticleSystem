@@ -11,6 +11,7 @@ private:
 	std::vector<sf::Vertex>				m_particleVertex;
 public:
 	ParticlesVertex(long int amount = 100, sf::Vector2f position = { 0.0,0.0 });
+	ParticlesVertex(long int amount = 100, std::vector<sf::Vector2f> position = {});
 	//ParticlesVertex(const ParticlesVertex&) { std::cout << "ParticlesVertex kopia"; };
 
 	virtual const sf::Vector2f getPosition(size_t index) { return m_particleVertex.at(index).position; }
