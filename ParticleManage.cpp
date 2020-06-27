@@ -73,6 +73,7 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 
 		if (effect == ParticleEffect::Explode) setParticleExpandAttributes(m_particleContainer[0], mousePosition, directionVector, forceRange);
 		else if (effect == ParticleEffect::Emiter) setParticleExpandAttributes(m_particleContainer[1], mousePosition, directionVector, forceRange);
+		/*
 		else if (effect == ParticleEffect::Tunnel)
 		{
 			static int tempDirection = 0;
@@ -83,6 +84,7 @@ void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePositi
 
 			if (tempDirection > 360) tempDirection = 0;
 		}
+		*/
 	}
 }
 
@@ -109,13 +111,12 @@ void ParticleManage::applyEffect(ParticleEffect effect, std::vector<sf::Vector2i
 
 		if (effect == ParticleEffect::Tunnel)
 		{
-			static int tempDirection = 0;
-			directionVector[0] = sf::Vector2f{ cos(tempDirection * 3.14f / 180), sin(tempDirection * 3.14f / 180) };
+			for (size_t i = 0; i < amount; i++)
+			{
+				directionVector[i] = sf::Vector2f{ cos(i * 3.14f / 180), sin(i * 3.14f / 180) };
+			}
 			//setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
 			setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
-			tempDirection++;
-
-			if (tempDirection > 360) tempDirection = 0;
 		}
 	}
 }
