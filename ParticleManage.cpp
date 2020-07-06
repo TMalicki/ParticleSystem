@@ -40,84 +40,54 @@ void ParticleManage::createParticles(std::vector<std::shared_ptr<ParticlesInterf
 
 void ParticleManage::applyEffect(ParticleEffect effect, sf::Vector2i mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount) 
 {
-
-	// bool effect = true -> than in update do it as long as it should
-	if (m_activeArea.x > mousePosition.x)
+	if (effect == ParticleEffect::Explode)
 	{
-		if (effect == ParticleEffect::Explode)
-		{
-			createParticles(m_particleContainer[0], mousePosition, amount);
-			//angleRange = sf::Vector2f(0.0f, 2.0f * 3.14f);
-			createForceWave(mousePosition);
-		}
-		else if (effect == ParticleEffect::Emiter)
-		{
-			createParticles(m_particleContainer[1], mousePosition, amount);
-			//angleRange = sf::Vector2f(250.0f * 0.0174f, 290.0f * 0.0174f); // (pi / 180 degree) == 0,0174
-		}
-		
-		else if(effect == ParticleEffect::Tunnel)
-		{
-			createParticles(m_particleContainer[2], mousePosition, amount);
-			// apply force / direction so it goes only outside of circle
-		}
-		
-
-		vector<sf::Vector2f> directionVector(amount);
-
-		std::for_each(directionVector.begin(), directionVector.end(), [&](sf::Vector2f& direction)
-		{
-			float randomDirection = getRandomFloat(angleRange.x, angleRange.y);
-			direction = sf::Vector2f(static_cast<float>(cos(randomDirection)), static_cast<float>(sin(randomDirection)));
-		});
-
-		if (effect == ParticleEffect::Explode) setParticleExpandAttributes(m_particleContainer[0], mousePosition, directionVector, forceRange);
-		else if (effect == ParticleEffect::Emiter) setParticleExpandAttributes(m_particleContainer[1], mousePosition, directionVector, forceRange);
-		/*
-		else if (effect == ParticleEffect::Tunnel)
-		{
-			static int tempDirection = 0;
-			directionVector[0] = sf::Vector2f{ cos(tempDirection * 3.14f / 180), sin(tempDirection * 3.14f / 180) };
-			//setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
-			setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
-			tempDirection++;
-
-			if (tempDirection > 360) tempDirection = 0;
-		}
-		*/
+		createParticles(m_particleContainer[0], mousePosition, amount);
+		//angleRange = sf::Vector2f(0.0f, 2.0f * 3.14f);
+		createForceWave(mousePosition);
 	}
+	else if (effect == ParticleEffect::Emiter)
+	{
+		createParticles(m_particleContainer[1], mousePosition, amount);
+		//angleRange = sf::Vector2f(250.0f * 0.0174f, 290.0f * 0.0174f); // (pi / 180 degree) == 0,0174
+	}
+		
+	vector<sf::Vector2f> directionVector(amount);
+
+	std::for_each(directionVector.begin(), directionVector.end(), [&](sf::Vector2f& direction)
+	{
+		float randomDirection = getRandomFloat(angleRange.x, angleRange.y);
+		direction = sf::Vector2f(static_cast<float>(cos(randomDirection)), static_cast<float>(sin(randomDirection)));
+	});
+
+	if (effect == ParticleEffect::Explode) setParticleExpandAttributes(m_particleContainer[0], mousePosition, directionVector, forceRange);
+	else if (effect == ParticleEffect::Emiter) setParticleExpandAttributes(m_particleContainer[1], mousePosition, directionVector, forceRange);
 }
 
 void ParticleManage::applyEffect(ParticleEffect effect, std::vector<sf::Vector2i> mousePosition, sf::Vector2f forceRange, sf::Vector2f angleRange, int amount)
 {
-	
-	// bool effect = true -> than in update do it as long as it should
-	//if (m_activeArea.x > std::min_element(mousePosition.begin()->x, mousePosition.end()->x))
-	if(m_activeArea.x > mousePosition[0].x)
+	if (effect == ParticleEffect::Tunnel)
 	{
-		if (effect == ParticleEffect::Tunnel)
+		createParticles(m_particleContainer[2], mousePosition, amount);
+		// apply force / direction so it goes only outside of circle
+	}
+
+	vector<sf::Vector2f> directionVector(amount);
+
+	std::for_each(directionVector.begin(), directionVector.end(), [&](sf::Vector2f& direction)
+	{
+		float randomDirection = getRandomFloat(angleRange.x, angleRange.y);
+		direction = sf::Vector2f(static_cast<float>(cos(randomDirection)), static_cast<float>(sin(randomDirection)));
+	});
+
+	if (effect == ParticleEffect::Tunnel)
+	{
+		for (size_t i = 0; i < amount; i++)
 		{
-			createParticles(m_particleContainer[2], mousePosition, amount);
-			// apply force / direction so it goes only outside of circle
+			directionVector[i] = sf::Vector2f{ cos(i * 3.14f / 180), sin(i * 3.14f / 180) };
 		}
-
-		vector<sf::Vector2f> directionVector(amount);
-
-		std::for_each(directionVector.begin(), directionVector.end(), [&](sf::Vector2f& direction)
-		{
-			float randomDirection = getRandomFloat(angleRange.x, angleRange.y);
-			direction = sf::Vector2f(static_cast<float>(cos(randomDirection)), static_cast<float>(sin(randomDirection)));
-		});
-
-		if (effect == ParticleEffect::Tunnel)
-		{
-			for (size_t i = 0; i < amount; i++)
-			{
-				directionVector[i] = sf::Vector2f{ cos(i * 3.14f / 180), sin(i * 3.14f / 180) };
-			}
-			//setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
-			setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
-		}
+		//setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
+		setParticleExpandAttributes(m_particleContainer[2], mousePosition, directionVector, forceRange);
 	}
 }
 

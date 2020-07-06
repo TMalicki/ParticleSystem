@@ -268,7 +268,7 @@ void ParticleSystem::updateEvent(sf::Event& event, sf::Vector2i mousePosition)
         window.close();
     if (event.type == sf::Event::MouseButtonPressed)
     {
-        if (event.mouseButton.button == sf::Mouse::Left)
+        if (event.mouseButton.button == sf::Mouse::Left && mousePosition.x < windowSetting->getActiveWindowSize().x)
         {
             if (m_particlesManage->getParticleEffect() == ParticleManage::ParticleEffect::Explode)
             {
