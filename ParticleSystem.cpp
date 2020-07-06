@@ -55,7 +55,6 @@ void ParticleSystem::Run()
 
         applyForces();
 
-
         m_particlesManage->setParticleType(static_cast<ParticleManage::ParticleType>(windowSetting->getParticleType()));
         m_particlesManage->applyFading(windowSetting->getLifeTimeLogic());
 
